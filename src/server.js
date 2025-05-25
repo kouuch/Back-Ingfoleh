@@ -6,7 +6,7 @@ const app = express()
 const PORT = 5000
 
 app.use(cors())
-app.use(express())
+app.use(express.json());
 
 mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
 })
@@ -16,6 +16,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
     .catch(err => {
         console.error("mongoDb no conn", err)
     })
+
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World")
