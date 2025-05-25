@@ -20,6 +20,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
+const produkRoutes = require('./routes/produk');
+app.use('/api/produk', produkRoutes);
+
 app.get('/', (req, res) => {
     res.send("Hello World")
     console.log("server is running...")
