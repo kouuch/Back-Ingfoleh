@@ -19,11 +19,17 @@ mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
         console.error("mongoDb no conn", err)
     })
 
+// route untuk autentikasi
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
+// route untuk produk
 const produkRoutes = require('./routes/produk');
 app.use('/api/produk', produkRoutes);
+
+// route untuk user
+const userRoutes = require('./routes/user');
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World")

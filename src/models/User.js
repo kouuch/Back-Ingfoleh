@@ -4,12 +4,12 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique:true,
+        unique: true,
     },
     email: {
         type: String,
         required: true,
-        unique:true,
+        unique: true,
     },
     password: {
         type: String,
@@ -19,7 +19,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['guest', 'user', 'admin'],
         default: 'user'
+    },
+    no_telepon: {
+        type: String
+    },
+    status_akun: {
+        type: String,
+        enum: ['aktif', 'nonaktif'],
+        default: 'aktif'
+    },
+    tanggal_daftar: {
+        type: Date,
+        default: Date.now
     }
-},{ timestamps: true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)
