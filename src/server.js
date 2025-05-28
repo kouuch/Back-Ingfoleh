@@ -9,6 +9,8 @@ app.use(cors())
 app.use(express.json());
 
 mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 })
     .then(() => {
         console.log("MongoDb Konek")
