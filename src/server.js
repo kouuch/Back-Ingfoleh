@@ -31,6 +31,10 @@ app.use('/api/produk', produkRoutes);
 const userRoutes = require('./routes/user');
 app.use('/api/users', userRoutes);
 
+// route untuk feedback
+const feedbackRoutes = require('./routes/feedback');
+app.use('/api/feedback', feedbackRoutes);
+
 app.get('/', (req, res) => {
     res.send("Hello World")
     console.log("server is running...")
