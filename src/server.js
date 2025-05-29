@@ -35,6 +35,10 @@ app.use('/api/users', userRoutes);
 const feedbackRoutes = require('./routes/feedback');
 app.use('/api/feedback', feedbackRoutes);
 
+// route untuk kategori favorit
+const kategoriFavoritRoutes = require('./routes/kategoriFavorit');
+app.use('/api/kategoriFavorit', kategoriFavoritRoutes);
+
 app.get('/', (req, res) => {
     res.send("Hello World")
     console.log("server is running...")
