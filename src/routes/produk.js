@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Produk = require('../models/Produk');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
-
+const { validateProductInput } = require('../middleware/validationMiddleware')
 
 //create produk hanya admin
-router.post('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res) => {
+    console.log("Request Body:", req.body);
     try {
         const produk = new Produk(req.body);
         await produk.save();
@@ -28,7 +29,8 @@ router.get('/', async (req, res) => {
 })
 
 // update produk hanya admin
-router.put('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res) => {
+    console.log("Update Request Body:", req.body);
     try {
         const produk = await Produk.findByIdAndUpdate(req.params.id, req.body, { new: true })
         if (!produk) return res.status(404).json({ msg: 'Produk tidak ditemukan' })

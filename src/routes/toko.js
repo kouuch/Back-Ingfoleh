@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router()
 const Toko = require('../models/Toko')
 const { authenticateToken, authorizeRoles } = require('../middleware/auth')
+const { validateStoreInput } = require('../middleware/validationMiddleware')
 
 // Create toko (admin only)
-router.post('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+router.post('/', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res) => {
     try {
         const toko = new Toko(req.body)
         await toko.save()
@@ -25,7 +26,7 @@ router.get('/', async (req, res) => {
 })
 
 // Update toko (admin only)
-router.put('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) =>{
+router.put('/:id', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res) =>{
     try {
         const toko = await Toko.findByIdAndUpdate(req.params.id, req.body, { new: true })
         res.json(toko)

@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/User')
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs')
 const { authenticateToken, authorizeRoles } = require('../middleware/auth')
+const { validateUserInput } = require('../middleware/validationMiddleware')
 
 // get all users (admin only)
 router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
@@ -15,7 +16,7 @@ router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res) => 
 })
 
 // update Profile (user atau admin)
-router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), async (req, res) => {
+router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUserInput, async (req, res) => {
     try {
         const userId = req.user.id;
         const updateData = { ...req.body }

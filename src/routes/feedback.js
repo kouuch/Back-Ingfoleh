@@ -3,9 +3,10 @@ const router = express.Router();
 const Feedback = require('../models/Feedback');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { populate } = require('../models/Produk');
+const { validateFeedbackInput } = require('../middleware/validationMiddleware');
 
 // Create feedback (user only)
-router.post('/', authenticateToken, authorizeRoles('user', 'admin'), async (req, res) => {
+router.post('/', authenticateToken, authorizeRoles('user', 'admin'), validateFeedbackInput, async (req, res) => {
     try {
         const feedback = new Feedback({
             user: req.user.id,
@@ -32,7 +33,7 @@ router.get('/', authenticateToken, authorizeRoles('admin', 'user'), async (req, 
 })
 
 // Update feedback (user dan admin)
-router.put('/:id', authenticateToken, authorizeRoles('user', 'admin'), async (req, res) => {
+router.put('/:id', authenticateToken, authorizeRoles('user', 'admin'), validateFeedbackInput, async (req, res) => {
     try {
         const feedback = await Feedback.findById(req.params.id)
         if (!feedback) return res.status(404).json({ msg: 'Feedback tidak ditemukan' })
