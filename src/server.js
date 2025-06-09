@@ -1,12 +1,22 @@
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const rateLimit = require('express-rate-limit')
 
 const app = express()
 const PORT = 5000
 
 app.use(cors())
-app.use(express.json());
+app.use(express.json())
+
+// konfigurasi raate limit
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: "Terlalu banyak permintaan, coba lagi nanti."
+})
+
+app.use(limiter)
 
 mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
     useNewUrlParser: true,

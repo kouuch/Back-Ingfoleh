@@ -4,6 +4,14 @@ const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const { authenticateToken, authorizeRoles } = require('../middleware/auth')
 const { validateUserInput } = require('../middleware/validationMiddleware')
+const rateLimit = require('express-rate-limit')
+
+// rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: 'Terlalu banyak permintaan, silakan coba lagi nanti'
+})
 
 // get all users (admin only)
 router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
