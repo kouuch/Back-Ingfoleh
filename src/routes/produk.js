@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Produk = require('../models/Produk');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
-const { validateProductInput } = require('../middleware/validationMiddleware')
+const { validateProductInput } = require('../middleware/validationMiddleware');
+const logger = require('../utils/logger');
 
 //create produk hanya admin
 router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res) => {
@@ -10,9 +11,10 @@ router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInpu
     try {
         const produk = new Produk(req.body);
         await produk.save();
+        logger.info(`Product created successfully: ${produk._id}`);
         return res.status(201).json(produk);
     } catch (error) {
-        console.error("Error while creating product:", error);
+        logger.error(`Error creating product: ${error.message}`);
         res.status(400).json({ msg: error.message });
     }
 });
@@ -22,8 +24,10 @@ router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInpu
 router.get('/', async (req, res) => {
     try {
         const produk = await Produk.find()
+        logger.info(`Fetched ${produk.length} products`)
         res.json(produk)
     } catch (error) {
+        logger.error(`Error fetching products: ${error.message}`)
         res.status(500).json({ msg: error.message })
     }
 })
@@ -33,9 +37,14 @@ router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductIn
     console.log("Update Request Body:", req.body);
     try {
         const produk = await Produk.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        if (!produk) return res.status(404).json({ msg: 'Produk tidak ditemukan' })
+        if (!produk) {
+            logger.warn(`Product with id ${req.params.id} not found`)
+            return res.status(404).json({ msg: 'Produk tidak ditemukan' })
+        }
+        logger.info(`Product updated successfully: ${produk._id}`)
         res.json(produk)
     } catch (error) {
+        logger.error(`Error updating product: ${error.message}`)
         res.status(400).json({ msg: error.message })
     }
 })
@@ -43,13 +52,16 @@ router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductIn
 // Dlete produk hanya admin
 router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
     try {
-        const produk = await Produk.findByIdAndDelete(req.params.id);
+        const produk = await Produk.findByIdAndDelete(req.params.id)
         if (!produk) {
-            return res.status(404).json({ msg: 'Produk tidak ditemukan' });
+            logger.warn(`Product with id ${req.params.id} not found`)
+            return res.status(404).json({ msg: 'Produk tidak ditemukan' })
         }
-        res.json({ msg: 'Produk berhasil dihapus' });
+        logger.info(`Product successfully deleted: ${produk._id}`)
+        res.json({ msg: 'Produk berhasil dihapus' })
     } catch (error) {
-        res.status(500).json({ msg: error.message });
+        logger.error(`Error deleting product with ID ${req.params.id}: ${error.message}`)
+        res.status(500).json({ msg: error.message })
     }
 });
 

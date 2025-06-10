@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const rateLimit = require('express-rate-limit')
+const logger = require('./utils/logger')
 
 const app = express()
 const PORT = 5000
@@ -12,21 +13,21 @@ app.use(express.json())
 // konfigurasi raate limit
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: "Terlalu banyak permintaan, coba lagi nanti."
+    max: 100,
+    message: "Terlalu banyak permintaan, coba lagi nanti.",
 })
 
 app.use(limiter)
 
-mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://127.0.0.1:27017/ingfoleh'
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+)
     .then(() => {
-        console.log("MongoDb Konek")
+        logger.info("MongoDB berhasil terkoneksi")
     })
     .catch(err => {
-        console.error("mongoDb no conn", err)
+        logger.error("Koneksi MongoDB gagal", err)
     })
 
 // route untuk autentikasi
@@ -55,10 +56,10 @@ app.use('/api/toko', tokoRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World")
-    console.log("server is running...")
+    logger.info("server is running...")
 })
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    logger.info(`Server is running on http://localhost:${PORT}`);
 
 })
