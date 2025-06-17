@@ -1,9 +1,10 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AppError = require('../utils/AppError');
 const { log, Logger } = require('winston');
 const logger = require('../utils/logger');
-const JWT_SECRET = 'key';
+const JWT_SECRET = process.env.JWT_SECRET
 
 
 // verifikasi token

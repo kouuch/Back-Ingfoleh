@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
@@ -8,7 +9,7 @@ const logger = require('../utils/logger')
 const AppError = require('../utils/AppError')
 
 
-const JWT_SECRET = 'key'
+const JWT_SECRET = process.env.JWT_SECRET
 
 // rate limiting
 const limiter = rateLimit({
