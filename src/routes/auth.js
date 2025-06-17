@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const rateLimit = require('express-rate-limit')
 const logger = require('../utils/logger')
+const AppError = require('../utils/AppError')
+
 
 const JWT_SECRET = 'key'
 
@@ -16,7 +18,7 @@ const limiter = rateLimit({
 });
 
 // Route untuk registrasi user
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
     const { username, email, password } = req.body;
 
     logger.info(`Registrasi request received for email: ${email}`)
@@ -26,7 +28,7 @@ router.post('/register', async (req, res) => {
         const existingUser = await User.findOne({ email })
         if (existingUser) {
             logger.warn(`Registrasi failed: User already exists with email: ${email}`)
-            return res.status(400).json({ msg: "User Sudah Terdaftar" })
+            return next(new AppError('User sudah terdaftar', 400))
         }
 
         // hash password
@@ -46,13 +48,12 @@ router.post('/register', async (req, res) => {
         res.status(201).json({ msg: "Registrasi Berhasil" })
     } catch (error) {
         logger.error(`Error during registration for email: ${email} - ${error.message}`)
-        console.error(error)
-        res.status(500).json({ msg: "Server Error" })
+        next(new AppError(error.message , 500))
     }
 });
 
 // Route untuk login user
-router.post('/login', limiter, async (req, res) => {
+router.post('/login', limiter, async (req, res, next) => {
     const { email, password } = req.body;
 
     logger.info(`Login request received for email: ${email}`)
@@ -61,14 +62,14 @@ router.post('/login', limiter, async (req, res) => {
         const user = await User.findOne({ email })
         if (!user) {
             logger.warn(`Login failed: User not found with email: ${email}`)
-            return res.status(400).json({ msg: "User Tidak ditemukan" })
+            return next(new AppError('User Tidak ditemukan' , 400))
         }
 
         // cek password
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             logger.warn(`Login failed: Invalid password for email: ${email}`)
-            return res.status(400).json({ msg: "Pasword Salah" })
+            return next(new AppError('Password salah', 400))
         }
 
         // buat JWT token
@@ -86,8 +87,7 @@ router.post('/login', limiter, async (req, res) => {
         })
     } catch (error) {
         logger.error(`Error during login for email: ${email} - ${error.message}`)
-        console.error(error)
-        res.status(500).json({ msg: "Server error" })
+        next(new AppError(error.message, 500))
     }
 });
 

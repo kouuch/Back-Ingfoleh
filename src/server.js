@@ -59,6 +59,19 @@ app.get('/', (req, res) => {
     logger.info("server is running...")
 })
 
+// Global error handling
+app.use((err, req, res, next) => {
+    logger.error(`Error occurred: ${err.message}`)
+
+    // Respons standar untuk error
+    res.status(err.statusCode || 500).json({
+        message: err.message || "Internal Server Error",
+        errors: err.errors || [],
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack })
+    })
+})
+
+
 app.listen(PORT, () => {
     logger.info(`Server is running on http://localhost:${PORT}`);
 

@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const AppError = require('../utils/AppError')
 
 //validasi input produk
 const validateProductInput = [
@@ -13,7 +14,8 @@ const validateProductInput = [
     (req, res, next) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            return next(new AppError('Input tidak valid', 400, errors.array()))
+            // return res.status(400).json({ errors: errors.array() })
         }
         next()
     }
@@ -29,7 +31,7 @@ const validateUserInput = [
     (req, res, next) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            return next(new AppError('Input tidak valid', 400, errors.array()))
         }
         next()
     }
@@ -45,7 +47,7 @@ const validateFeedbackInput = [
     (req, res, next) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            return next(new AppError('Input tidak valid', 400, errors.array()))
         }
         next()
     }
@@ -63,7 +65,7 @@ const validateStoreInput = [
     (req, res, next) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+            return next(new AppError('Input tidak valid', 400, errors.array()))
         }
         next()
     }

@@ -5,21 +5,22 @@ const bcrypt = require('bcryptjs')
 const { authenticateToken, authorizeRoles } = require('../middleware/auth')
 const { validateUserInput } = require('../middleware/validationMiddleware')
 const logger = require('../utils/logger')
+const AppError = require('../utils/AppError')
 
 // get all users (admin only)
-router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
         const users = await User.find().select('-password')
         logger.info(`Fetched ${users.length} users`)
         res.json(users)
     } catch (error) {
         logger.error(`Error fetching users: ${error.message}`)
-        res.status(500).json({ msg: error.message })
+        next(new AppError(error.message, 500))
     }
 })
 
 // update Profile (user atau admin)
-router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUserInput, async (req, res) => {
+router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUserInput, async (req, res, next) => {
     try {
         const userId = req.user.id;
         const updateData = { ...req.body }
@@ -35,22 +36,24 @@ router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUs
         res.json(updatedUser)
     } catch (error) {
         logger.error(`Error updating user profile for ${userId}: ${error.message}`)
-        res.status(400).json({ msg: error.message })
+        next(new AppError(error.message, 400))
     }
 })
 
 // delete user (admin only)
-router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id)
         logger.warn(`User with id ${userId} not found`)
-        if (!user) return res.status(404).json({ msg: 'User tidak ditemukan' })
-
+        if (!user) {
+            logger.warn(`User with id ${userId} not found`)
+            return next(new AppError('User tidak ditemukan', 404))
+        }
         logger.info(`User successfully deleted: ${userId}`)
         res.json({ msg: 'User berhasil dihapus' })
     } catch (error) {
         logger.error(`Error deleting user with id ${userId}: ${error.message}`)
-        res.status(500).json({ msg: error.message });
+        next(new AppError(error.message, 500))
     }
 })
 
