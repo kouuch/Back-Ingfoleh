@@ -1,0 +1,95 @@
+<!-- Navabar -->
+<header>
+    <a href="#" class="logo"><i class='bx bxs-basket'></i>Ingfoleh</a>
+    <div class="bx bx-menu" id="menu-icon"></div>
+
+    <!-- menu icon -->
+    <!-- Nav List -->
+    <ul class="navbar">
+        <li><a href="#home" class="home-active">Home</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#costumers">Costumer</a></li>
+    </ul>
+    <!-- menu login -->
+    <div id="guestMenu" class="guest-menu">
+        <a href="/login" id="loginBtn">login</a>
+    </div>
+    <!-- profile -->
+    <div class="profile" id="profileMenu">
+        <img src="images/profile/profile.jpg">
+        <span>Subhan</span>
+        <i class='bx bx-caret-down' onclick="toggleMenu(this);"></i>
+    </div>
+
+    <!-- submenu -->
+    <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+            <div class="user-info">
+                <img src="./images/profile/profile.jpg" alt="">
+                <h3>Muhammad Rifky Irsada</h3>
+            </div>
+            <hr>
+
+            <a href="#" class="sub-menu-link" id="reportMenu">
+                <i class='bx bxs-report'></i>
+                <p>Laporan</p>
+                <span>></span>
+            </a>
+
+            <!-- sub point menu1 -->
+            <div class="submenu-container" id="reportSubMenu">
+                <a href="#" class="sub-point-link">
+                    <p>Laporan Produk</p>
+                </a>
+                <a href="#" class="sub-point-link">
+                    <p>Laporan Pengguna</p>
+                </a>
+                <a href="#" class="sub-point-link">
+                    <p>Laporan Kategori Produk</p>
+                </a>
+                <a href="#" class="sub-point-link">
+                    <p>Laporan Produk Favorit</p>
+                </a>
+                <a href="#" class="sub-point-link">
+                    <p>Laporan Feedback</p>
+                </a>
+            </div>
+            <!-- sub point end menu -->
+            <a href="#" class="sub-menu-link" id="productsMenu">
+                <i class='bx bx-category'></i>
+                <p>Products</p>
+                <span>></span>
+            </a>
+            <!-- sub point menu2 -->
+            <div class="submenu-container" id="productsSubMenu">
+                <a href="#" class="sub-point-link products-sub-point-link">
+                    <p>aksesories</p>
+                </a>
+            </div>
+            <!-- sub point end menu -->
+            <a href="./page/produk/index.html" class="sub-menu-link">
+                <i class='bx bx-category'></i>
+                <p>Products</p>
+                <span>></span>
+            </a>
+            <a href="./page/produk/index.html" class="sub-menu-link">
+                <i class='bx bx-category'></i>
+                <p>Products</p>
+                <span>></span>
+            </a>
+            <a href="./page/produk/index.html" class="sub-menu-link">
+                <i class='bx bx-category'></i>
+                <p>Products</p>
+                <span>></span>
+            </a>
+
+            <a href="#" class="sub-menu-link">
+                <i class='bx bx-log-out'></i>
+                <p>Log Out</p>
+                <span>></span>
+            </a>
+        </div>
+    </div>
+</header>

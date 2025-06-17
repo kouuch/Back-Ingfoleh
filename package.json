@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "concurrently \"npm run dev-server\" \"npm run browser-sync\"",
+    "dev-server": "nodemon src/server.js",
+    "browser-sync": "browser-sync start --proxy http://localhost:5000 --files './ui/assets/css/*.css, ./ui/assets/js/*.js, ./ui/page/*.ejs' --no-open"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
@@ -22,6 +25,8 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "concurrently": "^9.1.2",
     "nodemon": "^3.1.10"
   }
 }

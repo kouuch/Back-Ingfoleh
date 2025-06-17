@@ -1,13 +1,48 @@
 require('dotenv').config()
-
 const express = require('express')
+const path = require('path');
 const cors = require('cors')
 const mongoose = require('mongoose')
 const rateLimit = require('express-rate-limit')
 const logger = require('./utils/logger')
 
 const app = express()
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 
+
+app.use((req, res, next) => {
+    logger.info(`Received request: ${req.method} ${req.url}`);
+    console.log(`Request URL: ${req.url}`);
+    next()
+})
+
+// file statis
+app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
+
+// set EJS as view engine
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, '..', 'ui', 'page'))
+
+// route utama
+app.get('/', (req, res) => {
+    logger.info("Rendering index page");
+    try {
+        res.render('index', { name: 'kyyy' });
+    } catch (err) {
+        logger.error('Error rendering index:', err);
+        res.status(500).send('Error rendering page');
+    }
+});
+
+//route login
+app.get('/login', (req, res) => {
+    logger.info("Rendering login page");
+    try {
+        res.render('login')  // Pastikan file login.ejs berada di folder 'ui/page'
+    } catch (err) {
+        logger.error('Error rendering login:', err)
+        res.status(500).send('Error rendering page')
+    }
+})
 
 app.use(cors())
 app.use(express.json())
@@ -56,10 +91,10 @@ app.use('/api/kategoriFavorit', kategoriFavoritRoutes);
 const tokoRoutes = require('./routes/toko');
 app.use('/api/toko', tokoRoutes);
 
-app.get('/', (req, res) => {
-    res.send("Hello World")
-    logger.info("server is running...")
-})
+// app.get('/', (req, res) => {
+//     res.send("Hello World")
+//     logger.info("server is running...")
+// })
 
 // Global error handling
 app.use((err, req, res, next) => {
