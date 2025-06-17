@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk</title>
-    <link rel="stylesheet" href="css/login.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Masuk</title>
+	<link rel="stylesheet" href="css/login.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
-<div class="container" id="container">
-	<div class="form-container sign-up-container">
-		<form action="#">
-			<h1>Buat Akun</h1>
-			<span>Atau gunakan email Anda untuk pendaftaran akun baru</span>
-			<input type="text" placeholder="Nama" />
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Kata Sandi" />
-			<button>Daftar</button>
-		</form>
-	</div>
-	<div class="form-container sign-in-container">
-		<form id="loginForm">
-			<h1>Masuk</h1>
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Kata Sandi" />
-			<a href="#">Lupa Kata Sandi?</a>
-			<button>Masuk</button>
-		</form>
-	</div>
-	<div class="overlay-container">
-		<div class="overlay">
-			<div class="overlay-panel overlay-left">
-				<h1>Selamat Datang Kembali!</h1>
-				<p>Untuk tetap terhubung, silakan masuk dengan akun pribadi Anda</p>
-				<button class="ghost" id="signIn">Masuk</button>
-			</div>
-			<div class="overlay-panel overlay-right">
-				<h1>Halo, Pengguna Baru!</h1>
-				<p>Daftarkan akun Anda untuk mulai mengakses sistem informasi</p>
-				<button class="ghost" id="signUp">Daftar</button>
+	<div class="container" id="container">
+		<div class="form-container sign-up-container" id="signupFormContainer" style="display:none;"">
+			<form id="signUpForm">
+				<h1>Daftar</h1>
+				<input type="text" id="signupUsername" placeholder="Username" required>
+				<input type="email" id="signupEmail" placeholder="Email" required>
+				<input type="password" id="signupPassword" placeholder="Password" required>
+				<button type="submit">Daftar</button>
+			</form>
+		</div>
+		<div class="form-container sign-in-container" id="loginFormContainer">
+			<form id="loginForm">
+				<h1>Masuk</h1>
+				<input type="text" id="loginEmailOrUsername" placeholder="Email atau Username" required>
+				<input type="password" id="loginPassword" placeholder="Password" required>
+				<button type="submit">Login</button>
+			</form>
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				<div class="overlay-panel overlay-left">
+					<h1>Selamat Datang Kembali!</h1>
+					<p>Untuk tetap terhubung, silakan masuk dengan akun pribadi Anda</p>
+					<button class="ghost" id="signIn">Masuk</button>
+				</div>
+				<div class="overlay-panel overlay-right">
+					<h1>Halo, Pengguna Baru!</h1>
+					<p>Daftarkan akun Anda untuk mulai mengakses sistem informasi</p>
+					<button class="ghost" id="signUp">Daftar</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<script src="/js/login.js"></script>
+	<script src="/js/login.js"></script>
 </body>
+
 </html>

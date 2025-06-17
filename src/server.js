@@ -7,13 +7,13 @@ const rateLimit = require('express-rate-limit')
 const logger = require('./utils/logger')
 
 const app = express()
-const PORT = process.env.PORT || 
+const PORT = process.env.PORT ||
 
-app.use((req, res, next) => {
-    logger.info(`Received request: ${req.method} ${req.url}`);
-    console.log(`Request URL: ${req.url}`);
-    next()
-})
+    app.use((req, res, next) => {
+        logger.info(`Received request: ${req.method} ${req.url}`);
+        console.log(`Request URL: ${req.url}`);
+        next()
+    })
 
 // file statis
 app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
@@ -33,16 +33,28 @@ app.get('/', (req, res) => {
     }
 });
 
-//route login
+// Route untuk halaman login
 app.get('/login', (req, res) => {
     logger.info("Rendering login page");
     try {
-        res.render('login')  // Pastikan file login.ejs berada di folder 'ui/page'
+        res.render('login');  // Render halaman login
     } catch (err) {
-        logger.error('Error rendering login:', err)
-        res.status(500).send('Error rendering page')
+        logger.error('Error rendering login:', err);
+        res.status(500).send('Error rendering page');
     }
-})
+});
+
+// Route untuk halaman registrasi
+app.get('/register', (req, res) => {
+    logger.info("Rendering register page");
+    try {
+        res.render('login');  // Render halaman yang sama dengan form registrasi
+    } catch (err) {
+        logger.error('Error rendering register:', err);
+        res.status(500).send('Error rendering page');
+    }
+});
+
 
 app.use(cors())
 app.use(express.json())

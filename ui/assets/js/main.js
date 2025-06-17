@@ -112,5 +112,5 @@ function showLoginPopup() {
 // fungsi logout
 document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('token')
-    window.location.href = '/login'
+    window.location.href = '/'
 })

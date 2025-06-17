@@ -26,57 +26,69 @@ router.post('/register', async (req, res, next) => {
 
     try {
         // cek apakah user sudah terdaftar
-        const existingUser = await User.findOne({ email })
-        if (existingUser) {
-            logger.warn(`Registrasi failed: User already exists with email: ${email}`)
-            return next(new AppError('User sudah terdaftar', 400))
+        const existingUserByEmail = await User.findOne({ email });
+        const existingUserByUsername = await User.findOne({ username });
+
+        if (existingUserByEmail || existingUserByUsername) {
+            logger.warn(`Registrasi failed: User already exists with email: ${email} or username: ${username}`)
+            return next(new AppError('User sudah terdaftar dengan email atau username tersebut', 400))
         }
 
         // hash password
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password, salt)
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
             username,
             email,
             password: hashedPassword
-        })
+        });
 
-        await newUser.save()
+        await newUser.save();
 
-        logger.info(`User registered successfully: ${email}`)
+        logger.info(`User registered successfully: ${email}`);
 
-        res.status(201).json({ msg: "Registrasi Berhasil" })
+        res.status(201).json({ msg: "Registrasi Berhasil" });
     } catch (error) {
-        logger.error(`Error during registration for email: ${email} - ${error.message}`)
-        next(new AppError(error.message , 500))
+        logger.error(`Error during registration for email: ${email} - ${error.message}`);
+        next(new AppError(error.message, 500));
     }
 });
 
+
 // Route untuk login user
 router.post('/login', limiter, async (req, res, next) => {
-    const { email, password } = req.body;
+    const { emailOrUsername, password } = req.body; // Ambil input yang bisa berupa email atau username
 
-    logger.info(`Login request received for email: ${email}`)
+    logger.info(`Login request received for email/username: ${emailOrUsername}`)
 
     try {
-        const user = await User.findOne({ email })
-        if (!user) {
-            logger.warn(`Login failed: User not found with email: ${email}`)
-            return next(new AppError('User Tidak ditemukan' , 400))
+        // Cek apakah login menggunakan email atau username
+        let user;
+        if (emailOrUsername.includes('@')) {
+            // Jika input mengandung '@', anggap itu adalah email
+            user = await User.findOne({ email: emailOrUsername });
+        } else {
+            // Jika tidak mengandung '@', anggap itu adalah username
+            user = await User.findOne({ username: emailOrUsername });
         }
 
-        // cek password
-        const isMatch = await bcrypt.compare(password, user.password)
+        if (!user) {
+            logger.warn(`Login failed: User not found with email/username: ${emailOrUsername}`)
+            return next(new AppError('User Tidak ditemukan', 400))
+        }
+
+        // Cek password
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            logger.warn(`Login failed: Invalid password for email: ${email}`)
+            logger.warn(`Login failed: Invalid password for email/username: ${emailOrUsername}`)
             return next(new AppError('Password salah', 400))
         }
 
-        // buat JWT token
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' })
+        // Buat JWT token
+        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
 
-        logger.info(`Login successful for user: ${email}`)
+        logger.info(`Login successful for user: ${emailOrUsername}`)
 
         res.json({
             token,
@@ -85,11 +97,12 @@ router.post('/login', limiter, async (req, res, next) => {
                 username: user.username,
                 email: user.email,
             },
-        })
+        });
     } catch (error) {
-        logger.error(`Error during login for email: ${email} - ${error.message}`)
-        next(new AppError(error.message, 500))
+        logger.error(`Error during login for email/username: ${emailOrUsername} - ${error.message}`);
+        next(new AppError(error.message, 500));
     }
 });
+
 
 module.exports = router
