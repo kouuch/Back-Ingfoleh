@@ -1,0 +1,223 @@
+@import "../../../css/style.css";
+
+/* custoom scrol bar */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+body {
+  background: var(--bg-color);
+}
+
+.container-table {
+  max-width: 1500px;
+  margin: 25px;
+  background: var(--bg-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 1px 2px 11px 4px rgb(14 55 54 /15%);
+}
+
+.container-table table thead {
+  border-bottom-color: var(--bg-color);
+}
+
+.container-table table {
+  border-color: var(--green-color);
+}
+
+.container-table table thead {
+  color: var(--bg-color);
+  background: var(--green-color);
+}
+
+.container-table table thead tr th {
+  border-right-color: var(--bg-color);
+}
+
+.container-table table thead tr th:first-child {
+  border-left-color: var(--green-color);
+}
+
+.container-table table thead tr th:last-child {
+  border-right-color: var(--green-color);
+}
+
+table thead tr th,
+table tbody tr td {
+  text-align: left !important;
+}
+
+table thead tr th:last-child {
+  pointer-events: none;
+}
+
+table thead tr th:last-child .dt-column-order {
+  display: none;
+}
+
+table tbody tr {
+  cursor: pointer;
+}
+
+table tbody tr td {
+  white-space: nowrap;  
+}
+
+table tbody tr td:first-child {
+  font-weight: 600;
+  text-align: center !important;
+}
+
+table tbody tr:nth-child(even) {
+  background: #f2f2f2 !important;
+}
+
+table tbody tr:hover {
+  background: var(--green-color) !important;
+  color: var(--bg-color);
+}
+
+table tbody tr:hover td:not(:last-child) {
+  border-right-color: var(--bg-color);
+}
+
+thead tr th:last-child,
+tbody tr td:last-child {
+  width: 160px;
+}
+
+table tbody tr td button {
+    border: none;
+    outline: none;
+    background: var(--green-color);
+    color: var(--bg-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    font-size: 1rem;
+}
+
+tbody tr:hover td button {
+    background: var(--light-orange-color);
+}
+.dt-scroll-body {
+  border-bottom: none !important;
+}
+
+#dt-length-0,
+#dt-search-0 {
+  border-color: var(--green-color);
+  box-shadow: none;
+}
+
+.dt-length label,
+.dt-info {
+  color: var(--light-orange-color);
+  font-weight: 600 !important;
+}
+
+.pagination .dt-paging-button .page-link {
+  border-color: var(--green-color);
+}
+
+.pagination .dt-paging-button.active .page-link {
+  background: var(--green-color) !important;
+  box-shadow: none;
+  border-color: var(--green-color);
+}
+
+.btn-dttabble {
+  padding: 0;
+  margin-bottom: 5px;
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.btn-dttabble button {
+  border: none;
+  outline: none;
+  padding: 8px 15px;
+  border-radius: 5rem;
+  background: var(--green-color);
+  color: var(--bg-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  -webkit-border-radius: 5rem;
+  -moz-border-radius: 5rem;
+  -ms-border-radius: 5rem;
+  -o-border-radius: 5rem;
+}
+
+.btn-dttabble button i {
+  padding: 4px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border-radius: 1rem;
+  font-size: 1rem;
+  margin: auto;
+}
+
+.btn-dttabble button:hover {
+  background: var(--light-orange-color);
+  transition: 0.2s ease;
+}
+
+/* Modal Form */
+.modal-header {
+  font-size: 25px;
+  background: var(--green-color);
+  color: var(--bg-color);
+}
+
+.cross {
+  color: var(--bg-color);
+  border: none;
+  outline: none;
+  font-size: 25px;
+  background: transparent;
+}
+
+.cross:hover {
+  color: var(--orange-color);
+}
+
+.modal span {
+  color: var(--text-red);
+  font-size: 18px;
+}
+
+.submitBtn {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  background: var(--green-color);
+  color: var(--bg-color);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.submitBtn:hover {
+  background: var(--light-orange-color);
+}
+
+form label {
+  font-size: 17px;
+}
