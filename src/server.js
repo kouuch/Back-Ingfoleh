@@ -17,8 +17,10 @@ app.use((req, res, next) => {
 
 // file statis
 app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
-// Menyajikan folder images sebagai folder statis agar gambar dapat diakses
+// Menyajikan folder images
 app.use('/images', express.static('images'));
+// Menyajikan folder uploads sebagai folder statis
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // set EJS as view engine
 app.set('view engine', 'ejs')
@@ -32,7 +34,7 @@ app.use((req, res, next) => {
         "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com data:; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; " +
-        "img-src 'self' data:;"
+        "img-src 'self' https://images.pexels.com data:;"  // Memperbolehkan gambar dari Pexels
     );
     next();
 });
@@ -100,7 +102,7 @@ app.use('/api/auth', authRoutes);
 
 // route untuk produk
 const produkRoutes = require('./routes/produk');
-app.use('/api/produk', produkRoutes);
+app.use('/api', produkRoutes);
 
 // route untuk user
 const userRoutes = require('./routes/user');

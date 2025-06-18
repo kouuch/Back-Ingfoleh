@@ -2,117 +2,59 @@
 <section class="categories" id="categories">
     <div class="heading">
         <h1>Khas Kalimantan Selatan <br><span>Categories</span></h1>
-        <a href="javascript:void(0);" class="btn" id="showProductsBtn">Lihat Semua<i class='bx bx-right-arrow-alt'></i></a> 
+        <a href="javascript:void(0);" class="btn" id="showProductsBtn">Lihat Semua<i
+                class='bx bx-right-arrow-alt'></i></a>
     </div>
     <!-- conten -->
     <div class="categories-container">
         <!-- box1 -->
-        <div class="box box1">
+        <div class="box box1" onclick="filterProducts('aksesoris')">
             <img src="/images/categori/acsesoris.png" alt="">
             <h2>aksesoris</h2>
             <span>19 items</span>
             <i class='bx bx-right-arrow-alt'></i>
         </div>
         <!-- box2 -->
-        <div class="box box2">
-            <img src="/images/categori/food.png" alt=""/>
-            <h2>Makan</h2>
+        <div class="box box2" onclick="filterProducts('makanan')">
+            <img src="/images/categori/food.png" alt="" />
+            <h2>Makanan</h2>
             <span>19 items</span>
             <i class='bx bx-right-arrow-alt'></i>
         </div>
         <!-- box3 -->
-        <div class="box box3">
-            <img src="/images/categori/drink.png" alt=""/>
+        <div class="box box3" onclick="filterProducts('minuman')">
+            <img src="/images/categori/drink.png" alt="" />
             <h2>Minuman</h2>
             <span>19 items</span>
             <i class='bx bx-right-arrow-alt'></i>
         </div>
         <!-- box4 -->
-        <div class="box box4">
-            <img src="images/categori/fashion.png" alt=""/>
+        <div class="box box4" onclick="filterProducts('fashion')">
+            <img src="images/categori/fashion.png" alt="" />
             <h2>Fashion</h2>
             <span>19 items</span>
             <i class='bx bx-right-arrow-alt'></i>
         </div>
     </div>
-    
+
 </section>
 
 <section class="overlay" id="overlay" style="display:none;">
     <div class="card-container">
-    <div class="heading">
-        <h1>Semua Produks <br></h1>
-        <a href="#" class="btn" id="closeOverlayBtn">kembali<i class='bx bx-right-arrow-alt'></i></a>
+        <div class="heading">
+            <h1>Semua Produks <br></h1>
+            <a href="#" class="btn" id="closeOverlayBtn">kembali<i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="products-containers" id="productsContainer">
+            <!-- box produts -->
+
+        </div>
+        <div class="pagination">
+            <button class="prev-btn">Prev</button>
+            <span class="page-number">1</span>
+            <span class="page-number">2</span>
+            <span class="page-number">3</span>
+            <button class="next-btn">Next</button>
+        </div>
     </div>
-    <div class="products-containers">
-        <!-- box produts -->
-        <div class="box">
-            <img src="./images/categori/fashion.png" alt="">
-            <span>Makanan</span>
-            <h2>Apam Barabai</h2>
-            <h3 class="price">kisaran : Rp 12.000+ <span>/Pks</span></h3>
-            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
-            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
-                title="Lihat lokasi Toko di Google Maps">
-                <i class='bx bx-map'></i>
-            </a>
-            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
-        </div>
-        <div class="box">
-            <img src="./images/categori/fashion.png" alt="">
-            <span>Makanan</span>
-            <h2>Apam Barabai</h2>
-            <h3 class="price">kisaran : Rp 12.000+ <span>/Pks</span></h3>
-            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
-            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
-                title="Lihat lokasi Toko di Google Maps">
-                <i class='bx bx-map'></i>
-            </a>
-            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
-        </div>
-        <div class="box">
-            <img src="./images/categori/fashion.png" alt="">
-            <span>Makanan</span>
-            <h2>Apam Barabai</h2>
-            <h3 class="price">kisaran : Rp 12.000+ <span>/Pks</span></h3>
-            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
-            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
-                title="Lihat lokasi Toko di Google Maps">
-                <i class='bx bx-map'></i>
-            </a>
-            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
-        </div>
-        <div class="box">
-            <img src="./images/categori/fashion.png" alt="">
-            <span>Makanan</span>
-            <h2>Apam Barabai</h2>
-            <h3 class="price">kisaran : Rp 12.000+ <span>/Pks</span></h3>
-            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
-            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
-                title="Lihat lokasi Toko di Google Maps">
-                <i class='bx bx-map'></i>
-            </a>
-            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
-        </div>
-        <div class="box">
-            <img src="./images/categori/fashion.png" alt="">
-            <span>Makanan</span>
-            <h2>Apam Barabai</h2>
-            <h3 class="price">kisaran : Rp 12.000+ <span>/Pks</span></h3>
-            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
-            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
-                title="Lihat lokasi Toko di Google Maps">
-                <i class='bx bx-map'></i>
-            </a>
-            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
-        </div>       
-    </div>
-    <div class="pagination">
-        <button class="prev-btn">Prev</button>
-        <span class="page-number">1</span>
-        <span class="page-number">2</span>
-        <span class="page-number">3</span>
-        <button class="next-btn">Next</button>
-    </div>
-</div>
 </section>

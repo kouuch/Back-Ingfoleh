@@ -210,3 +210,16 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('token');
     window.location.href = '/';
 });
+
+// button navigation
+document.getElementById('showProductsBtn').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'block';
+    // Dapatkan produk pertama atau favorit
+    fetch('/api/products')
+        .then(response => response.json())
+        .then(products => displayProducts(products));
+});
+
+document.getElementById('closeOverlayBtn').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'none';
+});

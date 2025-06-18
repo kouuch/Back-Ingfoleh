@@ -65,4 +65,56 @@ router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, re
     }
 });
 
+
+
+// Endpoint untuk menampilkan produk berdasarkan kategori
+
+router.get('/products', async (req, res) => {
+    try {
+        const products = await Produk.find();  // Mengambil produk dari database
+        res.json(products);  // Mengirim produk dalam format JSON
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Endpoint untuk menambahkan produk favorit
+router.post('/favorites', authenticateToken, async (req, res) => {
+    const { productId } = req.body;
+    const userId = req.user.id;  // Ambil ID pengguna dari token
+    try {
+        const favorit = new KategoriFavorit({ userId, productId });
+        await favorit.save();
+        res.status(201).send('Produk berhasil difavoritkan');
+    } catch (error) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Menampilkan produk berdasarkan halaman
+router.get('/', async (req, res) => {
+    const { page = 1, limit = 6 } = req.query;
+    const skip = (page - 1) * limit;
+    try {
+        const products = await Produk.find().skip(skip).limit(parseInt(limit));
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const product = await Produk.findById(id);
+        if (!product) return res.status(404).send('Product not found');
+        res.json(product);
+    } catch (error) {
+        res.status(500).send('Server Error');
+    }
+});
+
+
 module.exports = router;

@@ -9,23 +9,26 @@ const JWT_SECRET = process.env.JWT_SECRET
 
 // verifikasi token
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        logger.warn('Token tidak ditemukan')
-        return next(new AppError('Token tidak ditemukan', 401))
+        logger.warn('Token tidak ditemukan');
+        return next(new AppError('Token tidak ditemukan', 401));
     }
+
+    logger.info('Verifying token: ', token);  // Debugging: log token yang diterima
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            logger.error(`Token tidak valid atau expired: ${err.message}`)
-            return next(new AppError('Token tidak valid atau expired', 403))
+            logger.error(`Token tidak valid atau expired: ${err.message}`);
+            return next(new AppError('Token tidak valid atau expired', 403));
         }
         req.user = user;
         next();
-    })
+    });
 }
+
 
 // middleware cek role user
 
@@ -38,7 +41,7 @@ function authorizeRoles(...allowedRoles) {
         if (allowedRoles.includes(req.user.role)) {
             next()
         } else {
-            Logger.warn(`Akses ditolak: User dengan role ${req.user.role} mencoba mengakses route yang tidak diizinkan`)
+            logger.warn(`Akses ditolak: Role ${req.user.role} tidak cukup untuk mengakses resource ini`)
             return next(new AppError('Akses ditolak: Role tidak cukup', 403))
         }
     }
