@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
     logger.info("Rendering login page");
     try {
-        res.render('login');  // Render halaman login
+        res.render('login');
     } catch (err) {
         logger.error('Error rendering login:', err);
         res.status(500).send('Error rendering page');
@@ -48,7 +48,7 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     logger.info("Rendering register page");
     try {
-        res.render('login');  // Render halaman yang sama dengan form registrasi
+        res.render('login');
     } catch (err) {
         logger.error('Error rendering register:', err);
         res.status(500).send('Error rendering page');

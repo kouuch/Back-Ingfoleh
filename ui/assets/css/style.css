@@ -11,6 +11,8 @@
   scroll-behavior: smooth;
 }
 
+
+
 :root {
   --green-color: #3cb815;
   --light-green-color: #c0eb7b;
@@ -97,12 +99,18 @@ header {
   padding: 0.5rem 1rem;
 }
 
-.navbar a:hover,
+
 .navbar .home-active {
+  background: var(--green-color);
+  color: var(--bg-color);
+  border-radius: 5rem;
+}
+
+.navbar a:hover {
   background: var(--green-color);
   border-radius: 5rem;
   color: var(--bg-color);
-  transition: background-color 1s;
+  transition: background-color 0.5s ease-in-out;
 }
 
 #menu-icon {
