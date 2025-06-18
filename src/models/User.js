@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     tanggal_daftar: {
         type: Date,
         default: Date.now
+    },
+    profilePicture: {
+        type: String,
+        default: '/images/userDefault/user.png'
     }
 }, { timestamps: true })
 

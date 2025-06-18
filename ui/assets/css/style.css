@@ -924,35 +924,173 @@ header {
   color: red;
 }
 
-/*  sub Crud */
-/* .sub-menu-crud {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1000px;
-}
-.form-container {
-  display: flex;
+
+/* Overlay styling */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 70px; 
+  left: 0;
+  width: 100%;
+  height: calc(100% - 70px); /* Mengambil ruang setelah navbar */
+  background-color: #f0f0f0;
+  z-index: 1000;
+  justify-content: flex-start; /* Menyusun konten ke atas */
+  align-items: center;
+  padding-top: 20px;
+  overflow-y: auto; /* Menambahkan scrolling vertikal jika konten melebihi tinggi */
 }
 
-.form-container a {
-  
-  align-items: self-start;
-}
-.sub-crud {
-  border-radius: 8px;
-  background: var(--bg-color);
-  padding: 20px;
-  margin: 10px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  -ms-border-radius: 8px;
-  -o-border-radius: 8px;
-  justify-content: space-between;
+.card-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.sub-crud h3 {
-  font-size: 2rem;
+.products-containers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 250px));
+  gap: 1.5rem;
+  margin-top: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.products-containers .box {
+  padding: 20px 20px 10px 20px;
+  box-shadow: 1px 2px 11px 4px rgb(14 55 54 /15%);
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+.products-containers .box img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.products-containers .box span {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.products-containers .box h2 {
+  font-size: 1rem;
   font-weight: 600;
-} */
+  margin-top: 0.5rem;
+}
+
+.products-containers .box .price {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  color: var(--light-orange-color);
+}
+
+.products-containers .box .price span {
+  color: var(--text-color);
+}
+
+.products-containers .box .bx-map {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  background: var(--green-color);
+  color: var(--bg-color);
+  font-size: 20px;
+  border-radius: 0.5rem 0 0.5rem 0;
+}
+
+.products-containers .box .bx-map:hover {
+  background: var(--light-green-color);
+  color: var(--text-color);
+  transition: 0.2s all linear;
+}
+
+.products-containers .box .bx-checkbox,
+.products-containers .box .bx-checkbox-checked {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  font-size: 20px;
+  color: var(--light-orange-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.products-containers .box .bx-checkbox,
+.products-containers .box .bx-checkbox-checked {
+  color: var(--light-orange-color);
+}
+
+.products-containers .box .bx-heart,
+.products-containers .box .bxs-heart {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  color: var(--light-orange-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.products-containers .box .bx-heart.liked,
+.products-containers .box .bxs-heart {
+  color: var(--light-orange-color);
+}
+
+.products-containers .box .bx-buildings {
+  font-size: 16px;
+}
+
+.products-containers .box h6 {
+  font-size: 12px;
+  gap: 7px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  margin-top: 7px;
+}
+
+/* Styling untuk pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.pagination button:hover {
+  background-color: #388E3C;
+  transition: background-color 0.3s ease;
+}
+
+.pagination .page-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Styling untuk produk container */
+.products-containers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Menampilkan grid responsif */
+  gap: 1.5rem;
+  margin-top: 2rem;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+}

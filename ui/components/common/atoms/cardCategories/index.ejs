@@ -1,0 +1,24 @@
+<!-- Overlay untuk menampilkan produk -->
+<section class="overlay" id="overlay">
+    <!-- Tombol close overlay -->
+    <button id="closeOverlayBtn" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #fff; font-size: 1.5rem;">X</button>
+    
+    <div class="products-containers">
+        <!-- box produts -->
+        <div class="box">
+            <img src="" alt="">
+            <span>Makanan</span>
+            <h2>Apam Barabai</h2>
+            <h3 class="prices">kisaran : Rp 12.000+ <span>/Pks</span></h3>
+            <h6><i class='bx bx-buildings'></i>Barabai, Hulu Sungai Tengah</h6>
+            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank"
+                title="Lihat lokasi Toko di Google Maps">
+                <i class='bx bx-map'></i>
+            </a>
+            <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
+        </div>
+        <!-- Repeat similar content for other product boxes -->
+    </div>
+    <%- include('../components/common/atoms/cardCategories/index') %>
+</section>
+

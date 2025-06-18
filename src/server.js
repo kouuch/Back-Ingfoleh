@@ -7,20 +7,35 @@ const rateLimit = require('express-rate-limit')
 const logger = require('./utils/logger')
 
 const app = express()
-const PORT = process.env.PORT ||
+const PORT = process.env.PORT || 5000
 
-    app.use((req, res, next) => {
-        logger.info(`Received request: ${req.method} ${req.url}`);
-        console.log(`Request URL: ${req.url}`);
-        next()
-    })
+app.use((req, res, next) => {
+    logger.info(`Received request: ${req.method} ${req.url}`);
+    console.log(`Request URL: ${req.url}`);
+    next()
+})
 
 // file statis
 app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
+// Menyajikan folder images sebagai folder statis agar gambar dapat diakses
+app.use('/images', express.static('images'));
 
 // set EJS as view engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '..', 'ui', 'page'))
+
+// CSP
+app.use((req, res, next) => {
+    res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'self'; " +
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com data:; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; " +
+        "img-src 'self' data:;"
+    );
+    next();
+});
 
 // route utama
 app.get('/', (req, res) => {
