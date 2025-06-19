@@ -1,26 +1,51 @@
-// Fungsi untuk mengambil produk berdasarkan kategori
-function filterProducts(category) {
-    console.log(`Filtering products by category: ${category}`);  // Log kategori yang dipilih
-    fetch(`/api/products?category=${category}`)
+const productsPerPage = 8;
+let currentPage = 1; // Halaman saat ini
+let totalPages = 2;  // Total halaman (sesuaikan dengan data API)
+
+// Fungsi untuk mengambil produk berdasarkan kategori dan halaman
+function fetchProducts(page = 1, category = '') {
+    //console.log(`Fetching products for page: ${page}, category: ${category}`);
+    const url = category ? `/api/products?category=${category}&page=${page}` : `/api/products?page=${page}`;
+
+    fetch(url)
         .then(response => response.json())
-        .then(products => {
-            console.log('Fetched products:', products);  // Log produk yang diterima
-            displayProducts(products);
+        .then(data => {
+            //console.log('Fetched data from API:', data);
+
+            if (data && Array.isArray(data.products)) {
+                displayProducts(data);  // Tampilkan produk yang diterima
+                totalPages = Math.ceil((data.totalProducts || 0) / productsPerPage); // Hitung total halaman
+                updatePagination();  // Update pagination setelah produk diterima
+            } else {
+                console.error("Invalid data format: 'products' is not an array or missing.");
+                displayProducts([]);  // Tampilkan pesan bahwa tidak ada produk
+            }
         })
-        .catch(error => console.log('Error fetching products:', error));
+        .catch(error => console.error('Error fetching products:', error));
 }
 
 // Fungsi untuk menampilkan produk di halaman
-function displayProducts(products) {
-    console.log('Displaying products:', products);  // Log produk yang akan ditampilkan
+function displayProducts(data) {
+    //console.log("Received data in displayProducts:", data);
+
+    const products = data.products || [];  // Pastikan kita mendapatkan array produk
+    
+    if (!Array.isArray(products) || products.length === 0) {
+        //console.log("No products found or products is not an array.");
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = "<p>No products available.</p>";
+        return;
+    }
+
     const container = document.getElementById('productsContainer');
-    container.innerHTML = ''; // Kosongkan sebelumnya
+    container.innerHTML = '';
+
     products.forEach(product => {
-        console.log(`Rendering product: ${product.nama_produk}`);  // Log nama produk yang sedang dirender
+        //console.log(`Rendering product: ${product.nama_produk}`);
         const productCard = document.createElement('div');
         productCard.classList.add('box');
         productCard.innerHTML = `
-            <img src="${product.foto}" alt="">
+            <img src="${product.foto}" alt="Product Image">
             <span>${product.kategori}</span>
             <h2>${product.nama_produk}</h2>
             <h3 class="price">kisaran : Rp ${product.kisaran_harga}</h3>
@@ -34,43 +59,39 @@ function displayProducts(products) {
     });
 }
 
-// Fungsi untuk menambahkan atau menghapus favorit
-function toggleFavorite(element, productId) {
-    const isFavorited = element.classList.contains('bxs-heart');
-    console.log(`Toggling favorite for productId: ${productId}, already favorited: ${isFavorited}`);  // Log status favorit
-    if (isFavorited) {
-        element.classList.remove('bxs-heart');
-        element.classList.add('bx-heart');
-        fetch(`/api/favorites/${productId}`, { method: 'DELETE' })
-            .then(() => console.log(`Removed product ${productId} from favorites`))
-            .catch(error => console.log('Error removing from favorites:', error));
-    } else {
-        element.classList.remove('bx-heart');
-        element.classList.add('bxs-heart');
-        fetch(`/api/favorites`, {
-            method: 'POST',
-            body: JSON.stringify({ productId }),
-            headers: { 'Content-Type': 'application/json' }
-        })
-        .then(() => console.log(`Added product ${productId} to favorites`))
-        .catch(error => console.log('Error adding to favorites:', error));
-    }
+// Fungsi untuk memperbarui pagination (Prev/Next)
+function updatePagination() {
+    const prevButton = document.querySelector('.prev-btn');
+    const nextButton = document.querySelector('.next-btn');
+    const pageNumbers = document.querySelector('.page-numbers');
+
+    // Menonaktifkan tombol prev jika halaman pertama
+    prevButton.disabled = currentPage === 1;
+    // Menonaktifkan tombol next jika halaman terakhir
+    nextButton.disabled = currentPage === totalPages;
+
+    // Update nomor halaman yang menampilkan halaman saat ini
+    pageNumbers.innerHTML = `Halaman ${currentPage} dari ${totalPages}`;
+
+    //console.log(`Updating pagination: Current Page: ${currentPage}, Total Pages: ${totalPages}`);
 }
 
-// Mengambil dan menampilkan produk default (misalnya produk populer atau terbaru)
-fetch('/api/products')  // Pastikan URL ini benar
-    .then(response => response.json())
-    .then(products => {
-        console.log('Fetched default products:', products);  // Log produk default
-        displayProducts(products);
-    })
-    .catch(error => console.log('Error fetching products:', error));
-
-// Menampilkan detail produk setelah diklik
-document.querySelectorAll('.box').forEach(box => {
-    box.addEventListener('click', () => {
-        const productId = box.getAttribute('data-id');  // Ambil ID produk
-        console.log(`Redirecting to product detail for productId: ${productId}`);  // Log ketika produk diklik
-        window.location.href = `/product-detail/${productId}`;  // Arahkan ke halaman detail produk
-    });
+// Fungsi untuk menangani klik tombol prev dan next
+document.querySelector('.prev-btn').addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;  // Decrement halaman
+        //console.log(`Going to previous page: ${currentPage}`);
+        fetchProducts(currentPage);  // Ambil produk untuk halaman sebelumnya
+    }
 });
+
+document.querySelector('.next-btn').addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++;  // Increment halaman
+        //console.log(`Going to next page: ${currentPage}`);
+        fetchProducts(currentPage);  // Ambil produk untuk halaman berikutnya
+    }
+});
+
+// Mengambil dan menampilkan produk default (misalnya produk populer atau terbaru)
+fetchProducts(currentPage);  // Menampilkan halaman pertama secara default

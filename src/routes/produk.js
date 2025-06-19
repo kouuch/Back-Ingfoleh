@@ -67,17 +67,31 @@ router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, re
 
 
 
-// Endpoint untuk menampilkan produk berdasarkan kategori
-
+// Endpoint untuk mengambil produk dengan paginasi
 router.get('/products', async (req, res) => {
     try {
-        const products = await Produk.find();  // Mengambil produk dari database
-        res.json(products);  // Mengirim produk dalam format JSON
+        const { category, page = 1 } = req.query;
+        const productsPerPage = 8;
+        const skip = (page - 1) * productsPerPage;
+
+        const query = category ? { kategori: category } : {};
+        const products = await Produk.find(query)
+            .skip(skip)
+            .limit(productsPerPage);
+
+        const totalProducts = await Produk.countDocuments(query);
+
+        // Kirim data dalam format yang benar
+        res.json({
+            products: products,  // Pastikan products adalah array
+            totalProducts: totalProducts
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
     }
 });
+
 
 // Endpoint untuk menambahkan produk favorit
 router.post('/favorites', authenticateToken, async (req, res) => {
