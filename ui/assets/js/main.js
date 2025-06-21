@@ -11,16 +11,10 @@ var swiper = new Swiper(".home", {
     },
 });
 
-// Heart toggle function
-function toggleHeart(element) {
-    if (element.classList.contains('bx-heart')) {
-        element.classList.remove('bx-heart');
-        element.classList.add('bxs-heart');
-    } else {
-        element.classList.remove('bxs-heart');
-        element.classList.add('bx-heart');
-    }
-}
+
+window.addEventListener('load', () => {
+    loadFavoriteProducts();  // Memastikan favorit dimuat setiap kali halaman dimuat
+});
 
 // Document loaded event
 document.addEventListener('DOMContentLoaded', () => {
@@ -179,6 +173,7 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
     // Redirect ke halaman utama setelah logout
     window.location.href = '/';
 });
+
 
 
 

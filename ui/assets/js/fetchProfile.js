@@ -63,3 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Please log in first');
     }
 });
+
+window.addEventListener('load', () => {
+    loadFavoriteProducts();  // Memastikan favorit dimuat setiap kali halaman dimuat
+});

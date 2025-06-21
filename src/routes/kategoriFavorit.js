@@ -32,6 +32,7 @@ router.get('/admin/favorit', authenticateToken, authorizeRoles('admin'), async (
 // Menambahkan produk ke favorit (Hanya pengguna yang terautentikasi)
 // Menambahkan produk ke favorit
 // Menambahkan produk ke favorit
+// Menambahkan produk ke favorit
 router.post('/', authenticateToken, async (req, res) => {
     const { id_produk, nama_produk, id_kategori, nama_kategori } = req.body;
     const userId = req.user.id;  // Mendapatkan user_id dari token
@@ -61,11 +62,13 @@ router.post('/', authenticateToken, async (req, res) => {
             { $inc: { jumlah_favorit: 1 } }  // Increment jumlah_favorit
         );
 
+        // Pastikan favoriteId dikembalikan di respons
         res.status(201).json({ message: 'Produk berhasil ditambahkan ke favorit', favoriteId: favorit._id });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }
 });
+
 
 
 // Menghapus produk dari favorit

@@ -57,21 +57,25 @@ loginForm.addEventListener('submit', function (event) {
         },
         body: JSON.stringify({ emailOrUsername, password })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user_id', data.userId);
-            loadFavoriteProducts();  // Memanggil fungsi untuk menampilkan produk favorit
-            window.location.href = '/';
-        } else {
-            alert('Login gagal: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Login gagal, coba lagi');
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user_id', data.userId);
+
+                // Memuat produk favorit setelah login
+                loadFavoriteProducts();
+
+                // Setelah favorit dimuat, redirect ke halaman utama
+                window.location.href = '/';
+            } else {
+                alert('Login gagal: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Login gagal, coba lagi');
+        });
 });
 
 
@@ -81,10 +85,13 @@ loginForm.addEventListener('submit', function (event) {
 // Fungsi untuk memuat produk favorit setelah login
 function loadFavoriteProducts() {
     const token = localStorage.getItem('token');
+    console.log('Token:', token);  // Debugging Token
     if (!token) {
         console.log("User is not logged in.");
         return;
     }
+
+    console.log('Fetching favorite products for token:', token);
 
     fetch('/api/kategoriFavorit/like', {
         method: 'GET',
@@ -92,33 +99,59 @@ function loadFavoriteProducts() {
             'Authorization': `Bearer ${token}`
         }
     })
-    .then(response => response.json())
-    .then(favorites => {
-        console.log('Favorites:', favorites);
-        displayFavorites(favorites);  // Menampilkan data favorit
-    })
-    .catch(error => {
-        console.error('Error loading favorites:', error);
-        alert('Gagal mengambil data favorit');
-    });
+        .then(response => response.json())
+        .then(favorites => {
+            console.log('Favorites fetched:', favorites);  // Debugging
+            displayFavorites(favorites);  // Menampilkan data favorit
+            updateHeartStatus(favorites);
+        })
+        .catch(error => {
+            console.error('Error loading favorites:', error);
+            alert('Gagal mengambil data favorit');
+        });
 }
+
 
 // Fungsi untuk menampilkan produk favorit di halaman
-function displayFavorites(favorites) {
-    const container = document.getElementById('favoritesContainer');
+function displayProducts(data) {
+    const products = data.products || [];  // Pastikan kita mendapatkan array produk
+    console.log('Products:', products);
+    if (!Array.isArray(products) || products.length === 0) {
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = "<p>No products available.</p>";
+        return;
+    }
+
+    const container = document.getElementById('productsContainer');
     container.innerHTML = '';
 
-    favorites.forEach(favorite => {
-        const favoriteCard = document.createElement('div');
-        favoriteCard.classList.add('favorite-card');
-        favoriteCard.innerHTML = `
-            <h3>${favorite.nama_produk}</h3>
-            <p>${favorite.nama_kategori}</p>
-            <p>Jumlah Favorit: ${favorite.jumlah_favorit}</p>
+    products.forEach(product => {
+        const categoryName = product.kategori ? product.kategori.nama_kategori : 'Kategori Tidak Ditemukan';
+        const categoryId = product.kategori ? product.kategori._id : '';
+
+        const isFavorited = localStorage.getItem(`favorite_${product._id}`) === 'true';
+        console.log('Product:', product, 'Is Favorited:', isFavorited);  // Debugging
+
+        const favoriteId = localStorage.getItem(`favoriteId_${product._id}`);
+        console.log('FavoriteId from localStorage:', favoriteId);  // Debugging
+
+        const productCard = document.createElement('div');
+        productCard.classList.add('box');
+        productCard.innerHTML = `
+            <img src="${product.foto}" alt="Product Image">
+            <span>${categoryName}</span>
+            <h2>${product.nama_produk}</h2>
+            <h3 class="price">kisaran : Rp ${product.kisaran_harga}</h3>
+            <h6><i class='bx bx-buildings'></i>${product.kabupaten_kota}</h6>
+            <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank">
+                <i class='bx bx-map'></i>
+            </a>
+            <i id="heart-icon-${product._id}" class='bx ${isFavorited ? 'bxs-heart' : 'bx-heart'}' onclick="toggleHeart(this, '${product._id}', '${product.nama_produk}', '${categoryId}', '${categoryName}');"></i>
         `;
-        container.appendChild(favoriteCard);
+        container.appendChild(productCard);
     });
 }
+
 
 
 function displayFavorites(favorites) {
