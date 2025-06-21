@@ -58,3 +58,86 @@
     </a>
     <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
 </div> 
+
+const express = require('express');
+const router = express.Router();
+const kategori = require('../models/Kategori');
+const Produk = require('../models/Produk');
+const KategoriFavorit = require('../models/KategoriFavorit');
+const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const AppError = require('../utils/AppError');
+const logger = require('../utils/logger');
+
+// get laporan kategori favorit (admin only)
+router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+    try {
+        const data = await KategoriFavorit.find()
+        res.json(data)
+    } catch (error) {
+        logger.error(`Error fetching kategori favorit: ${error.message}`);
+        next(new AppError(error.message, 500))
+    }
+})
+
+// Menambahkan atau menghapus produk dari favorit (POST/DELETE)
+router.post('/', authenticateToken, async (req, res) => {
+    const { id_produk, nama_produk, id_kategori, nama_kategori } = req.body;
+    const userId = req.user.id;  // Ambil userId dari token yang sudah terautentikasi
+
+    try {
+        // Validasi input
+        if (!id_produk || !nama_produk || !id_kategori || !nama_kategori) {
+            return res.status(400).send('Product data is incomplete');
+        }
+
+        // Cek apakah produk sudah ada di favorit
+        const existingFavorit = await KategoriFavorit.findOne({ id_produk, userId });
+
+        if (existingFavorit) {
+            // Jika sudah ada, maka hapus produk dari favorit
+            await KategoriFavorit.findByIdAndDelete(existingFavorit._id);
+            return res.status(200).send('Produk berhasil dihapus dari favorit');
+        }
+
+        // Jika belum ada di favorit, tambahkan ke favorit
+        const favorit = new KategoriFavorit({
+            id_produk,
+            nama_produk,
+            id_kategori,
+            nama_kategori,
+            userId
+        });
+
+        // Menyimpan ke database
+        await favorit.save();
+        res.status(201).send('Produk berhasil ditambahkan ke favorit');
+    } catch (error) {
+        console.error('Error adding to favorites:', error);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+// Menghapus produk dari favorit
+router.delete('/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const favorit = await KategoriFavorit.findByIdAndDelete(id);
+        if (!favorit) {
+            return res.status(404).send('Favorit tidak ditemukan');
+        }
+        res.status(200).send('Produk berhasil dihapus dari favorit');
+    } catch (error) {
+        console.error('Error deleting from favorites:', error);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+
+
+
+
+
+
+module.exports = router;

@@ -9,8 +9,9 @@ const produkSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    kategori:{
-        type: String,
+    kategori: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Kategori',  
         required: true
     },
     lokasi_penjual:{
@@ -31,4 +32,4 @@ const produkSchema = new mongoose.Schema({
     }
 },{timestamps: true})
 
-module.exports = mongoose.model('produk', produkSchema)
+module.exports = mongoose.model('Produk', produkSchema)

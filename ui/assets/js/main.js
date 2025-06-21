@@ -1,4 +1,3 @@
-// swiper initialization
 var swiper = new Swiper(".home", {
     spaceBetween: 30,
     centeredSlides: true,
@@ -146,54 +145,9 @@ document.getElementById('showProductsBtn').addEventListener('click', function ()
     }
 });
 
-// Function to close overlay when clicking the close button (X)
-document.getElementById('closeOverlayBtn').addEventListener('click', function () {
-    document.getElementById('overlay').style.display = 'none';
 
-    // Reset URL hash to '/' when closing overlay
-    history.pushState(null, null, '/');
-});
 
-// Toggle menu for dropdown
-let subMenu = document.getElementById("subMenu");
-const reportMenu = document.getElementById('reportMenu');
-const productsMenu = document.getElementById('productsMenu');
 
-const reportSubMenu = document.getElementById('reportSubMenu');
-const productsSubMenu = document.getElementById('productsSubMenu');
-
-function toggleMenu(element) {
-    if (element.classList.contains('bx-caret-down')) {
-        element.classList.remove('bx-caret-down');
-        element.classList.add('bx-caret-up');
-    } else {
-        element.classList.remove('bx-caret-up');
-        element.classList.add('bx-caret-down');
-    }
-
-    subMenu.classList.toggle("open-menu");
-
-    if (!subMenu.classList.contains("open-menu")) {
-        reportSubMenu.classList.remove('open-menu-sub');
-        productsSubMenu.classList.remove('open-menu-sub');
-    }
-}
-
-reportMenu.addEventListener('click', e => {
-    e.preventDefault();
-
-    productsSubMenu.classList.remove('open-menu-sub');
-
-    reportSubMenu.classList.toggle('open-menu-sub');
-});
-
-productsMenu.addEventListener('click', e => {
-    e.preventDefault();
-
-    reportSubMenu.classList.remove('open-menu-sub');
-
-    productsSubMenu.classList.toggle('open-menu-sub');
-});
 
 // Show login popup
 function showLoginPopup() {
@@ -206,10 +160,32 @@ document.getElementById('closePopup').addEventListener('click', function () {
 });
 
 // Logout function
+// Logout function
+// Fungsi logout
 document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('token');
+    localStorage.removeItem('favorite_');  // Menghapus semua produk favorit
+    localStorage.removeItem('favoriteId_');  // Menghapus semua favoriteId produk
+    // Hapus semua item favorit produk berdasarkan produk ID
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('favorite_') || key.startsWith('favoriteId_')) {
+            localStorage.removeItem(key);
+        }
+    });
+
+    // Clear other user session data
+    localStorage.removeItem('user_id'); // Jika user_id disimpan di localStorage
+
+    // Redirect ke halaman utama setelah logout
     window.location.href = '/';
 });
+
+
+
+
+
+
+
 
 // button navigation
 document.getElementById('showProductsBtn').addEventListener('click', () => {
@@ -220,6 +196,15 @@ document.getElementById('showProductsBtn').addEventListener('click', () => {
         .then(products => displayProducts(products));
 });
 
-document.getElementById('closeOverlayBtn').addEventListener('click', () => {
+// Function to close overlay when clicking the close button (X)
+document.getElementById('closeOverlayBtn').addEventListener('click', function () {
+    // Menyembunyikan overlay
     document.getElementById('overlay').style.display = 'none';
+
+    // Menghapus data favorit di localStorage
+    localStorage.removeItem('favorite_');  // Menghapus semua produk favorit
+    localStorage.removeItem('favoriteId_');  // Menghapus semua favoriteId produk
+
+    // Reset URL hash ke '/'
+    history.pushState(null, null, '/');
 });

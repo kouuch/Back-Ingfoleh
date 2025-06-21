@@ -1,14 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const Produk = require('../models/Produk');
+const Kategori = require('../models/Kategori');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { validateProductInput } = require('../middleware/validationMiddleware');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+
 //create produk hanya admin
+// Endpoint untuk menambahkan produk baru (hanya admin)
 router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
     console.log("Request Body:", req.body);
     try {
+        const { kategori } = req.body; // Mendapatkan ID kategori dari request body
+
+        // Cek apakah kategori yang diberikan valid
+        const category = await Kategori.findById(kategori);
+        if (!category) {
+            return next(new AppError('Kategori tidak ditemukan', 404));
+        }
+
+        // Membuat produk baru dengan kategori yang valid
         const produk = new Produk(req.body);
         await produk.save();
         logger.info(`Product created successfully: ${produk._id}`);
@@ -20,17 +32,22 @@ router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInpu
 });
 
 
-// read semua
+// Mengambil produk beserta nama kategori
 router.get('/', async (req, res, next) => {
     try {
         const produk = await Produk.find()
-        logger.info(`Fetched ${produk.length} products`)
-        res.json(produk)
+            .populate('kategori', 'nama_kategori')  // Mengambil nama kategori dari model Kategori
+            .exec();
+
+        logger.info(`Fetched ${produk.length} products`);
+        res.json(produk);  // Mengirimkan produk dengan kategori terpopulasi
     } catch (error) {
-        logger.error(`Error fetching products: ${error.message}`)
-        next(new AppError(error.message, 500))
+        logger.error(`Error fetching products: ${error.message}`);
+        next(new AppError(error.message, 500));
     }
-})
+});
+
+
 
 // update produk hanya admin
 router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
@@ -77,7 +94,8 @@ router.get('/products', async (req, res) => {
         const query = category ? { kategori: category } : {};
         const products = await Produk.find(query)
             .skip(skip)
-            .limit(productsPerPage);
+            .limit(productsPerPage)
+            .populate('kategori', 'nama_kategori');  // Pastikan kategori di-populate
 
         const totalProducts = await Produk.countDocuments(query);
 
@@ -93,18 +111,7 @@ router.get('/products', async (req, res) => {
 });
 
 
-// Endpoint untuk menambahkan produk favorit
-router.post('/favorites', authenticateToken, async (req, res) => {
-    const { productId } = req.body;
-    const userId = req.user.id;  // Ambil ID pengguna dari token
-    try {
-        const favorit = new KategoriFavorit({ userId, productId });
-        await favorit.save();
-        res.status(201).send('Produk berhasil difavoritkan');
-    } catch (error) {
-        res.status(500).send('Server Error');
-    }
-});
+
 
 // Menampilkan produk berdasarkan halaman
 router.get('/', async (req, res) => {
@@ -119,6 +126,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// menampilkan produk berdasarkan ID
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {

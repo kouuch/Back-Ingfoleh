@@ -57,6 +57,7 @@ router.post('/register', async (req, res, next) => {
 
 
 // Route untuk login user
+// Route untuk login user
 router.post('/login', limiter, async (req, res, next) => {
     const { emailOrUsername, password } = req.body; // Ambil input yang bisa berupa email atau username
 
@@ -90,8 +91,10 @@ router.post('/login', limiter, async (req, res, next) => {
 
         logger.info(`Login successful for user: ${emailOrUsername}`)
 
+        // Kirim token dan userId di response
         res.json({
             token,
+            userId: user._id,  // Mengirimkan userId
             user: {
                 id: user._id,
                 username: user.username,
@@ -103,6 +106,7 @@ router.post('/login', limiter, async (req, res, next) => {
         next(new AppError(error.message, 500));
     }
 });
+
 
 
 module.exports = router

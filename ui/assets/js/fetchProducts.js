@@ -4,14 +4,11 @@ let totalPages = 2;  // Total halaman (sesuaikan dengan data API)
 
 // Fungsi untuk mengambil produk berdasarkan kategori dan halaman
 function fetchProducts(page = 1, category = '') {
-    //console.log(`Fetching products for page: ${page}, category: ${category}`);
     const url = category ? `/api/products?category=${category}&page=${page}` : `/api/products?page=${page}`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            //console.log('Fetched data from API:', data);
-
             if (data && Array.isArray(data.products)) {
                 displayProducts(data);  // Tampilkan produk yang diterima
                 totalPages = Math.ceil((data.totalProducts || 0) / productsPerPage); // Hitung total halaman
@@ -24,14 +21,31 @@ function fetchProducts(page = 1, category = '') {
         .catch(error => console.error('Error fetching products:', error));
 }
 
-// Fungsi untuk menampilkan produk di halaman
-function displayProducts(data) {
-    //console.log("Received data in displayProducts:", data);
+// Function to load user's favorites after login
+// Memuat produk favorit berdasarkan user_id setelah login
+function loadUserFavorites() {
+    const userId = localStorage.getItem('user_id'); // Pastikan user_id tersimpan di localStorage setelah login
+    if (userId) {
+        fetch(`/api/kategoriFavorit?user_id=${userId}`)
+            .then(response => response.json())
+            .then(favorites => {
+                // Update tampilan berdasarkan favorit pengguna
+                console.log(favorites);
+            })
+            .catch(error => console.error('Error loading favorites:', error));
+    }
+}
 
+
+
+
+
+
+
+function displayProducts(data) {
     const products = data.products || [];  // Pastikan kita mendapatkan array produk
-    
+    console.log('Products:', products);
     if (!Array.isArray(products) || products.length === 0) {
-        //console.log("No products found or products is not an array.");
         const container = document.getElementById('productsContainer');
         container.innerHTML = "<p>No products available.</p>";
         return;
@@ -41,23 +55,34 @@ function displayProducts(data) {
     container.innerHTML = '';
 
     products.forEach(product => {
-        //console.log(`Rendering product: ${product.nama_produk}`);
+        // Pastikan kategori ada dalam data produk
+        const categoryName = product.kategori ? product.kategori.nama_kategori : 'Kategori Tidak Ditemukan';
+        const categoryId = product.kategori ? product.kategori._id : '';  // Pastikan kategori ada
+
+        // Mengambil status favorit di localStorage
+        const isFavorited = localStorage.getItem(`favorite_${product._id}`) === 'true';  // Mengambil status favorit
+        const favoriteId = localStorage.getItem(`favoriteId_${product._id}`);  // Mengambil favoriteId
+
         const productCard = document.createElement('div');
         productCard.classList.add('box');
         productCard.innerHTML = `
             <img src="${product.foto}" alt="Product Image">
-            <span>${product.kategori}</span>
+            <span>${categoryName}</span>  <!-- Menampilkan nama kategori -->
             <h2>${product.nama_produk}</h2>
             <h3 class="price">kisaran : Rp ${product.kisaran_harga}</h3>
             <h6><i class='bx bx-buildings'></i>${product.kabupaten_kota}</h6>
             <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank">
                 <i class='bx bx-map'></i>
             </a>
-            <i class='bx bx-heart' onclick="toggleFavorite(this, '${product._id}');"></i>
+            <!-- Mengirimkan product._id sebagai productId ke fungsi toggleHeart -->
+            <i class='bx ${isFavorited ? 'bxs-heart' : 'bx-heart'}' onclick="toggleHeart(this, '${product._id}', '${product.nama_produk}', '${categoryId}', '${categoryName}');"></i>
         `;
         container.appendChild(productCard);
     });
 }
+
+
+
 
 // Fungsi untuk memperbarui pagination (Prev/Next)
 function updatePagination() {
@@ -65,33 +90,135 @@ function updatePagination() {
     const nextButton = document.querySelector('.next-btn');
     const pageNumbers = document.querySelector('.page-numbers');
 
-    // Menonaktifkan tombol prev jika halaman pertama
     prevButton.disabled = currentPage === 1;
-    // Menonaktifkan tombol next jika halaman terakhir
     nextButton.disabled = currentPage === totalPages;
 
-    // Update nomor halaman yang menampilkan halaman saat ini
     pageNumbers.innerHTML = `Halaman ${currentPage} dari ${totalPages}`;
-
-    //console.log(`Updating pagination: Current Page: ${currentPage}, Total Pages: ${totalPages}`);
 }
 
 // Fungsi untuk menangani klik tombol prev dan next
 document.querySelector('.prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
-        currentPage--;  // Decrement halaman
-        //console.log(`Going to previous page: ${currentPage}`);
-        fetchProducts(currentPage);  // Ambil produk untuk halaman sebelumnya
+        currentPage--;
+        fetchProducts(currentPage);
     }
 });
 
 document.querySelector('.next-btn').addEventListener('click', () => {
     if (currentPage < totalPages) {
-        currentPage++;  // Increment halaman
-        //console.log(`Going to next page: ${currentPage}`);
-        fetchProducts(currentPage);  // Ambil produk untuk halaman berikutnya
+        currentPage++;
+        fetchProducts(currentPage);
     }
 });
 
+// Heart toggle function
+// Fungsi untuk toggle favorite
+// Heart toggle function
+function toggleHeart(element, productId, productName, productCategoryId, productCategoryName) {
+    const token = localStorage.getItem('token');  // Ambil token yang valid dari localStorage
+    if (!token) {
+        alert("You need to log in to add products to your favorites.");
+        return;
+    }
+
+    const isFavorited = element.classList.contains('bxs-heart');  // Cek apakah produk sudah di-favoritkan atau belum
+    const favoriteId = localStorage.getItem(`favoriteId_${productId}`);  // Ambil favoriteId yang valid
+
+    const url = isFavorited ? `/api/kategoriFavorit/${favoriteId}` : '/api/kategoriFavorit'; // URL untuk POST atau DELETE
+
+    const productData = {
+        id_produk: productId,  // Menggunakan _id produk yang valid
+        nama_produk: productName,
+        id_kategori: productCategoryId,  // ID kategori produk
+        nama_kategori: productCategoryName,  // Nama kategori produk
+    };
+
+    const options = {
+        method: isFavorited ? 'DELETE' : 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: !isFavorited ? JSON.stringify(productData) : undefined // Hanya kirim body pada POST request
+    };
+
+    fetch(url, options)
+        .then(response => response.json()) // Pastikan menerima response dalam format JSON
+        .then(data => {
+            if (isFavorited) {
+                element.classList.remove('bxs-heart');
+                element.classList.add('bx-heart');
+                console.log('Produk berhasil dihapus dari favorit');
+                localStorage.setItem(`favorite_${productId}`, 'false');  // Menandakan produk tidak difavoritkan
+                localStorage.removeItem(`favoriteId_${productId}`); // Menghapus favoriteId dari localStorage
+            } else {
+                element.classList.remove('bx-heart');
+                element.classList.add('bxs-heart');
+                console.log('Produk berhasil ditambahkan ke favorit');
+                localStorage.setItem(`favorite_${productId}`, 'true');  // Menandakan produk difavoritkan
+                localStorage.setItem(`favoriteId_${productId}`, data.favoriteId);  // Simpan favoriteId
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling favorite:', error);
+            alert(`Terjadi kesalahan: ${error.message}`); // Menampilkan pesan kesalahan
+        });
+}
+
+
+
+// Mengambil favorit saat login
+function checkFavoriteStatus(productId) {
+    const favoriteStatus = localStorage.getItem(`favorite_${productId}`);
+    if (favoriteStatus === 'true') {
+        // Set heart icon to "favorited" (bxs-heart)
+        document.querySelector(`#heart-icon-${productId}`).classList.add('bxs-heart');
+    } else {
+        // Set heart icon to "not favorited" (bx-heart)
+        document.querySelector(`#heart-icon-${productId}`).classList.remove('bxs-heart');
+    }
+}
+
+// Toggle menu for dropdown
+let subMenu = document.getElementById("subMenu");
+const reportMenu = document.getElementById('reportMenu');
+const productsMenu = document.getElementById('productsMenu');
+
+const reportSubMenu = document.getElementById('reportSubMenu');
+const productsSubMenu = document.getElementById('productsSubMenu');
+
+function toggleMenu(element) {
+    if (element.classList.contains('bx-caret-down')) {
+        element.classList.remove('bx-caret-down');
+        element.classList.add('bx-caret-up');
+    } else {
+        element.classList.remove('bx-caret-up');
+        element.classList.add('bx-caret-down');
+    }
+
+    subMenu.classList.toggle("open-menu");
+
+    if (!subMenu.classList.contains("open-menu")) {
+        reportSubMenu.classList.remove('open-menu-sub');
+        productsSubMenu.classList.remove('open-menu-sub');
+    }
+}
+
+reportMenu.addEventListener('click', e => {
+    e.preventDefault();
+
+    productsSubMenu.classList.remove('open-menu-sub');
+
+    reportSubMenu.classList.toggle('open-menu-sub');
+});
+
+productsMenu.addEventListener('click', e => {
+    e.preventDefault();
+
+    reportSubMenu.classList.remove('open-menu-sub');
+
+    productsSubMenu.classList.toggle('open-menu-sub');
+});
+
 // Mengambil dan menampilkan produk default (misalnya produk populer atau terbaru)
-fetchProducts(currentPage);  // Menampilkan halaman pertama secara default
+fetchProducts(currentPage); 

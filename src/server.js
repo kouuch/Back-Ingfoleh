@@ -120,6 +120,10 @@ app.use('/api/kategoriFavorit', kategoriFavoritRoutes);
 const tokoRoutes = require('./routes/toko');
 app.use('/api/toko', tokoRoutes);
 
+// route untuk kategori 
+const kategoriRoutes = require('./routes/kategori');    
+app.use('/api/kategori', kategoriRoutes);   
+
 // app.get('/', (req, res) => {
 //     res.send("Hello World")
 //     logger.info("server is running...")

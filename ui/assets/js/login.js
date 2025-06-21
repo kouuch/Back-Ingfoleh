@@ -59,20 +59,44 @@ loginForm.addEventListener('submit', function (event) {
         },
         body: JSON.stringify({ emailOrUsername, password })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem('token', data.token);
-            window.location.href = '/';
-        } else {
-            alert('Login gagal: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Login gagal, coba lagi');
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                // Menyimpan token dan user_id di localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user_id', data.userId);
+
+                // Memuat produk favorit setelah login berhasil
+                loadUserFavorites(); // Fungsi untuk memuat data favorit pengguna dari backend
+
+                window.location.href = '/';
+            } else {
+                alert('Login gagal: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Login gagal, coba lagi');
+        });
 });
+
+// Fungsi untuk memuat favorit setelah login
+function loadUserFavorites() {
+    const userId = localStorage.getItem('user_id');
+    if (userId) {
+        fetch(`/api/kategoriFavorit?user_id=${userId}`)
+            .then(response => response.json())
+            .then(favorites => {
+                // Loop melalui favorit dan simpan di localStorage
+                favorites.forEach(fav => {
+                    localStorage.setItem(`favorite_${fav.id_produk}`, 'true'); // Menyimpan status favorit
+                    localStorage.setItem(`favoriteId_${fav.id_produk}`, fav._id); // Menyimpan ID favorit
+                });
+            })
+            .catch(error => console.error('Error loading favorites:', error));
+    }
+}
+
 
 // Register
 const signUpForm = document.querySelector('.sign-up-container form');
@@ -90,17 +114,17 @@ signUpForm.addEventListener('submit', function (event) {
         },
         body: JSON.stringify({ username, email, password })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.msg === "Registrasi Berhasil") {
-            localStorage.setItem('token', data.token);
-            window.location.href = '/';
-        } else {
-            alert('Registrasi gagal: ' + data.msg);
-        }
-    })
-    .catch(error => {
-        console.error('Registrasi gagal:', error);
-        alert('Registrasi gagal: ' + (error.message || 'Coba lagi nanti'));
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.msg === "Registrasi Berhasil") {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/';
+            } else {
+                alert('Registrasi gagal: ' + data.msg);
+            }
+        })
+        .catch(error => {
+            console.error('Registrasi gagal:', error);
+            alert('Registrasi gagal: ' + (error.message || 'Coba lagi nanti'));
+        });
 });
