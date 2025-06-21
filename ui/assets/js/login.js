@@ -78,35 +78,67 @@ loginForm.addEventListener('submit', function (event) {
 
 // Fungsi untuk memuat produk favorit setelah login
 // Fungsi untuk memuat produk favorit setelah login
+// Fungsi untuk memuat produk favorit setelah login
 function loadFavoriteProducts() {
-    const token = localStorage.getItem('token'); // Ambil token dari localStorage
+    const token = localStorage.getItem('token');
     if (!token) {
         console.log("User is not logged in.");
         return;
     }
 
-    fetch('/api/kategoriFavorit/like', { // Ganti dengan endpoint yang tepat sesuai API
+    fetch('/api/kategoriFavorit/like', {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`  // Sertakan token di header request
+            'Authorization': `Bearer ${token}`
         }
     })
-    .then(response => {
-        if (response.status === 200) {
-            return response.json();  // Ambil data favorit jika status OK
-        } else {
-            throw new Error('Tidak ada produk favorit');
-        }
-    })
+    .then(response => response.json())
     .then(favorites => {
-        console.log('Favorites:', favorites);  // Tampilkan data favorit di console
-        displayFavorites(favorites);  // Panggil fungsi untuk menampilkan produk favorit
+        console.log('Favorites:', favorites);
+        displayFavorites(favorites);  // Menampilkan data favorit
     })
     .catch(error => {
         console.error('Error loading favorites:', error);
         alert('Gagal mengambil data favorit');
     });
 }
+
+// Fungsi untuk menampilkan produk favorit di halaman
+function displayFavorites(favorites) {
+    const container = document.getElementById('favoritesContainer');
+    container.innerHTML = '';
+
+    favorites.forEach(favorite => {
+        const favoriteCard = document.createElement('div');
+        favoriteCard.classList.add('favorite-card');
+        favoriteCard.innerHTML = `
+            <h3>${favorite.nama_produk}</h3>
+            <p>${favorite.nama_kategori}</p>
+            <p>Jumlah Favorit: ${favorite.jumlah_favorit}</p>
+        `;
+        container.appendChild(favoriteCard);
+    });
+}
+
+
+function displayFavorites(favorites) {
+    const container = document.getElementById('favoritesContainer');
+    container.innerHTML = '';  // Bersihkan kontainer
+
+    favorites.forEach(fav => {
+        const product = fav.id_produk;  // Ambil data produk favorit
+        const favoriteCard = document.createElement('div');
+        favoriteCard.classList.add('favorite-card');
+        favoriteCard.innerHTML = `
+            <img src="${product.foto}" alt="${product.nama_produk}">
+            <h2>${product.nama_produk}</h2>
+            <p>${product.kategori.nama_kategori}</p>
+            <p>Price: Rp ${product.kisaran_harga}</p>
+        `;
+        container.appendChild(favoriteCard);
+    });
+}
+
 
 
 // Register
