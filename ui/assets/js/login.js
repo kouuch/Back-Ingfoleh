@@ -44,8 +44,6 @@ window.addEventListener('load', () => {
 
 
 
-// Login
-const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -59,42 +57,55 @@ loginForm.addEventListener('submit', function (event) {
         },
         body: JSON.stringify({ emailOrUsername, password })
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.token) {
-                // Menyimpan token dan user_id di localStorage
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user_id', data.userId);
-
-                // Memuat produk favorit setelah login berhasil
-                loadUserFavorites(); // Fungsi untuk memuat data favorit pengguna dari backend
-
-                window.location.href = '/';
-            } else {
-                alert('Login gagal: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Login gagal, coba lagi');
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user_id', data.userId);
+            loadFavoriteProducts();  // Memanggil fungsi untuk menampilkan produk favorit
+            window.location.href = '/';
+        } else {
+            alert('Login gagal: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Login gagal, coba lagi');
+    });
 });
 
-// Fungsi untuk memuat favorit setelah login
-function loadUserFavorites() {
-    const userId = localStorage.getItem('user_id');
-    if (userId) {
-        fetch(`/api/kategoriFavorit?user_id=${userId}`)
-            .then(response => response.json())
-            .then(favorites => {
-                // Loop melalui favorit dan simpan di localStorage
-                favorites.forEach(fav => {
-                    localStorage.setItem(`favorite_${fav.id_produk}`, 'true'); // Menyimpan status favorit
-                    localStorage.setItem(`favoriteId_${fav.id_produk}`, fav._id); // Menyimpan ID favorit
-                });
-            })
-            .catch(error => console.error('Error loading favorites:', error));
+
+
+// Fungsi untuk memuat produk favorit setelah login
+// Fungsi untuk memuat produk favorit setelah login
+function loadFavoriteProducts() {
+    const token = localStorage.getItem('token'); // Ambil token dari localStorage
+    if (!token) {
+        console.log("User is not logged in.");
+        return;
     }
+
+    fetch('/api/kategoriFavorit/like', { // Ganti dengan endpoint yang tepat sesuai API
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`  // Sertakan token di header request
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            return response.json();  // Ambil data favorit jika status OK
+        } else {
+            throw new Error('Tidak ada produk favorit');
+        }
+    })
+    .then(favorites => {
+        console.log('Favorites:', favorites);  // Tampilkan data favorit di console
+        displayFavorites(favorites);  // Panggil fungsi untuk menampilkan produk favorit
+    })
+    .catch(error => {
+        console.error('Error loading favorites:', error);
+        alert('Gagal mengambil data favorit');
+    });
 }
 
 

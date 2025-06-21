@@ -112,6 +112,10 @@ app.use('/api/users', userRoutes);
 const feedbackRoutes = require('./routes/feedback');
 app.use('/api/feedback', feedbackRoutes);
 
+// route untuk menceklike
+const favoritesRoute = require('./routes/favorites');
+app.use('/api/favorites', favoritesRoute);
+
 // route untuk kategori favorit
 const kategoriFavoritRoutes = require('./routes/kategoriFavorit');
 app.use('/api/kategoriFavorit', kategoriFavoritRoutes);

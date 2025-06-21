@@ -6,47 +6,60 @@ const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
 // Get laporan kategori favorit (admin only)
-router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+// Admin melihat history produk yang di-like oleh pengguna
+router.get('/admin/favorit', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
-        const data = await KategoriFavorit.find()
-            .populate('id_produk')  // Mengisi detail produk
+        // Ambil seluruh produk favorit dari semua pengguna
+        const favoritData = await KategoriFavorit.find()
+            .populate('id_produk')  // Menyertakan detail produk
             .exec();
-        res.json(data);
+
+        if (!favoritData || favoritData.length === 0) {
+            return res.status(404).json({ message: "Tidak ada produk favorit" });
+        }
+
+        res.status(200).json(favoritData);  // Mengirimkan data favorit
     } catch (error) {
-        logger.error(`Error fetching kategori favorit: ${error.message}`);
-        next(new AppError(error.message, 500));
+        logger.error(`Error fetching favorit data: ${error.message}`);
+        return next(new AppError('Error fetching favorit data', 500));
     }
 });
+
+
 
 // Menambahkan produk ke favorit (Hanya pengguna yang terautentikasi)
 // Menambahkan produk ke favorit
 // Menambahkan produk ke favorit (Hanya pengguna yang terautentikasi)
+// Menambahkan produk ke favorit
+// Menambahkan produk ke favorit dan mengupdate jumlah favorit
 router.post('/', authenticateToken, async (req, res) => {
     const { id_produk, nama_produk, id_kategori, nama_kategori } = req.body;
-    const userId = req.user.id;  // Mengambil userId dari token yang sudah terautentikasi
+    const userId = req.user.id;
 
     try {
-        // Validasi data
-        if (!id_produk || !nama_produk || !id_kategori || !nama_kategori) {
-            return res.status(400).json({ message: 'Product data is incomplete' });
-        }
-
         // Cek apakah produk sudah ada di favorit
-        const existingFavorit = await KategoriFavorit.findOne({ id_produk, userId });
+        const existingFavorit = await KategoriFavorit.findOne({ id_produk, user_id: userId });
         if (existingFavorit) {
             return res.status(400).json({ message: 'Produk sudah ada di favorit' });
         }
 
-        // Menambahkan produk ke favorit, pastikan user_id ada
+        // Menambahkan produk ke favorit
         const favorit = new KategoriFavorit({
             id_produk,
             nama_produk,
             id_kategori,
             nama_kategori,
-            user_id: userId  // Menambahkan user_id ke data favorit
+            user_id: userId
         });
 
         await favorit.save();
+
+        // Update jumlah favorit di produk (menggunakan aggregate)
+        await KategoriFavorit.aggregate([
+            { $match: { id_produk: id_produk } },
+            { $group: { _id: "$id_produk", totalFavorit: { $sum: 1 } } }
+        ]);
+
         res.status(201).json({ message: 'Produk berhasil ditambahkan ke favorit', favoriteId: favorit._id });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
@@ -59,30 +72,40 @@ router.post('/', authenticateToken, async (req, res) => {
 
 
 
+
 // Mengambil daftar produk favorit berdasarkan user_id (untuk pengguna yang terautentikasi)
 // Mengambil produk favorit berdasarkan user_id
 // Mengambil daftar produk favorit berdasarkan user_id
 // Mengambil daftar produk favorit berdasarkan user_id
-router.get('/', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
+// Mengambil daftar produk favorit berdasarkan user_id saat login
+router.get('/like', authenticateToken, authorizeRoles('admin', 'user'), async (req, res, next) => {
+    const userId = req.user.id; // Ambil userId dari token yang terautentikasi
+    logger.info(`Fetching favorites for user: ${userId}`);
+
     try {
-        // Pastikan untuk selalu memeriksa userId saat mengambil data favorit
+        // Cari produk favorit yang dimiliki oleh user berdasarkan user_id
         const favorit = await KategoriFavorit.find({ user_id: userId })
-            .populate('id_produk')
+            .populate('id_produk', 'nama_produk foto kisaran_harga')  // Memuat detail produk terkait
+            .populate('id_kategori', 'nama_kategori')  // Memuat kategori produk terkait
             .exec();
 
+        // Jika tidak ada produk favorit untuk user
         if (!favorit || favorit.length === 0) {
-            logger.warn(`Tidak ada produk favorit untuk user ${userId}`);
-            return res.status(404).send('Tidak ada produk favorit');
+            logger.warn(`Tidak ada produk favorit untuk userId: ${userId}`);
+            return res.status(404).send('Tidak ada produk favorit untuk user ini');
         }
 
-        logger.info(`Produk favorit untuk user ${userId} berhasil diambil`);
-        res.status(200).json(favorit);  // Kirimkan produk favorit sesuai userId
+        // Jika ditemukan produk favorit, kirimkan sebagai respon
+        logger.info(`Produk favorit ditemukan untuk userId: ${userId}, total favorit: ${favorit.length}`);
+        res.status(200).json(favorit);  // Mengembalikan produk favorit untuk user tersebut
     } catch (error) {
-        logger.error(`Error fetching favorites: ${error.message}`);
-        res.status(500).send('Server Error');
+        // Jika terjadi error, log dan kirimkan error ke client
+        logger.error(`Error fetching favorite data for userId ${userId}: ${error.message}`);
+        next(new AppError(error.message, 500));
     }
 });
+
+
 
 
 

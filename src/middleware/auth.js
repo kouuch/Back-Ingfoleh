@@ -17,7 +17,7 @@ function authenticateToken(req, res, next) {
         return next(new AppError('Token tidak ditemukan', 401));
     }
 
-    logger.info('Verifying token: ', token);  // Debugging: log token yang diterima
+    logger.info('Verifying token: ', token);  // Log token untuk debugging
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
@@ -25,9 +25,11 @@ function authenticateToken(req, res, next) {
             return next(new AppError('Token tidak valid atau expired', 403));
         }
         req.user = user;
+        logger.info(`Token valid, user: ${user.id}`);  // Log user setelah token divalidasi
         next();
     });
 }
+
 
 
 // middleware cek role user
@@ -35,17 +37,21 @@ function authenticateToken(req, res, next) {
 function authorizeRoles(...allowedRoles) {
     return (req, res, next) => {
         if (!req.user) {
-            logger.warn('User belum terautentikasi')
-            return next(new AppError('User belum terautentikasi', 401))
+            logger.warn('User belum terautentikasi');
+            return next(new AppError('User belum terautentikasi', 401));
         }
+
+        logger.info(`User role: ${req.user.role}`);  // Log role pengguna
+
         if (allowedRoles.includes(req.user.role)) {
-            next()
+            next();
         } else {
-            logger.warn(`Akses ditolak: Role ${req.user.role} tidak cukup untuk mengakses resource ini`)
-            return next(new AppError('Akses ditolak: Role tidak cukup', 403))
+            logger.warn(`Akses ditolak: Role ${req.user.role} tidak cukup untuk mengakses resource ini`);
+            return next(new AppError('Akses ditolak: Role tidak cukup', 403));
         }
-    }
+    };
 }
+
 
 
 module.exports = { authenticateToken, authorizeRoles };
