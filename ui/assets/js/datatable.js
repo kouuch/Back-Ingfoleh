@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     document.getElementById('close').addEventListener('click', function () {
-        window.location.href = '../../index.html'
+        window.location.href = '/'
+        // history.pushState(null, null, '/');
     })
 
     document.querySelectorAll('input[required]').forEach(input => {
@@ -34,4 +35,3 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 })
-
