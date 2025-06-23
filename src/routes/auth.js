@@ -57,7 +57,6 @@ router.post('/register', async (req, res, next) => {
 
 
 // Route untuk login user
-// Route untuk login user
 router.post('/login', limiter, async (req, res, next) => {
     const { emailOrUsername, password } = req.body; // Ambil input yang bisa berupa email atau username
 
@@ -88,7 +87,7 @@ router.post('/login', limiter, async (req, res, next) => {
 
         // Buat JWT token
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-
+        logger.info(`user role:`, user.role)
         logger.info(`Login successful for user: ${emailOrUsername}`)
 
         // Kirim token dan userId di response
@@ -99,6 +98,7 @@ router.post('/login', limiter, async (req, res, next) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
             },
         });
     } catch (error) {

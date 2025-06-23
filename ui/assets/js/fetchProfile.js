@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // Ambil role dari localStorage
+    console.log('role:', role);  // Debugging role
 
     if (token) {
         console.log('Token found:', token);
+        console.log('role:', role); // Debugging role
 
         // Fungsi untuk mengambil data profil pengguna
         function fetchProfileData(apiUrl, profileElements) {
@@ -14,14 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => response.json())  
                 .then(user => {
-                    //console.log('User data:', user);  
-
                     const usernameElement = document.getElementById('username');
-                    //console.log('Before update username:', usernameElement.textContent);  // Log sebelum update
-
                     if (user.username) {
-                        usernameElement.textContent = user.username;  
-                        //console.log('After update username:', usernameElement.textContent);  // Log setelah update
+                        usernameElement.textContent = user.username;
                     } else {
                         console.error('username tidak ditemukan pada data user');
                     }
@@ -46,23 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const apiUrl = 'http://localhost:5000/api/users/me';  
 
-
         const profileElements = {
             username: { id: 'username', type: 'text', defaultValue: 'No Name' },
-            userEmail: { id: 'userEmail', type: 'text', defaultValue: 'N/A' },
+            email: { id: 'email', type: 'text', defaultValue: 'N/A' },
             userPhone: { id: 'userPhone', type: 'text', defaultValue: 'N/A' },
             userStatus: { id: 'userStatus', type: 'text', defaultValue: 'Unknown' },
             userJoinDate: { id: 'userJoinDate', type: 'text', defaultValue: 'Unknown' },
             userProfilePic: { id: 'userProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
-            userSubMenuProfilePic: { id: 'userSubMenuProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' }
+            userSubMenuProfilePic: { id: 'userSubMenuProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
+            role: { id: 'role', type: 'text', defaultValue: 'No Role' }  // Menambahkan role ke profil
         };
-
 
         fetchProfileData(apiUrl, profileElements);
     } else {
         alert('Please log in first');
     }
 });
+
+
+
 
 window.addEventListener('load', () => {
     loadFavoriteProducts();  // Memastikan favorit dimuat setiap kali halaman dimuat

@@ -109,9 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Menu login check
 window.onload = function () {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');  // Menyimpan role di localStorage
 
-    if (token) {
+    if (token && role) {
         document.getElementById('guestMenu').style.display = 'none';
         document.getElementById('profileMenu').style.display = 'block';
     } else {
@@ -141,8 +142,6 @@ document.getElementById('showProductsBtn').addEventListener('click', function ()
 
 
 
-
-
 // Show login popup
 function showLoginPopup() {
     document.getElementById('loginPrompt').style.display = 'flex';
@@ -153,13 +152,10 @@ document.getElementById('closePopup').addEventListener('click', function () {
     document.getElementById('loginPrompt').style.display = 'none';
 });
 
-// Logout function
-// Logout function
-// Fungsi logout
 document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('token');
-    localStorage.removeItem('favorite_');  // Menghapus semua produk favorit
-    localStorage.removeItem('favoriteId_');  // Menghapus semua favoriteId produk
+    localStorage.removeItem('favorite_');
+    localStorage.removeItem('favoriteId_');
     // Hapus semua item favorit produk berdasarkan produk ID
     Object.keys(localStorage).forEach(key => {
         if (key.startsWith('favorite_') || key.startsWith('favoriteId_')) {
@@ -173,14 +169,6 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
     // Redirect ke halaman utama setelah logout
     window.location.href = '/';
 });
-
-
-
-
-
-
-
-
 
 // button navigation
 document.getElementById('showProductsBtn').addEventListener('click', () => {
@@ -197,8 +185,8 @@ document.getElementById('closeOverlayBtn').addEventListener('click', function ()
     document.getElementById('overlay').style.display = 'none';
 
     // Menghapus data favorit di localStorage
-    localStorage.removeItem('favorite_');  // Menghapus semua produk favorit
-    localStorage.removeItem('favoriteId_');  // Menghapus semua favoriteId produk
+    localStorage.removeItem('favorite_');
+    localStorage.removeItem('favoriteId_');
 
     // Reset URL hash ke '/'
     history.pushState(null, null, '/');

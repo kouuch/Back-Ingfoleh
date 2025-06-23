@@ -9,7 +9,7 @@ const AppError = require('../utils/AppError');
 
 //create produk hanya admin
 // Endpoint untuk menambahkan produk baru (hanya admin)
-router.post('/', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
+router.post('/admin', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
     console.log("Request Body:", req.body);
     try {
         const { kategori } = req.body; // Mendapatkan ID kategori dari request body
@@ -137,6 +137,10 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+
+
+
 
 
 module.exports = router;

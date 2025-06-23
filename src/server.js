@@ -5,6 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const rateLimit = require('express-rate-limit')
 const logger = require('./utils/logger')
+const { authenticateToken, authorizeRoles } = require('./middleware/auth')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -43,7 +44,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     logger.info("Rendering index page");
     try {
-        res.render('index', { name: 'kyyy' });
+        res.render('index');
     } catch (err) {
         logger.error('Error rendering index:', err);
         res.status(500).send('Error rendering page');
@@ -69,6 +70,16 @@ app.get('/register', (req, res) => {
     } catch (err) {
         logger.error('Error rendering register:', err);
         res.status(500).send('Error rendering page');
+    }
+});
+
+// Route untuk halaman Admin Product
+app.get('/adminproducts', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+    try {
+        const produk = await Produk.find().populate('kategori', 'nama_kategori');
+        res.render('adminproduct', { produk });
+    } catch (error) {
+        next(new AppError('Error fetching products for admin view', 500));
     }
 });
 
@@ -126,6 +137,7 @@ app.use('/api/toko', tokoRoutes);
 
 // route untuk kategori 
 const kategoriRoutes = require('./routes/kategori');    
+const AppError = require('./utils/AppError');
 app.use('/api/kategori', kategoriRoutes);   
 
 // app.get('/', (req, res) => {

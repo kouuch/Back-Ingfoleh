@@ -60,8 +60,9 @@ loginForm.addEventListener('submit', function (event) {
         .then(response => response.json())
         .then(data => {
             if (data.token) {
+                // Menyimpan token dan role setelah login berhasil
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user_id', data.userId);
+                localStorage.setItem('role', data.user.role);  // Pastikan role disimpan
 
                 // Memuat produk favorit setelah login
                 loadFavoriteProducts();
@@ -80,8 +81,8 @@ loginForm.addEventListener('submit', function (event) {
 
 
 
-// Fungsi untuk memuat produk favorit setelah login
-// Fungsi untuk memuat produk favorit setelah login
+
+
 // Fungsi untuk memuat produk favorit setelah login
 function loadFavoriteProducts() {
     const token = localStorage.getItem('token');

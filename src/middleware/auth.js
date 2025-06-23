@@ -25,7 +25,7 @@ function authenticateToken(req, res, next) {
             return next(new AppError('Token tidak valid atau expired', 403));
         }
         req.user = user;
-        logger.info(`Token valid, user: ${user.id}`);  // Log user setelah token divalidasi
+        logger.info(`Token valid, user: ${user.id}, role: ${user.role}`);  // Log user setelah token divalidasi
         next();
     });
 }

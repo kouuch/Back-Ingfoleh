@@ -58,7 +58,59 @@
             </div>
         </div>
     </div>
-    <%- include('../components/common/molecules/atoms/modalProduct/index') %>
+    <!-- Modal -->
+    <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Tambah Produk</h5>
+                    <button type="button" class="cross" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addNewProducts">
+                        <div class="mb-3">
+                            <label for="productCity">Kabupaten/Kota<span>*</span></label>
+                            <input type="text" class="form-control" id="productCity" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="produkName">Nama Produk<span>*</span></label>
+                            <input type="text" class="form-control" id="produkName" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCategories">Kategori Produk<span>*</span></label>
+                            <select name="" class="form-select" id="produkCategories" required>
+                                <option value="">Jenis Kategori</option>
+                                <option value="Aksesoris">Aksesoris</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Fashion">Fashion</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productLocation">Lokasi Penjual<span>*</span></label>
+                            <input type="text" class="form-control" id="productLocation" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="costumerContact">Kontak Penjual<span>*</span></label>
+                            <input type="text" class="form-control" id="costumerContact" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="priceRange">Kisaran Harga<span>*</span></label>
+                            <input type="text" class="form-control" id="produkKota" required autocomplete="off">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="productImg">
+                            <label class="input-group-text" for="productImg">Upload</label>
+                        </div>
+                        <button type="submit" class="submitBtn">Simpan</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <!-- jQuery CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -74,7 +126,6 @@
 
     <!-- Custom JS -->
     <script src="/js/datatable.js"></script>
-    <%- include('../components/common/molecules/adminproduct/index') %>
 </body>
 
 </html>
