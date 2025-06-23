@@ -153,9 +153,12 @@ document.getElementById('closePopup').addEventListener('click', function () {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function () {
+    // Hapus token dan role dari localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('role');  // Pastikan untuk menghapus role
     localStorage.removeItem('favorite_');
     localStorage.removeItem('favoriteId_');
+
     // Hapus semua item favorit produk berdasarkan produk ID
     Object.keys(localStorage).forEach(key => {
         if (key.startsWith('favorite_') || key.startsWith('favoriteId_')) {
@@ -164,11 +167,12 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
     });
 
     // Clear other user session data
-    localStorage.removeItem('user_id'); // Jika user_id disimpan di localStorage
+    localStorage.removeItem('user_id');  // Jika user_id disimpan di localStorage
 
     // Redirect ke halaman utama setelah logout
-    window.location.href = '/';
+    window.location.href = '/';  // Anda bisa mengganti ini dengan URL tujuan lain jika perlu
 });
+
 
 // button navigation
 document.getElementById('showProductsBtn').addEventListener('click', () => {
