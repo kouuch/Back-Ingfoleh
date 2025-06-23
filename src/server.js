@@ -32,13 +32,14 @@ app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
         "default-src 'self'; " +
-        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com data:; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; " +
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk font
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk stylesheet
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk skrip
         "img-src 'self' https://images.pexels.com data:;"  // Memperbolehkan gambar dari Pexels
     );
     next();
 });
+
 
 // route utama
 app.get('/', (req, res) => {
@@ -73,15 +74,20 @@ app.get('/register', (req, res) => {
     }
 });
 
-// Route untuk halaman Admin Product
-app.get('/adminproducts', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+// Route untuk halaman admin
+app.get('/adminproducts', async (req, res) => {
     try {
-        const produk = await Produk.find().populate('kategori', 'nama_kategori');
-        res.render('adminproduct', { produk });
+        res.render('adminproduct'); // Render halaman adminproduct.ejs
     } catch (error) {
-        next(new AppError('Error fetching products for admin view', 500));
+        logger.error('Error rendering admin products page:', error);
+        res.status(500).send('Error rendering page');
     }
 });
+
+
+// //route untuk halaman admin
+// const adminRoutes = require('./routes/admin');
+// app.use('/api/admin', authenticateToken, authorizeRoles('admin'), adminRoutes);
 
 
 app.use(cors())
@@ -93,6 +99,12 @@ const limiter = rateLimit({
     max: 100,
     message: "Terlalu banyak permintaan, coba lagi nanti.",
 })
+
+// Middleware untuk logging request
+app.use((req, res, next) => {
+    logger.info(`Received request: ${req.method} ${req.url}`);
+    next();
+});
 
 app.use(limiter)
 
@@ -136,9 +148,9 @@ const tokoRoutes = require('./routes/toko');
 app.use('/api/toko', tokoRoutes);
 
 // route untuk kategori 
-const kategoriRoutes = require('./routes/kategori');    
+const kategoriRoutes = require('./routes/kategori');
 const AppError = require('./utils/AppError');
-app.use('/api/kategori', kategoriRoutes);   
+app.use('/api/kategori', kategoriRoutes);
 
 // app.get('/', (req, res) => {
 //     res.send("Hello World")

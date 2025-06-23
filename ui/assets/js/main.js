@@ -152,26 +152,7 @@ document.getElementById('closePopup').addEventListener('click', function () {
     document.getElementById('loginPrompt').style.display = 'none';
 });
 
-document.getElementById('logoutBtn').addEventListener('click', function () {
-    // Hapus token dan role dari localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');  // Pastikan untuk menghapus role
-    localStorage.removeItem('favorite_');
-    localStorage.removeItem('favoriteId_');
 
-    // Hapus semua item favorit produk berdasarkan produk ID
-    Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('favorite_') || key.startsWith('favoriteId_')) {
-            localStorage.removeItem(key);
-        }
-    });
-
-    // Clear other user session data
-    localStorage.removeItem('user_id');  // Jika user_id disimpan di localStorage
-
-    // Redirect ke halaman utama setelah logout
-    window.location.href = '/';  // Anda bisa mengganti ini dengan URL tujuan lain jika perlu
-});
 
 
 // button navigation
@@ -182,6 +163,19 @@ document.getElementById('showProductsBtn').addEventListener('click', () => {
         .then(response => response.json())
         .then(products => displayProducts(products));
 });
+
+window.addEventListener('load', () => {
+    const role = localStorage.getItem('role');
+    const adminLink = document.getElementById('adminLink');
+    
+    if (role === 'admin') {
+        adminLink.style.display = 'block';  // Menampilkan link admin sebagai inline-block
+    } else {
+        adminLink.style.display = 'none';   // Menyembunyikan link admin
+    }
+});
+
+
 
 // Function to close overlay when clicking the close button (X)
 document.getElementById('closeOverlayBtn').addEventListener('click', function () {
