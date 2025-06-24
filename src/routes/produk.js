@@ -13,31 +13,41 @@ const upload = require('../utils/upload');  // Pastikan path ini sesuai dengan s
 // Endpoint untuk menambahkan produk baru dengan foto
 router.post('/admincreate', authenticateToken, authorizeRoles('admin'), upload.single('foto'), async (req, res, next) => {
     try {
-        // Mengambil data dari body request
+        // Ambil data dari body request
         const { kabupaten_kota, nama_produk, kategori, lokasi_penjual, kontak_penjual, kisaran_harga } = req.body;
 
+        // Ambil ObjectId kategori berdasarkan nama kategori
+        const kategoriObj = await Kategori.findOne({ nama_kategori: kategori });
+
+        // Jika kategori tidak ditemukan, beri respons error
+        if (!kategoriObj) {
+            return res.status(400).json({ message: "Kategori tidak ditemukan" });
+        }
+
         // Mendapatkan nama file gambar dari req.file.filename
-        const fotoPath = `/uploads/${req.file.filename}`;  // Menambahkan prefix '/uploads/' untuk path gambar
+        const fotoPath = `/uploads/${req.file.filename}`;
 
         // Membuat objek produk baru
         const newProduct = new Produk({
             kabupaten_kota,
             nama_produk,
-            kategori,
+            kategori: kategoriObj._id,  // Menyimpan ObjectId kategori
             lokasi_penjual,
             kontak_penjual,
             kisaran_harga,
-            foto: fotoPath  // Simpan path relatif di database
+            foto: fotoPath
         });
 
         // Simpan produk ke database
         await newProduct.save();
         res.status(201).json({ message: 'Produk berhasil ditambahkan' });
     } catch (error) {
-        console.error(error);
+        console.error("Error during product creation:", error);
         next(error);  // Menangani error dengan middleware
     }
 });
+
+
 
 // Mengambil produk beserta nama kategori
 router.get('/adminget', async (req, res, next) => {

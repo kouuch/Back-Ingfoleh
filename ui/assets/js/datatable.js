@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Mengambil token dari localStorage
+    const token = localStorage.getItem('token');  
+    console.log('Token found:', token);
+
+    if (!token) {
+        alert("You need to be logged in to access this page.");
+        return;  // Jika token tidak ada, hentikan eksekusi lebih lanjut
+    }
+
     // Inisialisasi DataTables
     $('#example').DataTable({
         destroy: true,
@@ -13,14 +22,60 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollCollapse: true
     });
 
-    // Modal Form untuk menambahkan produk baru
-    var modalForm;
-    document.getElementById('addNewBtn').addEventListener('click', function () {
-        modalForm = new bootstrap.Modal(document.getElementById('exModal'), {
-            backdrop: 'static',
-            keyboard: false,
+    // Ambil data produk menggunakan token yang valid
+    fetch('http://localhost:5000/api/adminget', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Role dan Produk:', data);  // Log data untuk debugging
+
+        const tableBody = document.querySelector('#example tbody');
+        tableBody.innerHTML = '';  // Kosongkan tabel sebelum diisi
+
+        data.forEach((product, index) => {
+            console.log('Product:', product);
+            console.log('Category Name:', product.kategori ? product.kategori.nama_kategori : 'N/A');
+            console.log('Product Image:', product.foto);
+
+            // Menyimpan path gambar di productImagePath
+            const productImagePath = product.foto;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${product.nama_produk}</td>
+                <td>${product.kabupaten_kota}</td>
+                <td>${product.kategori ? product.kategori.nama_kategori : 'N/A'}</td>
+                <td>${product.lokasi_penjual}</td>
+                <td>${product.kontak_penjual}</td>
+                <td>Rp ${product.kisaran_harga}</td>
+                <td><img src="http://localhost:5000${productImagePath}" alt="Product Image" width="50"></td>
+                <td>
+                    <button onclick="editProduct('${product._id}')">Edit</button>
+                    <button onclick="deleteProduct('${product._id}')">Hapus</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
         });
-        modalForm.show();
+    })
+    .catch(error => {
+        console.error('Error fetching products:', error);
+        alert('Gagal mengambil data produk');
+    });
+
+    // Inisialisasi modal dengan Bootstrap
+    const modalForm = new bootstrap.Modal(document.getElementById('exModal'), {
+        backdrop: 'static',
+        keyboard: false,
+    });
+
+    // Modal Form untuk menambahkan produk baru
+    document.getElementById('addNewBtn').addEventListener('click', function () {
+        modalForm.show();  // Tampilkan modal
     });
 
     // Close modal atau redirect ke halaman utama
@@ -38,107 +93,46 @@ document.addEventListener('DOMContentLoaded', function () {
             e.target.setCustomValidity('');
         };
     });
-
 });
 
-fetch('http://localhost:5000/api/adminget', {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
-    }
-})
-.then(response => response.json())
-.then(data => {
-    console.log('Role dan Produk:', data);  // Log data untuk debugging
-    
-    const tableBody = document.querySelector('#example tbody');
-    tableBody.innerHTML = '';  // Kosongkan tabel sebelum diisi
+// POST request untuk menambahkan produk baru
+document.getElementById('addNewProducts').addEventListener('submit', function (event) {
+    event.preventDefault();  // Mencegah form melakukan refresh halaman
 
-    data.forEach((product, index) => {
-        console.log('Product:', product);
-        console.log('Category Name:', product.kategori ? product.kategori.nama_kategori : 'N/A');
-        console.log('Product Image:', product.foto);
+    const token = localStorage.getItem('token');  // Ambil token dari localStorage
+    const kabupatenKota = document.getElementById('productCity').value;
+    const produkName = document.getElementById('produkName').value;
+    const kategori = document.getElementById('produkCategories').value;
+    const lokasiPenjual = document.getElementById('productLocation').value;
+    const kontakPenjual = document.getElementById('costumerContact').value;
+    const kisaranHarga = document.getElementById('produkKota').value;
+    const foto = document.getElementById('productImg').files[0];  // Ambil file gambar produk
 
-        // Menyimpan path gambar di productImagePath
-        const productImagePath = product.foto;
+    // Buat FormData untuk mengirim data termasuk file gambar
+    const formData = new FormData();
+    formData.append('kabupaten_kota', kabupatenKota);
+    formData.append('nama_produk', produkName);
+    formData.append('kategori', kategori);
+    formData.append('lokasi_penjual', lokasiPenjual);
+    formData.append('kontak_penjual', kontakPenjual);
+    formData.append('kisaran_harga', kisaranHarga);
+    formData.append('foto', foto);  // Mengirim foto produk
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${product.nama_produk}</td>
-            <td>${product.kabupaten_kota}</td>
-            <td>${product.kategori ? product.kategori.nama_kategori : 'N/A'}</td>
-            <td>${product.lokasi_penjual}</td>
-            <td>${product.kontak_penjual}</td>
-            <td>Rp ${product.kisaran_harga}</td>
-            <td><img src="http://localhost:5000${productImagePath}" alt="Product Image" width="50"></td>
-            <td>
-                <button onclick="editProduct('${product._id}')">Edit</button>
-                <button onclick="deleteProduct('${product._id}')">Hapus</button>
-            </td>
-        `;
-        tableBody.appendChild(row);
+    // Mengirim request POST ke server
+    fetch('http://localhost:5000/api/admincreate', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: formData  // Kirim FormData (termasuk gambar)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Produk berhasil ditambahkan');
+        window.location.reload();  // Reload halaman setelah produk ditambahkan
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal menambahkan produk');
     });
-})
-.catch(error => {
-    console.error('Error fetching products:', error);
-    alert('Gagal mengambil data produk');
 });
-
-
-
-
-// Defining edit and delete product functions
-function editProduct(productId) {
-    console.log('Edit product with ID:', productId);
-    // Add logic for editing the product (e.g., open a modal or redirect to edit page)
-}
-
-function deleteProduct(productId) {
-    console.log('Delete product with ID:', productId);
-    // Add logic for deleting the product (e.g., confirm and then delete via API)
-}
-
-// document.getElementById('addNewProducts').addEventListener('submit', function (event) {
-//     event.preventDefault();  // Mencegah form melakukan refresh halaman
-
-//     const token = localStorage.getItem('token');  // Ambil token dari localStorage
-//     const kabupatenKota = document.getElementById('productCity').value;
-//     const produkName = document.getElementById('produkName').value;
-//     const kategori = document.getElementById('produkCategories').value;
-//     const lokasiPenjual = document.getElementById('productLocation').value;
-//     const kontakPenjual = document.getElementById('costumerContact').value;
-//     const kisaranHarga = document.getElementById('produkKota').value;
-//     const foto = document.getElementById('productImg').files[0];  // Ambil file gambar produk
-
-//     // Buat FormData untuk mengirim data termasuk file gambar
-//     const formData = new FormData();
-//     formData.append('kabupaten_kota', kabupatenKota);
-//     formData.append('nama_produk', produkName);
-//     formData.append('kategori', kategori);
-//     formData.append('lokasi_penjual', lokasiPenjual);
-//     formData.append('kontak_penjual', kontakPenjual);
-//     formData.append('kisaran_harga', kisaranHarga);
-//     formData.append('foto', foto);  // Mengirim foto produk
-
-//     // Mengirim request POST ke server
-//     fetch('http://localhost:5000/api/admincreate', {
-//         method: 'POST',
-//         headers: {
-//             'Authorization': `Bearer ${token}`,
-//         },
-//         body: formData  // Kirim FormData (termasuk gambar)
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         alert('Produk berhasil ditambahkan');
-//         window.location.reload();  // Reload halaman setelah produk ditambahkan
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         alert('Gagal menambahkan produk');
-//     });
-// });
-
-
-

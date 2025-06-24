@@ -26,7 +26,7 @@ const kategoriFavoritSchema = new mongoose.Schema({
     user_id: { // Menambahkan user_id untuk menghubungkan favorit dengan pengguna
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',  // Mengacu ke model User
-        required: true
+        required: true,
     }
 },{ timestamps: true });
 
