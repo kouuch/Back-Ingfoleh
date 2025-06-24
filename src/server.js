@@ -20,25 +20,28 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
 // Menyajikan folder images
 app.use('/images', express.static('images'));
-// Menyajikan folder uploads sebagai folder statis
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Menyajikan folder uploads yang ada di src/utils
+app.use('/uploads', express.static(path.join(__dirname, '..','src', 'utils', 'uploads')));
+
 
 // set EJS as view engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '..', 'ui', 'page'))
+
 
 // CSP
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
         "default-src 'self'; " +
-        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk font
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com data:; " +  // Menambahkan cdn.cloudflare.com untuk font dan data: untuk base64 font
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk stylesheet
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk skrip
         "img-src 'self' https://images.pexels.com data:;"  // Memperbolehkan gambar dari Pexels
     );
     next();
 });
+
 
 
 // route utama
@@ -74,8 +77,8 @@ app.get('/register', (req, res) => {
     }
 });
 
-// Route untuk halaman admin
-app.get('/adminproducts', async (req, res) => {
+// // Route untuk halaman admin
+app.get('/adminproduct', async (req, res) => {
     try {
         res.render('adminproduct'); // Render halaman adminproduct.ejs
     } catch (error) {
@@ -84,13 +87,46 @@ app.get('/adminproducts', async (req, res) => {
     }
 });
 
+// app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+//     try {
+//         // Render halaman adminproduct.ejs hanya jika token valid dan user adalah admin
+//         res.render('adminproduct');
+//     } catch (error) {
+//         logger.error('Error rendering admin products page:', error);
+//         res.status(500).send('Error rendering page');
+//     }
+// });
+
+
+
+// app.get('/adminproducts', authenticateToken, (req, res) => {
+//     logger.warn('Halaman admin produk diakses tanpa otorisasi yang benar');    
+//     console.log('Token diterima:', req.headers['authorization']);  // Log token yang diterima
+//     res.send('Halaman produk admin');
+// });
+
+
+// Route untuk halaman admin
+// app.get('/adminproducts', authenticateToken, async (req, res) => {
+//     try {
+//         res.render('adminproduct');  // Render halaman adminproduct.ejs
+//     } catch (error) {
+//         logger.error('Error rendering admin products page:', error);
+//         res.status(500).send('Error rendering page');
+//     }
+// });
+
 
 // //route untuk halaman admin
 // const adminRoutes = require('./routes/admin');
 // app.use('/api/admin', authenticateToken, authorizeRoles('admin'), adminRoutes);
 
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000',  // Ganti dengan URL frontend Anda
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']  // Pastikan Authorization diizinkan
+}));
 app.use(express.json())
 
 // konfigurasi raate limit

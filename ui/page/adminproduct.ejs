@@ -26,9 +26,9 @@
                 <table id="example" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Id_Produk</th>
-                            <th>Kabupaten/Kota</th>
+                            <th>NO</th>
                             <th>Nama Produk </th>
+                            <th>Kabupaten/Kota</th>
                             <th>Kategori</th>
                             <th>Lokasi Penjual</th>
                             <th>Kontak Penjual</th>
@@ -70,6 +70,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="addNewProducts">
+                        <!-- Form Fields -->
                         <div class="mb-3">
                             <label for="productCity">Kabupaten/Kota<span>*</span></label>
                             <input type="text" class="form-control" id="productCity" required autocomplete="off">
@@ -78,6 +79,7 @@
                             <label for="produkName">Nama Produk<span>*</span></label>
                             <input type="text" class="form-control" id="produkName" required autocomplete="off">
                         </div>
+                        <!-- Kategori Produk -->
                         <div class="mb-3">
                             <label for="productCategories">Kategori Produk<span>*</span></label>
                             <select name="" class="form-select" id="produkCategories" required>
@@ -88,24 +90,29 @@
                                 <option value="Fashion">Fashion</option>
                             </select>
                         </div>
+                        <!-- Lokasi Penjual -->
                         <div class="mb-3">
                             <label for="productLocation">Lokasi Penjual<span>*</span></label>
                             <input type="text" class="form-control" id="productLocation" required autocomplete="off">
                         </div>
+                        <!-- Kontak Penjual -->
                         <div class="mb-3">
                             <label for="costumerContact">Kontak Penjual<span>*</span></label>
                             <input type="text" class="form-control" id="costumerContact" required autocomplete="off">
                         </div>
+                        <!-- Kisaran Harga -->
                         <div class="mb-3">
                             <label for="priceRange">Kisaran Harga<span>*</span></label>
                             <input type="text" class="form-control" id="produkKota" required autocomplete="off">
                         </div>
+                        <!-- Input Foto -->
                         <div class="input-group mb-3">
-                            <input type="file" class="form-control" id="productImg">
+                            <input type="file" class="form-control" id="productImg" name="foto" required>
                             <label class="input-group-text" for="productImg">Upload</label>
                         </div>
                         <button type="submit" class="submitBtn">Simpan</button>
                     </form>
+                    
                 </div>
 
             </div>

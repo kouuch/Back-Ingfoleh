@@ -112,6 +112,7 @@ window.onload = function () {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');  // Menyimpan role di localStorage
 
+    // Mengatur tampilan menu berdasarkan status login
     if (token && role) {
         document.getElementById('guestMenu').style.display = 'none';
         document.getElementById('profileMenu').style.display = 'block';
@@ -119,7 +120,42 @@ window.onload = function () {
         document.getElementById('guestMenu').style.display = 'block';
         document.getElementById('profileMenu').style.display = 'none';
     }
+
+    // Event listener untuk link admin
+    document.getElementById('adminLink').addEventListener('click', function (event) {
+        // Cek apakah token ada di localStorage
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            event.preventDefault();  // Mencegah pengalihan ke /adminproducts
+            alert('Anda perlu login terlebih dahulu.');
+            window.location.href = '/login';  // Redirect ke halaman login
+        } else {
+            // Jika token ada, lakukan fetch ke server untuk memverifikasi token
+            fetch('http://localhost:5000/adminproduct', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Token tidak valid atau tidak memiliki hak akses');
+                    }
+                    // Jika response berhasil (status 200), alihkan ke halaman admin
+                    window.location.href = '/adminproduct';  // Arahkan ke halaman admin
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Akses ditolak: Anda tidak memiliki hak akses atau token tidak valid');
+                    window.location.href = '/login';  // Redirect ke halaman login jika ada error
+                });
+        }
+    });
 }
+
+
 
 // Check if user is logged in
 function isLoggedIn() {
@@ -167,7 +203,7 @@ document.getElementById('showProductsBtn').addEventListener('click', () => {
 window.addEventListener('load', () => {
     const role = localStorage.getItem('role');
     const adminLink = document.getElementById('adminLink');
-    
+
     if (role === 'admin') {
         adminLink.style.display = 'block';  // Menampilkan link admin sebagai inline-block
     } else {

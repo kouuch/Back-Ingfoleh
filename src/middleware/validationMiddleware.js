@@ -2,24 +2,32 @@ const { body, validationResult } = require('express-validator');
 const AppError = require('../utils/AppError')
 
 //validasi input produk
+// Validasi input produk
 const validateProductInput = [
     body('nama_produk').not().isEmpty().withMessage('Nama produk harus diisi'),
     body('kategori').not().isEmpty().withMessage('Kategori harus diisi'),
     body('kisaran_harga').isNumeric().withMessage('Kisaran harga harus berupa angka'),
     body('lokasi_penjual').not().isEmpty().withMessage('Lokasi penjual harus diisi'),
     body('kontak_penjual').not().isEmpty().withMessage('Kontak penjual harus diisi'),
-    body('foto').not().isEmpty().withMessage('Foto produk harus diisi'),
 
-    //hasil
+    // Validasi foto
+    (req, res, next) => {
+        if (!req.file) {
+            return next(new AppError('Foto produk harus diisi', 400));  // Menangani jika tidak ada foto yang diupload
+        }
+        next(); // Jika ada foto, lanjutkan ke validasi berikutnya
+    },
+
+    // Hasil validasi
     (req, res, next) => {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return next(new AppError('Input tidak valid', 400, errors.array()))
-            // return res.status(400).json({ errors: errors.array() })
         }
         next()
     }
 ]
+
 
 //validasi input user (register dan update)
 const validateUserInput = [

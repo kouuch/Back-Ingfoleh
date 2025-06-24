@@ -14,7 +14,7 @@ function authenticateToken(req, res, next) {
 
     if (!token) {
         logger.warn('Token tidak ditemukan');
-        return next(new AppError('Token tidak ditemukan', 401));
+        return next(new AppError('Token tidak ditemukan', 401));  // Jika token tidak ada, kirim error 401
     }
 
     logger.info('Verifying token: ', token);  // Log token untuk debugging
@@ -22,13 +22,22 @@ function authenticateToken(req, res, next) {
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             logger.error(`Token tidak valid atau expired: ${err.message}`);
-            return next(new AppError('Token tidak valid atau expired', 403));
+            return next(new AppError('Token tidak valid atau expired', 403));  // Token invalid atau expired
         }
-        req.user = user;
-        logger.info(`Token valid, user: ${user.id}, role: ${user.role}`);  // Log user setelah token divalidasi
-        next();
+
+        req.user = user;  // Menyimpan data user yang terverifikasi ke req.user
+        logger.info(`Token valid, user: ${user.id}, role: ${user.role}`);  // Log user dan role setelah token valid
+
+        // Mengecek apakah role yang dimiliki sesuai dengan yang dibutuhkan (misalnya 'admin')
+        if (user.role !== 'admin') {
+            logger.warn(`Akses ditolak: User dengan role ${user.role} tidak diizinkan mengakses halaman ini`);
+            return next(new AppError('Akses ditolak: Role tidak cukup', 403));  // Role tidak sesuai
+        }
+
+        next();  // Jika role sesuai, lanjutkan ke rute berikutnya
     });
 }
+
 
 
 

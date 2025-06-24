@@ -6,41 +6,54 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { validateProductInput } = require('../middleware/validationMiddleware');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+const upload = require('../utils/upload');  // Pastikan path ini sesuai dengan struktur proyek Anda
 
 //create produk hanya admin
 // Endpoint untuk menambahkan produk baru (hanya admin)
-router.post('/admin', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
-    console.log("Request Body:", req.body);
+// Endpoint untuk menambahkan produk baru dengan foto
+router.post('/admincreate', authenticateToken, authorizeRoles('admin'), upload.single('foto'), async (req, res, next) => {
     try {
-        const { kategori } = req.body; // Mendapatkan ID kategori dari request body
+        // Mengambil data dari body request
+        const { kabupaten_kota, nama_produk, kategori, lokasi_penjual, kontak_penjual, kisaran_harga } = req.body;
 
-        // Cek apakah kategori yang diberikan valid
-        const category = await Kategori.findById(kategori);
-        if (!category) {
-            return next(new AppError('Kategori tidak ditemukan', 404));
-        }
+        // Mendapatkan nama file gambar dari req.file.filename
+        const fotoPath = `/uploads/${req.file.filename}`;  // Menambahkan prefix '/uploads/' untuk path gambar
 
-        // Membuat produk baru dengan kategori yang valid
-        const produk = new Produk(req.body);
-        await produk.save();
-        logger.info(`Product created successfully: ${produk._id}`);
-        return res.status(201).json(produk);
+        // Membuat objek produk baru
+        const newProduct = new Produk({
+            kabupaten_kota,
+            nama_produk,
+            kategori,
+            lokasi_penjual,
+            kontak_penjual,
+            kisaran_harga,
+            foto: fotoPath  // Simpan path relatif di database
+        });
+
+        // Simpan produk ke database
+        await newProduct.save();
+        res.status(201).json({ message: 'Produk berhasil ditambahkan' });
     } catch (error) {
-        logger.error(`Error creating product: ${error.message}`);
-        next(new AppError(error.message, 400));
+        console.error(error);
+        next(error);  // Menangani error dengan middleware
     }
 });
 
-
 // Mengambil produk beserta nama kategori
-router.get('/', async (req, res, next) => {
+router.get('/adminget', async (req, res, next) => {
     try {
         const produk = await Produk.find()
             .populate('kategori', 'nama_kategori')  // Mengambil nama kategori dari model Kategori
             .exec();
 
+        // Pastikan path gambar yang dikirimkan sudah benar
+        const produkWithImagePath = produk.map(p => ({
+            ...p.toObject(),
+            foto: p.foto  // Menggunakan path gambar yang sudah benar
+        }));
+
         logger.info(`Fetched ${produk.length} products`);
-        res.json(produk);  // Mengirimkan produk dengan kategori terpopulasi
+        res.json(produkWithImagePath);  // Mengirimkan produk dengan kategori dan path gambar yang benar
     } catch (error) {
         logger.error(`Error fetching products: ${error.message}`);
         next(new AppError(error.message, 500));
@@ -50,7 +63,7 @@ router.get('/', async (req, res, next) => {
 
 
 // update produk hanya admin
-router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
+router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
     console.log("Update Request Body:", req.body);
     try {
         const produk = await Produk.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -67,7 +80,7 @@ router.put('/:id', authenticateToken, authorizeRoles('admin'), validateProductIn
 })
 
 // Dlete produk hanya admin
-router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+router.delete('/delete/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
         const produk = await Produk.findByIdAndDelete(req.params.id)
         if (!produk) {
