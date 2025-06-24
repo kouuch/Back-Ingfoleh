@@ -43,6 +43,7 @@
     </div>
 
     <!-- Modal -->
+    <!-- Modal for Add Product -->
     <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -53,8 +54,8 @@
                             class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addNewProducts">
-                        <!-- Form Fields -->
+                    <!-- Add Product Form -->
+                    <form id="addNewProducts" style="display:block;">
                         <div class="mb-3">
                             <label for="productCity">Kabupaten/Kota<span>*</span></label>
                             <input type="text" class="form-control" id="productCity" required autocomplete="off">
@@ -63,7 +64,6 @@
                             <label for="produkName">Nama Produk<span>*</span></label>
                             <input type="text" class="form-control" id="produkName" required autocomplete="off">
                         </div>
-                        <!-- Kategori Produk -->
                         <div class="mb-3">
                             <label for="productCategories">Kategori Produk<span>*</span></label>
                             <select name="" class="form-select" id="produkCategories" required>
@@ -74,25 +74,66 @@
                                 <option value="Fashion">Fashion</option>
                             </select>
                         </div>
-                        <!-- Lokasi Penjual -->
                         <div class="mb-3">
                             <label for="productLocation">Lokasi Penjual<span>*</span></label>
                             <input type="text" class="form-control" id="productLocation" required autocomplete="off">
                         </div>
-                        <!-- Kontak Penjual -->
                         <div class="mb-3">
                             <label for="costumerContact">Kontak Penjual<span>*</span></label>
                             <input type="text" class="form-control" id="costumerContact" required autocomplete="off">
                         </div>
-                        <!-- Kisaran Harga -->
                         <div class="mb-3">
-                            <label for="priceRange">Kisaran Harga<span>*</span></label>
+                            <label for="produkKota">Kisaran Harga<span>*</span></label>
                             <input type="text" class="form-control" id="produkKota" required autocomplete="off">
                         </div>
-                        <!-- Input Foto -->
                         <div class="input-group mb-3">
                             <input type="file" class="form-control" id="productImg" name="foto" required>
                             <label class="input-group-text" for="productImg">Upload</label>
+                        </div>
+                        <button type="submit" class="submitBtn">Simpan</button>
+                    </form>
+
+                    <!-- Edit Product Form (Hidden by Default) -->
+                    <form id="editProductForm" style="display:none;">
+                        <input type="hidden" id="productId" name="productId">
+                        <div class="mb-3">
+                            <label for="productCityEdit">Kabupaten/Kota<span>*</span></label>
+                            <input type="text" class="form-control" id="productCityEdit" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="produkNameEdit">Nama Produk<span>*</span></label>
+                            <input type="text" class="form-control" id="produkNameEdit" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productCategoriesEdit">Kategori Produk<span>*</span></label>
+                            <select name="" class="form-select" id="produkCategoriesEdit" required>
+                                <option value="">Jenis Kategori</option>
+                                <option value="Aksesoris">Aksesoris</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Fashion">Fashion</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productLocationEdit">Lokasi Penjual<span>*</span></label>
+                            <input type="text" class="form-control" id="productLocationEdit" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="costumerContactEdit">Kontak Penjual<span>*</span></label>
+                            <input type="text" class="form-control" id="costumerContactEdit" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="produkKotaEdit">Kisaran Harga<span>*</span></label>
+                            <input type="text" class="form-control" id="produkKotaEdit" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="oldFoto">Foto Produk Lama</label>
+                            <img id="oldFoto" src="" alt="Old Product Photo" width="100" />
+                            <!-- Menampilkan gambar lama -->
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="productImgEdit" name="foto">
+                            <label class="input-group-text" for="productImgEdit">Upload</label>
                         </div>
                         <button type="submit" class="submitBtn">Simpan</button>
                     </form>

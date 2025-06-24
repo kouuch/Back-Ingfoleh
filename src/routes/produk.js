@@ -70,24 +70,81 @@ router.get('/adminget', async (req, res, next) => {
     }
 });
 
-
-
-// update produk hanya admin
-router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), validateProductInput, async (req, res, next) => {
-    console.log("Update Request Body:", req.body);
+// Update produk hanya admin
+// Mengupdate produk hanya untuk admin
+// Mengupdate produk hanya untuk admin
+// Mengupdate produk hanya untuk admin
+// Mengupdate produk hanya untuk admin
+// Mengupdate produk hanya untuk admin
+router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), upload.single('foto'), async (req, res, next) => {
     try {
-        const produk = await Produk.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        if (!produk) {
-            logger.warn(`Product with id ${req.params.id} not found`)
-            return next(new AppError('Produk tidak ditemukan', 404))
+        let updatedFoto = req.body.foto;  // Jika tidak ada file baru, tetap gunakan foto yang lama
+
+        // Jika ada file baru yang diupload, ganti dengan file tersebut
+        if (req.file) {
+            updatedFoto = `/uploads/${req.file.filename}`;  // Pastikan path gambar benar
         }
-        logger.info(`Product updated successfully: ${produk._id}`)
-        res.json(produk)
+
+        const { kabupaten_kota, nama_produk, kategori, lokasi_penjual, kontak_penjual, kisaran_harga } = req.body;
+        logger.warn(`Updating product with ID: ${req.params.id}`);  // Log ID produk yang akan diupdate
+        console.log("Kategori yang diterima dari frontend:", kategori);  // Log kategori
+
+        // Mencari produk berdasarkan ID
+        const produk = await Produk.findById(req.params.id);
+        if (!produk) {
+            return next(new AppError('Produk tidak ditemukan', 404));
+        }
+
+        // Cari ObjectId kategori berdasarkan nama kategori
+        const kategoriObj = await Kategori.findOne({ nama_kategori: kategori });
+        if (!kategoriObj) {
+            return res.status(400).json({ message: "Kategori tidak ditemukan" });
+        }
+
+        // Update produk dengan data baru
+        produk.kabupaten_kota = kabupaten_kota || produk.kabupaten_kota;
+        produk.nama_produk = nama_produk || produk.nama_produk;
+        produk.kategori = kategoriObj._id;  // Gunakan ObjectId kategori
+        produk.lokasi_penjual = lokasi_penjual || produk.lokasi_penjual;
+        produk.kontak_penjual = kontak_penjual || produk.kontak_penjual;
+        produk.kisaran_harga = kisaran_harga || produk.kisaran_harga;
+        produk.foto = updatedFoto;  // Update foto jika ada perubahan
+
+        // Simpan perubahan ke database
+        await produk.save();
+        res.status(200).json({ message: 'Produk berhasil diupdate', produk });
     } catch (error) {
-        logger.error(`Error updating product: ${error.message}`)
-        next(new AppError(error.message, 400))
+        console.error(`Error updating product: ${error.message}`);
+        next(new AppError(error.message, 400));
     }
-})
+});
+
+
+
+
+
+
+// Mengambil produk berdasarkan ID untuk update
+router.get('/products/:id', async (req, res, next) => {
+    try {
+        const produk = await Produk.findById(req.params.id)
+            .populate('kategori', 'nama_kategori');  // Populasi kategori
+
+        if (!produk) {
+            logger.warn(`Product with id ${req.params.id} not found`);
+            return next(new AppError('Produk tidak ditemukan', 404));
+        }
+
+        res.status(200).json(produk);
+    } catch (error) {
+        logger.error(`Error fetching product with ID ${req.params.id}: ${error.message}`);
+        console.error(`Error fetching product: ${error.message}`);
+        next(new AppError(error.message, 400));
+    }
+});
+
+
+
 
 // Dlete produk hanya admin
 router.delete('/delete/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {

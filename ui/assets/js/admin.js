@@ -32,22 +32,3 @@ document.getElementById('adminLink').addEventListener('click', function(event) {
     }
 });
 
-const token = localStorage.getItem('token');
-if (!token) {
-    console.log('Token tidak ditemukan');
-    return;
-}
-
-fetch('http://localhost:5000/adminproduct', {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${token}`  // Kirim token di header
-    }
-})
-.then(response => response.json())
-.then(data => {
-    console.log(data); // Menampilkan data yang diterima
-})
-.catch(error => {
-    console.error('Error:', error);
-});
