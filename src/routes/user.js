@@ -23,31 +23,36 @@ router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res, nex
 })
 
 // Endpoint untuk mengambil data profil pengguna
-// router.get('/me', authenticateToken, async (req, res, next) => {
-//     try {
-//         const userId = req.user.id;
-//         const user = await User.findById(userId).select('-password');
+router.get('/me', authenticateToken, async (req, res, next) => {
+    try {
+        const userId = req.user.id;
 
-//         if (!user) {
-//             return next(new AppError('User not found', 404));
-//         }
+        // Admin bisa mengakses semua data pengguna, user hanya bisa akses data mereka sendiri
+        if (req.user.role !== 'admin' && req.user.id !== userId) {
+            return next(new AppError('Unauthorized access', 403));  // Tidak bisa akses profil orang lain
+        }
 
-//         // Tambahkan log untuk memeriksa data yang dikirim
-//         console.log('User data from DB:', user);  // Log user data
+        const user = await User.findById(userId).select('-password');
 
-//         res.json({
-//             username: user.username,
-//             email: user.email,
-//             profilePicture: user.profilePicture || '/images/userDefault/user.png',
-//             status_akun: user.status_akun,
-//             no_telepon: user.no_telepon || 'N/A',
-//             tanggal_daftar: user.tanggal_daftar,
-//         });
-//     } catch (error) {
-//         logger.error(`Error fetching user profile: ${error.message}`);
-//         next(new AppError(error.message, 500));
-//     }
-// });
+        if (!user) {
+            return next(new AppError('User not found', 404));
+        }
+
+        // Mengirimkan data pengguna
+        res.json({
+            username: user.username,
+            email: user.email,
+            profilePicture: user.profilePicture || '/images/userDefault/user.png',
+            status_akun: user.status_akun,
+            no_telepon: user.no_telepon || 'N/A',
+            tanggal_daftar: user.tanggal_daftar,
+        });
+    } catch (error) {
+        logger.error(`Error fetching user profile: ${error.message}`);
+        next(new AppError(error.message, 500));
+    }
+});
+
 
 
 
