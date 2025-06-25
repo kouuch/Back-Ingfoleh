@@ -60,22 +60,34 @@ router.get('/me', authenticateToken, async (req, res, next) => {
 router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUserInput, async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const updateData = { ...req.body }
+        let updateData = { ...req.body };
 
-        // update password, hash dulu
-        if (updateData.password) {
-            const salt = await bcrypt.genSalt(10)
-            updateData.password = await bcrypt.hash(updateData.password, salt)
+        // Jangan izinkan pengeditan status_akun dan tanggal_daftar
+        if (updateData.status_akun || updateData.tanggal_daftar) {
+            return next(new AppError('Status Akun dan Tanggal Daftar tidak dapat diubah', 400));
         }
 
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password')
-        logger.info(`User profile updated successfully: ${userId}`)
-        res.json(updatedUser)
+        // Update password, jika ada, hash password baru
+        if (updateData.password) {
+            const salt = await bcrypt.genSalt(10);
+            updateData.password = await bcrypt.hash(updateData.password, salt);
+        }
+
+        // Jika ada foto profil yang diupload, simpan foto baru
+        if (req.file) {
+            updateData.profilePicture = `/uploads/${req.file.filename}`; // Menggunakan path gambar yang baru
+        }
+
+        // Perbarui data pengguna
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
+        logger.info(`User profile updated successfully: ${userId}`);
+        res.json(updatedUser);
     } catch (error) {
-        logger.error(`Error updating user profile for ${userId}: ${error.message}`)
-        next(new AppError(error.message, 400))
+        logger.error(`Error updating user profile for ${userId}: ${error.message}`);
+        next(new AppError(error.message, 400));
     }
-})
+});
+
 
 // Hapus user (admin only)
 // Route untuk menghapus pengguna (admin only)
