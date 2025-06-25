@@ -12,7 +12,6 @@
 </head>
 
 <body>
-    <!-- Table for displaying products -->
     <div class="container-table">
         <div class="row-table">
             <div class="col-12">
@@ -39,43 +38,24 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <!-- Modal for Add Product -->
+    <!-- Modal untuk Edit Toko -->
     <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Tambah Produk</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Edit Toko</h5>
                     <button type="button" class="cross" data-bs-dismiss="modal" aria-label="Close"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Add Toko Form -->
-                    <form id="addNewToko" style="display:block;">
-                        <div class="mb-3">
-                            <label for="tokoName">Namatoko<span>*</span></label>
-                            <input type="text" class="form-control" id="tokoName" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="tokoCity">Kabupaten/Kota<span>*</span></label>
-                            <input type="text" class="form-control" id="tokoCity" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="tokoLocation">Alamat Toko<span>*</span></label>
-                            <input type="text" class="form-control" id="tokoLocation" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="tokoContact">Kontak Toko<span>*</span></label>
-                            <input type="text" class="form-control" id="tokoContact" required autocomplete="off">
-                        </div>
-                        <button type="submit" class="submitBtn">Simpan</button>
-                    </form>
-
-                    <!-- Edit Toko Form (Hidden by Default) -->
+                    <!-- Form Edit Toko -->
                     <form id="EditNewToko" style="display:block;">
+                        <!-- Input tersembunyi untuk ID toko -->
+                        <input type="hidden" id="tokoId" name="id">
+
                         <div class="mb-3">
-                            <label for="EdittokoName">Namatoko<span>*</span></label>
+                            <label for="EdittokoName">Nama Toko<span>*</span></label>
                             <input type="text" class="form-control" id="EdittokoName" required autocomplete="off">
                         </div>
                         <div class="mb-3">

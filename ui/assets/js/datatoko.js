@@ -1,3 +1,5 @@
+let modalForm;
+
 document.addEventListener('DOMContentLoaded', function () {
     // Mengambil token dari localStorage
     const token = localStorage.getItem('token');
@@ -60,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     // Inisialisasi modal dengan Bootstrap
-    const modalForm = new bootstrap.Modal(document.getElementById('exModal'), {
+    modalForm = new bootstrap.Modal(document.getElementById('exModal'), {
         backdrop: 'static',
         keyboard: false,
     });
@@ -68,12 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Modal Form untuk menambahkan toko baru
     document.getElementById('addNewBtn').addEventListener('click', function () {
         modalForm.show();  // Tampilkan modal
-    });
-
-    // Close modal atau redirect ke halaman utama
-    document.getElementById('close').addEventListener('click', function () {
-        window.location.href = '/'; // Mengarahkan ke halaman utama
-        // history.pushState(null, null, '/'); // Alternatif menggunakan history
     });
 
     // Menangani validasi input yang wajib diisi
@@ -88,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // post Toko
-document.getElementById('addNewToko').addEventListener('submit', function (event) {
+document.getElementById('addNewBtn').addEventListener('submit', function (event) {
     event.preventDefault();  // Mencegah form melakukan refresh halaman
 
     const token = localStorage.getItem('token');  // Ambil token dari localStorage
@@ -124,3 +120,75 @@ document.getElementById('addNewToko').addEventListener('submit', function (event
         });
 
 });
+// Memuat data toko untuk di edit
+function loadTokoData(tokoId) {
+    fetch(`http://localhost:5000/api/toko/admintoko/${tokoId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('tokoId').value = data._id;
+        document.getElementById('EdittokoName').value = data.nama_toko;
+        document.getElementById('EdittokoCity').value = data.kabupaten_kota;
+        document.getElementById('EdittokoLocation').value = data.alamat_lengkap;
+        document.getElementById('EdittokoContact').value = data.kontak_toko;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal memuat data toko');
+    });
+}
+
+// Fungsi untuk mengedit toko
+function editToko(tokoId) {
+    loadTokoData(tokoId);  // Memuat data toko ke dalam form
+    modalForm.show();  // Menampilkan modal
+
+    // Pastikan form sudah dimuat dan modal terbuka, baru tambahkan event listener
+    const editForm = document.getElementById('EditNewToko');
+    if (editForm) {
+        editForm.addEventListener('submit', function (event) {
+            event.preventDefault();  // Mencegah form melakukan refresh halaman
+
+            // Ambil ID toko yang tersembunyi
+            const tokoId = document.getElementById('tokoId').value;
+
+            // Ambil data dari form
+            const tokoName = document.getElementById('EdittokoName').value;
+            const kabupatenKota = document.getElementById('EdittokoCity').value;
+            const alamatToko = document.getElementById('EdittokoLocation').value;
+            const kontakToko = document.getElementById('EdittokoContact').value;
+
+            // Buat objek data toko yang akan diupdate
+            const updatedTokoData = {
+                nama_toko: tokoName,
+                kabupaten_kota: kabupatenKota,
+                alamat_lengkap: alamatToko,
+                kontak_toko: kontakToko
+            };
+
+            // Mengirim request PUT ke server
+            fetch(`http://localhost:5000/api/toko/admintoko/${tokoId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,  // Token untuk autentikasi
+                    'Content-Type': 'application/json',  // Mengirim data dalam format JSON
+                },
+                body: JSON.stringify(updatedTokoData)  // Mengirimkan data toko yang sudah diubah
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('response:', data);  // Log response untuk debugging    
+                alert('Toko berhasil diperbarui');
+                window.location.reload();  // Reload halaman setelah toko diperbarui
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal memperbarui toko');
+            });
+        });
+    }
+}
