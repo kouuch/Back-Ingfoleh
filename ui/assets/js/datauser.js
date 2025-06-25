@@ -38,21 +38,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             data.forEach((user, index) => {
                 console.log('data:', user);
-                
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td>${user.role}</td>
-                <td>${user.no_telepon}</td>
-                <td>${user.status_akun}</td>
-                <td>${user.tanggal_daftar}</td>
-                <td>${user.profilePicture}</td>
-                <td>
-                    <button onclick="deleteuser('${user._id}')">Hapus</button>
-                </td>
-            `;
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>${user.no_telepon}</td>
+                    <td>${user.status_akun}</td>
+                    <td>${new Date(user.tanggal_daftar).toLocaleDateString()}</td>
+                    <td><img src="${user.profilePicture}" alt="Foto Pengguna" width="50" height="50"></td>
+                    <td>
+                        <button onclick="deleteuser('${user._id}')">Hapus</button>
+                    </td>
+                `;
                 tableBody.appendChild(row);
             });
         })
