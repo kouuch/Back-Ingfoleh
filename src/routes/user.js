@@ -11,16 +11,16 @@ const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRE
 
 // get all users (admin only)
-router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+router.get('/admingetuser', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
-        const users = await User.find().select('-password')
-        logger.info(`Fetched ${users.length} users`)
-        res.json(users)
+        const users = await User.find().select('-password'); // Mengambil data pengguna tanpa password
+        logger.info(`Mengambil ${users.length} pengguna`);
+        res.json(users);  // Mengirimkan data pengguna dalam format JSON
     } catch (error) {
-        logger.error(`Error fetching users: ${error.message}`)
-        next(new AppError(error.message, 500))
+        logger.error(`Terjadi kesalahan saat mengambil pengguna: ${error.message}`);
+        next(new AppError(error.message, 500));
     }
-})
+});
 
 // Endpoint untuk mengambil data profil pengguna
 router.get('/me', authenticateToken, async (req, res, next) => {

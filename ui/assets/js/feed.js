@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedbackList = document.getElementById('feedbackList');
     const stars = document.querySelectorAll('#ratingForm i');
 
+    // Ambil feedback yang sudah ada di database saat halaman dimuat
+    fetchFeedbacks();
+
     // Event untuk mengubah bintang menjadi aktif saat diklik
     stars.forEach(star => {
         star.addEventListener('click', () => {
@@ -72,9 +75,31 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     });
 
+    // Fungsi untuk mengambil feedback dari API
+    function fetchFeedbacks() {
+        fetch('api/feedbacks')
+            .then(response => {
+                console.log('Response Status:', response.status); // Log status response
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.statusText}`);
+                }
+                return response.json(); // Hanya mem-parsing JSON jika response status OK
+            })
+            .then(data => {
+                console.log('Fetched Feedbacks:', data); // Log feedback yang diterima
+                data.forEach(feedback => {
+                    renderFeedback(feedback);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching feedbacks:', error);
+                // alert('Terjadi kesalahan dalam mengambil feedback');
+            });
+    }
+
     // Render feedback
     function renderFeedback(feedback) {
-        // Cek jika jumlah feedback melebihi 3, hapus yang pertama
+        // Cek jika jumlah feedback melebihi 3, hapus yang pertama (feedback lama)
         if (feedbackList.children.length >= 3) {
             feedbackList.removeChild(feedbackList.firstChild);
         }
@@ -87,18 +112,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Update bagian innerHTML sesuai dengan format yang Anda inginkan
         feedbackItem.innerHTML = `
-        <i class='bx bxs-quote-alt-left'></i>
-        <div class="stars">
-            ${starsHtml}
-        </div>
-        <p>${feedback.komentar}</p>
-        <div class="review-profile">
-            <img src="${feedback.id_user.profilePicture}" alt="User Profile Picture">
-            <h3>${feedback.email}</h3>
-        </div>
-    `;
+            <i class='bx bxs-quote-alt-left'></i>
+            <div class="stars">
+                ${starsHtml}
+            </div>
+            <p>${feedback.komentar}</p>
+            <div class="review-profile">
+                <img src="${feedback.id_user.profilePicture}" alt="User Profile Picture">
+                <h3>${feedback.email}</h3>
+            </div>
+        `;
 
-        feedbackList.appendChild(feedbackItem);  // Menambahkan feedback baru ke dalam daftar feedback
+        // Menambahkan feedback terbaru ke dalam daftar feedback
+        feedbackList.appendChild(feedbackItem);
     }
 
     // Fungsi untuk membuat bintang berdasarkan rating

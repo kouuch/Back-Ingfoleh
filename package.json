@@ -6,8 +6,9 @@
     "start": "node src/server.js",
     "dev": "concurrently \"npm run dev-server\" \"npm run browser-sync\"",
     "dev-server": "nodemon src/server.js",
-    "browser-sync": "browser-sync start --proxy http://localhost:5000 --files './ui/assets/css/*.css, ./ui/assets/js/*.js, ./ui/page/*.ejs' --no-open"
-  },
+    "browser-sync": "browser-sync start --proxy http://localhost:5000 --files './ui/assets/css/*.css, ./ui/assets/js/*.js, ./ui/page/*.ejs' --no-open",
+    "debug": "node --inspect-brk=9229 src/server.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

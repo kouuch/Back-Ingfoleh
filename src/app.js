@@ -105,15 +105,6 @@ app.get('/adminfavorite', async (req, res) => {
         res.status(500).send('Error rendering page');
     }
 });
-// Route untuk halaman datauser
-app.get('/datauser', async (req, res) => {
-    try {
-        res.render('datauser'); // Render halaman adminproduct.ejs
-    } catch (error) {
-        logger.error('Error rendering admin Like page:', error);
-        res.status(500).send('Error rendering page');
-    }
-});
 
 // app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
 //     try {

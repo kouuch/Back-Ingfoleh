@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const feedbackSchema = new mongoose.Schema({
     id_user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Referensi ke model User untuk mengambil foto pengguna
+        ref: 'User',
         required: true
     },
     email: {
@@ -24,6 +24,6 @@ const feedbackSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-}, { timestamps: true })
+}, { timestamps: true, collection: 'feedbacks' });  // Tentukan koleksi dengan nama 'feedbacks'
 
 module.exports = mongoose.model('Feedback', feedbackSchema);
