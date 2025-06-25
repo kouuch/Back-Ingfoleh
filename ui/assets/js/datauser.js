@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('data:', user);
 
                 const row = document.createElement('tr');
+                row.setAttribute('data-id', user._id);  // Menambahkan data-id pada baris
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${user.username}</td>
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
                 tableBody.appendChild(row);
             });
+
         })
         .catch(error => {
             console.error('Error fetching users:', error);
@@ -88,3 +90,45 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 });
+
+
+// Fungsi untuk menghapus pengguna
+function deleteuser(userId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("You need to be logged in to delete a user.");
+        return;
+    }
+
+    // Konfirmasi sebelum menghapus
+    if (confirm('Are you sure you want to delete this user?')) {
+        fetch(`http://localhost:5000/api/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`, // Mengirim token di header
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.msg === 'User berhasil dihapus') {
+                    alert('User berhasil dihapus');
+
+                    // Menghapus baris yang sesuai dari tabel
+                    const row = document.querySelector(`tr[data-id='${userId}']`);
+                    if (row) {
+                        row.remove();
+                    }
+
+                    // Refresh halaman setelah berhasil menghapus
+                    location.reload();  // Reload halaman untuk memperbarui tampilan tabel
+                } else {
+                    alert('Gagal menghapus user');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting user:', error);
+                alert('Gagal menghapus user');
+            });
+    }
+}
+

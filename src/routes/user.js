@@ -77,7 +77,8 @@ router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUs
     }
 })
 
-// delete user (admin only)
+// Hapus user (admin only)
+// Route untuk menghapus pengguna (admin only)
 router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     const userId = req.params.id;  // Mendapatkan ID pengguna dari parameter URL
     try {
@@ -85,13 +86,15 @@ router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, re
         if (!user) {
             return next(new AppError('User tidak ditemukan', 404));
         }
-        logger.info(`User successfully deleted: ${userId}`);
+        logger.info(`User berhasil dihapus: ${userId}`);
         res.json({ msg: 'User berhasil dihapus' });
     } catch (error) {
-        logger.error(`Error deleting user with id ${userId}: ${error.message}`);
-        next(new AppError(error.message, 500));
+        logger.error(`Error menghapus user dengan ID ${userId}: ${error.message}`);
+        next(new AppError('Terjadi kesalahan saat menghapus pengguna', 500));
     }
 });
+
+
 
 
 // Endpoint untuk meng-upload gambar profil
