@@ -31,19 +31,20 @@ const validateProductInput = [
 
 //validasi input user (register dan update)
 const validateUserInput = [
-    body('username').not().isEmpty().withMessage('Username harus diisi'),
-    body('email').isEmail().withMessage('Email harus valid'),
-    body('password').isLength({ min: 6 }).withMessage('Password harus minimal 6 karakter'),
+    body('username').optional().not().isEmpty().withMessage('Username harus diisi'),
+    body('email').optional().isEmail().withMessage('Email harus valid'),
+    body('password').optional().isLength({ min: 6 }).withMessage('Password harus minimal 6 karakter'),
     body('role').optional().isIn(['user', 'admin']).withMessage('Role tidak valid'),
 
     (req, res, next) => {
-        const errors = validationResult(req)
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return next(new AppError('Input tidak valid', 400, errors.array()))
+            return next(new AppError('Input tidak valid', 400, errors.array()));
         }
-        next()
+        next();
     }
-]
+];
+
 
 
 

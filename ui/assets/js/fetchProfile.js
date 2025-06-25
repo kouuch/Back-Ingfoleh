@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const profileElements = {
             username: { id: 'username', type: 'text', defaultValue: 'No Name' },
             email: { id: 'email', type: 'text', defaultValue: 'N/A' },
-            userPhone: { id: 'userPhone', type: 'text', defaultValue: 'N/A' },
+            no_telepon: { id: 'no_telepon', type: 'text', defaultValue: 'N/A' },
             userStatus: { id: 'userStatus', type: 'text', defaultValue: 'Unknown' },
             userJoinDate: { id: 'userJoinDate', type: 'text', defaultValue: 'Unknown' },
             userProfilePic: { id: 'userProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
