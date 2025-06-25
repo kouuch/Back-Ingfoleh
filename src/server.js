@@ -30,17 +30,20 @@ app.set('views', path.join(__dirname, '..', 'ui', 'page'))
 
 
 // CSP
+// CSP
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
         "default-src 'self'; " +
-        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com data:; " +  // Menambahkan cdn.cloudflare.com untuk font dan data: untuk base64 font
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk stylesheet
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://code.jquery.com; " +  // Menambahkan cdn.cloudflare.com dan code.jquery.com untuk skrip
-        "img-src 'self' https://images.pexels.com data:;"  // Memperbolehkan gambar dari Pexels
+        "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com data:; " +  // Menambahkan cdn.jsdelivr.net untuk font dan data: untuk base64 font
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://stackpath.bootstrapcdn.com; " +  // Menambahkan stackpath.bootstrapcdn.com untuk stylesheet
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://code.jquery.com; " +  // Menambahkan cdn.jsdelivr.net dan code.jquery.com untuk skrip
+        "img-src 'self' https://images.pexels.com https://bootdey.com https://www.bootdey.com data:;"  // Memperbolehkan gambar dari Pexels dan Bootdey (dengan www)
     );
     next();
 });
+
+
 
 
 
@@ -114,6 +117,15 @@ app.get('/datauser', async (req, res) => {
         res.status(500).send('Error rendering page');
     }
 });
+// Route untuk halaman profile
+app.get('/profile', async (req, res) => {
+    try {
+        res.render('profile'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering Profile page:', error);
+        res.status(500).send('Error rendering page');
+    }
+})
 
 // app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
 //     try {

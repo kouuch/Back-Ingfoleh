@@ -90,6 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 });
+// Close modal atau redirect ke halaman utama
+document.getElementById('close').addEventListener('click', function () {
+    window.location.href = '/'; // Mengarahkan ke halaman utama
+    // history.pushState(null, null, '/'); // Alternatif menggunakan history
+});
 
 
 // Fungsi untuk menghapus pengguna
