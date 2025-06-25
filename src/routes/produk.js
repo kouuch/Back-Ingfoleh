@@ -190,6 +190,50 @@ router.get('/products', async (req, res) => {
     }
 });
 
+router.get('/productskate', async (req, res) => {
+    try {
+        const { category, page = 1 } = req.query;  // Ambil kategori dan halaman dari query string
+        const productsPerPage = 6;  // Menampilkan 8 produk per halaman
+        const skip = (page - 1) * productsPerPage;
+
+        // Cek apakah ada kategori yang dipilih
+        let query = {};
+
+        // Jika kategori diberikan, kita filter berdasarkan kategori
+        if (category) {
+            // Cek apakah kategori adalah ObjectId yang valid atau nama kategori
+            const kategoriObj = await Kategori.findOne({ nama_kategori: category });
+
+            // Jika kategori tidak ditemukan, kembalikan error
+            if (!kategoriObj) {
+                return res.status(404).json({ message: 'Kategori tidak ditemukan' });
+            }
+
+            // Filter produk berdasarkan kategori yang ditemukan
+            query = { kategori: kategoriObj._id };
+        }
+
+        // Ambil produk berdasarkan query kategori dengan pagination
+        const products = await Produk.find(query)
+            .skip(skip)
+            .limit(productsPerPage)
+            .populate('kategori', 'nama_kategori');  // Pastikan kategori di-populate
+
+        // Ambil total produk untuk pagination
+        const totalProducts = await Produk.countDocuments(query);
+
+        // Kirim data dalam format yang benar
+        res.json({
+            products: products,
+            totalProducts: totalProducts,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+
 
 
 
@@ -217,6 +261,8 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// endpoint untuk filter produk berdasarkan kategori
 
 
 
