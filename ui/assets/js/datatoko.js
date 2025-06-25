@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         keyboard: false,
     });
 
-    // Modal Form untuk menambahkan produk baru
+    // Modal Form untuk menambahkan toko baru
     document.getElementById('addNewBtn').addEventListener('click', function () {
         modalForm.show();  // Tampilkan modal
     });
@@ -87,3 +87,37 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// post Toko
+document.getElementById('addNewToko').addEventListener('submit', function (event) {
+    event.preventDefault();  // Mencegah form melakukan refresh halaman
+
+    const token = localStorage.getItem('token');  // Ambil token dari localStorage
+    const tokoName = document.getElementById('tokoName').value;
+    const kabupatenKota = document.getElementById('tokoCity').value;
+    const alamatToko = document.getElementById('tokoLocation').value;
+    const kontakToko = document.getElementById('tokoContact').value;
+
+    // Buat FormData untuk mengirim data termasuk file gambar
+    const formData = new FormData();
+    formData.append('nama_toko', tokoName);
+    formData.append('kabupaten_kota', kabupatenKota);
+    formData.append('alamat_lengkap', alamatToko);
+    formData.append('kontak_toko', kontakToko);
+    // Mengirim request POST ke server
+    fetch('http://localhost:5000/api/toko/admincreate', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: formData  // Kirim FormData (termasuk gambar)
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert('toko berhasil ditambahkan');
+            window.location.reload();  // Reload halaman setelah toko ditambahkan
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal menambahkan toko');
+        });
+});

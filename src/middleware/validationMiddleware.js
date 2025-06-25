@@ -52,8 +52,6 @@ const validateStoreInput = [
     body('nama_toko').not().isEmpty().withMessage('Nama toko wajib diisi'),
     body('kabupaten_kota').not().isEmpty().withMessage('Kabupaten/Kota wajib diisi'),
     body('alamat_lengkap').not().isEmpty().withMessage('Alamat lengkap wajib diisi'),
-    body('latitude').isNumeric().withMessage('Latitude harus berupa angka'),
-    body('longitude').isNumeric().withMessage('Longitude harus berupa angka'),
     body('kontak_toko').not().isEmpty().withMessage('Kontak toko wajib diisi'),
 
     (req, res, next) => {

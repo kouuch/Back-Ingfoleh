@@ -7,7 +7,7 @@ const logger = require('../utils/logger')
 const AppError = require('../utils/AppError')
 
 // Create toko (admin only)
-router.post('/', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res, next) => {
+router.post('/admincreate', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res, next) => {
     try {
         const toko = new Toko(req.body)
         await toko.save()
