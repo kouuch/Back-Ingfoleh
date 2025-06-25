@@ -192,3 +192,26 @@ function editToko(tokoId) {
         });
     }
 }
+
+// Fungsi untuk menghapus toko
+function deleteToko(tokoId) {
+    const token = localStorage.getItem('token');  // Ambil token dari localStorage
+
+    // Mengirim request DELETE ke server
+    fetch(`http://localhost:5000/api/toko/delete/${tokoId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response:', data);
+        alert(data.msg);  // Menampilkan pesan jika toko berhasil dihapus
+        window.location.reload();  // Reload halaman setelah toko dihapus
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal menghapus toko');
+    });
+}

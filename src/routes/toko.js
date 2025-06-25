@@ -77,20 +77,29 @@ router.put('/admintoko/:id', authenticateToken, authorizeRoles('admin'), validat
 
 
 // Delete toko (admin only)
-router.delete('/delete:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+router.delete('/delete/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
-        const toko = await Toko.findByIdAndDelete(req.params.id)
+        // Mengambil ID toko dari parameter URL
+        const tokoId = req.params.id;
+
+        // Mencari toko berdasarkan ID dan menghapusnya
+        const toko = await Toko.findByIdAndDelete(tokoId);
+
+        // Jika toko tidak ditemukan, kirimkan respons 404
         if (!toko) {
-            logger.warn(`Store with id ${req.params.id} not found`)
-            return next(new AppError('Toko tidak ditemukan', 404))
+            logger.warn(`Store with id ${tokoId} not found`);
+            return next(new AppError('Toko tidak ditemukan', 404));
         }
 
-        logger.info(`Store successfully deleted: ${req.params.id}`)
-        res.json({ msg: 'Toko berhasil dihapus' })
+        // Jika toko berhasil dihapus
+        logger.info(`Store successfully deleted: ${tokoId}`);
+        res.json({ msg: 'Toko berhasil dihapus' });
     } catch (error) {
-        logger.error(`Error deleting store with ID ${req.params.id}: ${error.message}`)
-        next(new AppError(error.message, 500))
+        // Menangani error jika terjadi masalah saat menghapus
+        logger.error(`Error deleting store with ID ${req.params.id}: ${error.message}`);
+        next(new AppError(error.message, 500));
     }
-})
+});
+
 
 module.exports = router
