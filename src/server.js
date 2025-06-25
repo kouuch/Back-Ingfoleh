@@ -78,12 +78,21 @@ app.get('/register', (req, res) => {
     }
 });
 
-// // Route untuk halaman admin
+// Route untuk halaman admin
 app.get('/adminproduct', async (req, res) => {
     try {
         res.render('adminproduct'); // Render halaman adminproduct.ejs
     } catch (error) {
         logger.error('Error rendering admin products page:', error);
+        res.status(500).send('Error rendering page');
+    }
+});
+// Route untuk halaman toko
+app.get('/admintoko', async (req, res) => {
+    try {
+        res.render('admintoko'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering admin toko page:', error);
         res.status(500).send('Error rendering page');
     }
 });

@@ -20,7 +20,7 @@ router.post('/', authenticateToken, authorizeRoles('admin'), validateStoreInput,
 })
 
 //read semua (public)
-router.get('/', async (req, res, next) => {
+router.get('/admintoko', async (req, res, next) => {
     try {
         const tokos = await Toko.find()
         logger.info(`Fetched ${tokos.length} stores`)

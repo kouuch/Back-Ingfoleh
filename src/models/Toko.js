@@ -13,14 +13,6 @@ const tokoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    latitude: {
-        type: Number,
-        required: true
-    },
-    longitude: {
-        type: Number,
-        required: true
-    },
     kontak_toko: {
         type: String,
         required: true
