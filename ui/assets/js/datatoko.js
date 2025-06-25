@@ -97,27 +97,30 @@ document.getElementById('addNewToko').addEventListener('submit', function (event
     const alamatToko = document.getElementById('tokoLocation').value;
     const kontakToko = document.getElementById('tokoContact').value;
 
-    // Buat FormData untuk mengirim data termasuk file gambar
-    const formData = new FormData();
-    formData.append('nama_toko', tokoName);
-    formData.append('kabupaten_kota', kabupatenKota);
-    formData.append('alamat_lengkap', alamatToko);
-    formData.append('kontak_toko', kontakToko);
-    // Mengirim request POST ke server
+    // Buat data toko dalam bentuk objek JSON
+    const tokoData = {
+        nama_toko: tokoName,
+        kabupaten_kota: kabupatenKota,
+        alamat_lengkap: alamatToko,
+        kontak_toko: kontakToko
+    };
+
+    // Mengirim request POST ke server dengan data JSON
     fetch('http://localhost:5000/api/toko/admincreate', {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
+            'Content-Type': 'application/json', // Tentukan bahwa data yang dikirim adalah JSON
         },
-        body: formData  // Kirim FormData (termasuk gambar)
+        body: JSON.stringify(tokoData)  // Kirim data JSON
     })
-        .then(response => response.json())
-        .then(data => {
-            alert('toko berhasil ditambahkan');
-            window.location.reload();  // Reload halaman setelah toko ditambahkan
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Gagal menambahkan toko');
-        });
+    .then(response => response.json())
+    .then(data => {
+        alert('Toko berhasil ditambahkan');
+        window.location.reload();  // Reload halaman setelah toko ditambahkan
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal menambahkan toko');
+    });
 });

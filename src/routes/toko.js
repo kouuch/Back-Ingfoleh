@@ -9,7 +9,17 @@ const AppError = require('../utils/AppError')
 // Create toko (admin only)
 router.post('/admincreate', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res, next) => {
     try {
-        const toko = new Toko(req.body)
+        // ambit data dari body request
+        const { nama_toko, kabupaten_kota, alamat_lengkap, kontak_toko } = req.body
+        
+        // membuat objek Toko baru
+        const toko = new Toko({
+            nama_toko,
+            kabupaten_kota,
+            alamat_lengkap,
+            kontak_toko
+        })
+        // simpan toko ke database
         await toko.save()
         logger.info(`Store created successfully: ${toko._id}`)
         res.status(201).json(toko)
