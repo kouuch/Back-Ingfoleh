@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('addNewBtn').addEventListener('click', function () {
         modalForm.show();  // Tampilkan modal
     });
+    
 
     // Menangani validasi input yang wajib diisi
     document.querySelectorAll('input[required]').forEach(input => {
@@ -81,6 +82,11 @@ document.addEventListener('DOMContentLoaded', function () {
             e.target.setCustomValidity('');
         };
     });
+});
+// Close modal atau redirect ke halaman utama
+document.getElementById('close').addEventListener('click', function () {
+    window.location.href = '/'; // Mengarahkan ke halaman utama
+    // history.pushState(null, null, '/'); // Alternatif menggunakan history
 });
 
 // post Toko

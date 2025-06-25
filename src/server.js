@@ -96,6 +96,15 @@ app.get('/admintoko', async (req, res) => {
         res.status(500).send('Error rendering page');
     }
 });
+// Route untuk halaman Suka
+app.get('/adminfavorite', async (req, res) => {
+    try {
+        res.render('adminfavorite'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering admin Like page:', error);
+        res.status(500).send('Error rendering page');
+    }
+});
 
 // app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
 //     try {

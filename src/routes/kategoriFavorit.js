@@ -5,7 +5,6 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
-// Get laporan kategori favorit (admin only)
 // Admin melihat history produk yang di-like oleh pengguna
 router.get('/admin/favorit', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
@@ -26,12 +25,6 @@ router.get('/admin/favorit', authenticateToken, authorizeRoles('admin'), async (
 });
 
 
-
-// Menambahkan produk ke favorit (Hanya pengguna yang terautentikasi)
-// Menambahkan produk ke favorit
-// Menambahkan produk ke favorit (Hanya pengguna yang terautentikasi)
-// Menambahkan produk ke favorit
-// Menambahkan produk ke favorit
 // Menambahkan produk ke favorit
 router.post('/', authenticateToken, async (req, res) => {
     const { id_produk, nama_produk, id_kategori, nama_kategori } = req.body;
@@ -104,6 +97,7 @@ router.get('/like', authenticateToken, async (req, res, next) => {
         const favorit = await KategoriFavorit.find({ user_id: userId })
             .populate('id_produk', 'nama_produk')
             .populate('id_kategori', 'nama_kategori')
+            .populate('user_id', 'username email')
             .exec();
 
         if (!favorit || favorit.length === 0) {
