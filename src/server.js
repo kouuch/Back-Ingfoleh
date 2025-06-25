@@ -36,11 +36,12 @@ app.use((req, res, next) => {
         "default-src 'self'; " +
         "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com data:; " +  // Menambahkan cdn.cloudflare.com untuk font dan data: untuk base64 font
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk stylesheet
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; " +  // Menambahkan cdn.cloudflare.com untuk skrip
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://code.jquery.com; " +  // Menambahkan cdn.cloudflare.com dan code.jquery.com untuk skrip
         "img-src 'self' https://images.pexels.com data:;"  // Memperbolehkan gambar dari Pexels
     );
     next();
 });
+
 
 
 
@@ -169,7 +170,7 @@ app.use('/api/users', userRoutes);
 
 // route untuk feedback
 const feedbackRoutes = require('./routes/feedback');
-app.use('/api/feedback', feedbackRoutes);
+app.use('/api', feedbackRoutes);
 
 // route untuk menceklike
 const favoritesRoute = require('./routes/favorites');

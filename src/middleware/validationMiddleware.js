@@ -45,21 +45,7 @@ const validateUserInput = [
     }
 ]
 
-//validasi input feedback
-const validateFeedbackInput = [
-    body('produk').isMongoId().withMessage('Produk ID tidak valid'),
-    body('rating').isInt({ min: 1, max: 5 }).withMessage('Rating harus antara 1 dan 5'),
-    body('komentar').optional().isLength({ min: 5 }).withMessage('Komentar harus lebih dari 5 karakter'),
 
-
-    (req, res, next) => {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return next(new AppError('Input tidak valid', 400, errors.array()))
-        }
-        next()
-    }
-]
 
 // Validasi input untuk toko
 const validateStoreInput = [
@@ -82,6 +68,5 @@ const validateStoreInput = [
 module.exports = {
   validateProductInput,
   validateUserInput,
-  validateFeedbackInput,
   validateStoreInput
 };

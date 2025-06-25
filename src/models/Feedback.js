@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 
 const feedbackSchema = new mongoose.Schema({
-    user: {
+    id_user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User', // Referensi ke model User untuk mengambil foto pengguna
         required: true
     },
-    produk: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'produk',
+    email: {
+        type: String,
         required: true
     },
     rating: {
@@ -18,12 +17,13 @@ const feedbackSchema = new mongoose.Schema({
         max: 5
     },
     komentar: {
-        type: String
+        type: String,
+        required: true
     },
-    tanggal_review : {
+    tanggal_review: {
         type: Date,
         default: Date.now
     }
-},{ timestamps: true})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Feedback', feedbackSchema);

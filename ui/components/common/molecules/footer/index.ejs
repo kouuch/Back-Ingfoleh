@@ -1,36 +1,44 @@
-                    <!-- footer -->
-                    <section class="footer" id="foooter">
-                        <div class="footer-box">
-                            <a href="#" class="logo"><i class='bx bxs-basket'></i>Ingfoleh</a>
-                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. <br>Inventore 2025</p>
-                            <div class="social">
-                                <a href=""><i class='bx bxl-instagram'></i></a>
-                                <a href=""><i class='bx bxl-instagram'></i></a>
-                                <a href=""><i class='bx bxl-instagram'></i></a>
-                            </div>
-                        </div>
-                        <div class="footer-box">
-                            <h2>Categories</h2>
-                            <a href="#">Khas kalimantan</a>
-                            <a href="#">khas Daerah</a>
-                            <a href="#">Khas Kampung</a>
-                        </div>
-                        <div class="footer-box">
-                            <h2>Produk Terpofuler</h2>
-                            <a href="#">Apam barabai</a>
-                            <a href="#">Dodol Kandangan</a>
-                            <a href="#">Mie habang</a>
-                        </div>
-                        <div class="footer-box">
-                            <h2>Request & Feedback</h2>
-                            <p>Ada oleh-oleh yang ingin kamu tambahkan atau tanggapan anda tentang Ingofoleh? Sampaikan
-                                idemu di sini!
-                            </p>
-                            <form action="">
-                                <i class='bx bx-envelope'></i>
-                                <input type="email" name="" id="" placeholder="Masukan Email Anda">
-                                <i class='bx bx-arrow-back bx-rotate-180'></i>
-                            </form>
-
-                        </div>
-                    </section>
+<!-- footer -->
+<section class="footer" id="footer">
+    <div class="footer-box">
+        <a href="#" class="logo"><i class='bx bxs-basket'></i>Ingfoleh</a>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. <br>Inventore 2025</p>
+        <div class="social">
+            <a href=""><i class='bx bxl-instagram'></i></a>
+            <a href=""><i class='bx bxl-instagram'></i></a>
+            <a href=""><i class='bx bxl-instagram'></i></a>
+        </div>
+    </div>
+    <div class="footer-box">
+        <h2>Categories</h2>
+        <a href="#">Khas kalimantan</a>
+        <a href="#">khas Daerah</a>
+        <a href="#">Khas Kampung</a>
+    </div>
+    <div class="footer-box">
+        <h2>Produk Terpofuler</h2>
+        <a href="#">Apam barabai</a>
+        <a href="#">Dodol Kandangan</a>
+        <a href="#">Mie habang</a>
+    </div>
+    <div class="footer-box">
+        <h2>Request & Feedback</h2>
+        <form id="feedbackForm">
+            <i class='bx bx-envelope'></i>
+            <input type="email" id="email" placeholder="Masukan Email Anda" required>
+        </form>
+        <form id="ratingForm" style="font-size: 2rem;">
+            <i class='bx bx-star' data-value="1"></i>
+            <i class='bx bx-star' data-value="2"></i>
+            <i class='bx bx-star' data-value="3"></i>
+            <i class='bx bx-star' data-value="4"></i>
+            <i class='bx bx-star' data-value="5"></i>
+            <input type="hidden" id="rating" value="0" required>
+        </form>
+        <form id="commentForm">
+            <i class='bx bx-terminal'></i>
+            <input type="text" id="comment" placeholder="Masukan Komentar anda" required>
+        </form>
+        <button id="submitFooter"><i class='bx bx-send'></i></button>
+    </div>
+</section>
