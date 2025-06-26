@@ -328,13 +328,6 @@ function updateProductFavoritCount(productId) {
     }
 }
 
-// Logout function
-document.getElementById('logoutBtn').addEventListener('click', function () {
-    localStorage.removeItem('token');
-    localStorage.removeItem('favorite_');
-    localStorage.removeItem('favoriteId_');
-    window.location.href = '/';
-});
 
 // Fetch products on page load
 fetchProducts(currentPage);

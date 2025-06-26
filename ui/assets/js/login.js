@@ -63,6 +63,10 @@ loginForm.addEventListener('submit', function (event) {
                 // Menyimpan token dan role setelah login berhasil
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('role', data.user.role);  // Pastikan role disimpan
+                // Menyimpan foto profil pengguna setelah login
+            if (data.user.profilePicture) {
+                localStorage.setItem('profilePicture', data.user.profilePicture); // Menyimpan foto profil
+            }
 
                 // Memuat produk favorit setelah login
                 loadFavoriteProducts();

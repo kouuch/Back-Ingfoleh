@@ -270,16 +270,25 @@ function checkFavoriteStatus(productId) {
 
 // Fungsi untuk logout
 document.getElementById('logoutBtn').addEventListener('click', function () {
+    // Menghapus item yang terkait dengan sesi pengguna
     localStorage.removeItem('token');
     localStorage.removeItem('favorite_');
+    
     localStorage.removeItem('favoriteId_');
+    localStorage.removeItem('profilePicture');  // Menghapus foto profil dari localStorage
+    localStorage.removeItem('role');  // Menghapus role dari localStorage
+    localStorage.removeItem('userEmail');  // Menghapus email pengguna dari localStorage
+
+    // Menghapus semua item favorit dan ID favorit dari localStorage
     Object.keys(localStorage).forEach(key => {
         if (key.startsWith('favorite_') || key.startsWith('favoriteId_')) {
             localStorage.removeItem(key);
         }
     });
 
+    // Mengarahkan ke halaman utama setelah logout
     window.location.href = '/';
 });
+
 
 fetchProducts(currentPage);  // Ambil produk saat pertama kali

@@ -1,62 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); // Ambil role dari localStorage
-    console.log('role:', role);  // Debugging role
+    const profilePicElement = document.getElementById('userProfilePic');
 
     if (token) {
-        console.log('Token found:', token);
-        console.log('role:', role); // Debugging role
+        // Ambil data profil dari API
+        fetch('http://localhost:5000/api/users/me', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(user => {
+            console.log('User data fetched:', user);  // Debugging user data
+            
+            // Menyimpan foto profil ke localStorage jika baru
+            if (user.profilePicture) {
+                localStorage.setItem('profilePicture', user.profilePicture);
+            }
 
-        // Fungsi untuk mengambil data profil pengguna
-        function fetchProfileData(apiUrl, profileElements) {
-            fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`  
-                }
-            })
-                .then(response => response.json())  
-                .then(user => {
-                    console.log('User data fetched:', user);  // Debugging user data
-                    const usernameElement = document.getElementById('username');
-                    if (user.username) {
-                        usernameElement.textContent = user.username;
-                    } else {
-                        console.error('username tidak ditemukan pada data user');
-                    }
-
-                    // Lakukan hal yang sama untuk elemen lainnya jika perlu
-                    Object.keys(profileElements).forEach(key => {
-                        const element = document.getElementById(profileElements[key].id);
-                        if (element) {
-                            if (profileElements[key].type === 'text') {
-                                element.textContent = user[key] || profileElements[key].defaultValue;
-                            } else if (profileElements[key].type === 'image') {
-                                element.src = user[key] || profileElements[key].defaultValue;
-                            }
-                        }
-                    });
-                })
-                .catch(err => {
-                    console.error('Error fetching profile:', err);
-                    alert('Error fetching profile. Please try again later.');
-                });
-        }
-
-        const apiUrl = 'http://localhost:5000/api/users/me';  
-
-        const profileElements = {
-            username: { id: 'username', type: 'text', defaultValue: 'No Name' },
-            email: { id: 'email', type: 'text', defaultValue: 'N/A' },
-            no_telepon: { id: 'no_telepon', type: 'text', defaultValue: 'N/A' },
-            userStatus: { id: 'userStatus', type: 'text', defaultValue: 'Unknown' },
-            userJoinDate: { id: 'userJoinDate', type: 'text', defaultValue: 'Unknown' },
-            userProfilePic: { id: 'userProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
-            userSubMenuProfilePic: { id: 'userSubMenuProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
-            role: { id: 'role', type: 'text', defaultValue: 'No Role' }  // Menambahkan role ke profil
-        };
-
-        fetchProfileData(apiUrl, profileElements);
+            // Pastikan gambar profil diperbarui di halaman
+            const savedProfilePic = user.profilePicture || '/images/userDefault/user.png';
+            profilePicElement.src = savedProfilePic;
+        })
+        .catch(err => {
+            console.error('Error fetching profile data:', err);
+            alert('Error fetching profile data. Please try again later.');
+        });
     } else {
         alert('Please log in first');
     }
@@ -65,25 +35,20 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {
     const savedProfilePic = localStorage.getItem('profilePicture');
     const profilePicElement = document.getElementById('userProfilePic');
-    
+
     // Cek jika profilePicture ada di localStorage
     if (savedProfilePic) {
-        // Cek apakah URL gambar valid
-        const img = new Image();
-        img.onload = function() {
-            // Gambar valid, update src dengan gambar yang diambil
-            profilePicElement.src = savedProfilePic;
-        };
-        img.onerror = function() {
-            // Gambar tidak ditemukan, kembalikan ke default
-            profilePicElement.src = '/images/userDefault/user.png';
-        };
-        img.src = savedProfilePic;  // Tentukan sumber gambar untuk pengecekan
+        // Tambahkan query string unik untuk memastikan gambar baru dimuat tanpa cache
+        const uniqueProfilePicUrl = savedProfilePic + '?v=' + new Date().getTime();
+        
+        // Memastikan gambar profil yang baru di-load
+        profilePicElement.src = uniqueProfilePicUrl;
     } else {
         // Gambar default jika tidak ada di localStorage
         profilePicElement.src = '/images/userDefault/user.png';
     }
 });
+
 
 
 
