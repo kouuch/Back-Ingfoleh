@@ -145,7 +145,15 @@ app.get('/laporandatauser', async (req, res) => {
         res.status(500).send('Error rendering laporan page');
     }
 })
-
+// Route untuk halaman laporan datauser
+app.get('/laaphoranadminfavorite', async (req, res) => {
+    try {
+        res.render('laaphoranadminfavorite'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering laaphoranadminfavorite page:', error);
+        res.status(500).send('Error rendering laporan page');
+    }
+})
 // app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
 //     try {
 //         // Render halaman adminproduct.ejs hanya jika token valid dan user adalah admin
