@@ -145,12 +145,22 @@ app.get('/laporandatauser', async (req, res) => {
         res.status(500).send('Error rendering laporan page');
     }
 })
-// Route untuk halaman laporan datauser
+// Route untuk halaman laporan favorite
 app.get('/laaphoranadminfavorite', async (req, res) => {
     try {
         res.render('laaphoranadminfavorite'); // Render halaman adminproduct.ejs
     } catch (error) {
         logger.error('Error rendering laaphoranadminfavorite page:', error);
+        res.status(500).send('Error rendering laporan page');
+    }
+})
+
+// Route untuk halaman laporan toko
+app.get('/laporantoko', async (req, res) => {
+    try {
+        res.render('laporantoko'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering laporantoko page:', error);
         res.status(500).send('Error rendering laporan page');
     }
 })
