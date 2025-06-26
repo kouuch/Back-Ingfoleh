@@ -64,10 +64,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {
     const savedProfilePic = localStorage.getItem('profilePicture');
+    const profilePicElement = document.getElementById('userProfilePic');
+    
+    // Cek jika profilePicture ada di localStorage
     if (savedProfilePic) {
-        document.getElementById('userProfilePic').src = savedProfilePic;
+        // Cek apakah URL gambar valid
+        const img = new Image();
+        img.onload = function() {
+            // Gambar valid, update src dengan gambar yang diambil
+            profilePicElement.src = savedProfilePic;
+        };
+        img.onerror = function() {
+            // Gambar tidak ditemukan, kembalikan ke default
+            profilePicElement.src = '/images/userDefault/user.png';
+        };
+        img.src = savedProfilePic;  // Tentukan sumber gambar untuk pengecekan
+    } else {
+        // Gambar default jika tidak ada di localStorage
+        profilePicElement.src = '/images/userDefault/user.png';
     }
 });
+
 
 
 window.addEventListener('load', () => {
