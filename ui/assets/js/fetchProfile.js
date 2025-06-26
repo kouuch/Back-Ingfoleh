@@ -62,7 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
+window.addEventListener('load', () => {
+    const savedProfilePic = localStorage.getItem('profilePicture');
+    if (savedProfilePic) {
+        document.getElementById('userProfilePic').src = savedProfilePic;
+    }
+});
 
 
 window.addEventListener('load', () => {

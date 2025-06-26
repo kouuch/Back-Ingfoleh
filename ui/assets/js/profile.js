@@ -167,17 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fungsi untuk mengubah foto profil
         profilePicForm.addEventListener('submit', (e) => {
             e.preventDefault();
-        
+
             if (!profilePicInput.files.length) {
                 alert('Please select an image to upload');
                 return;
             }
-        
+
             const formData = new FormData();
             formData.append('profilePicture', profilePicInput.files[0]);
-        
+
             console.log('Uploading new profile picture');  // Log saat mengupload foto profil
-        
+
             fetch('http://localhost:5000/api/users/me', {
                 method: 'PUT',
                 headers: {
@@ -188,10 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(updatedUser => {
                     console.log('Updated user profile picture:', updatedUser);  // Log data pengguna setelah foto diperbarui
-        
+                    // Update localStorage with new profile picture URL
+                    localStorage.setItem('profilePicture', updatedUser.profilePicture)
                     // Memperbarui gambar profil dengan gambar yang baru
                     document.getElementById('userProfilePic').src = updatedUser.profilePicture; // Pastikan ini diperbarui dengan path baru
-        
+
                     alert('Profile picture updated!');
                     profilePicForm.style.display = 'none';  // Sembunyikan form setelah foto diubah
                 })
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Failed to update profile picture.');
                 });
         });
-        
+
 
 
 
