@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="/css/datatables.min.css">
+    <link rel="stylesheet" href="/css/datatable.css">
+    <title>Products</title>
+</head>
+
+<body>
+    <!-- Table for displaying products -->
+    <div class="container-table">
+        <div class="row-table">
+            <div class="col-12">
+                <div class="btn-dttabble">
+                    <button id="addNewBtn"><i class="fa-solid fa-plus"></i>Tambah produk</button>
+                    <button id="close"><i class="fa-solid fa-arrow-left"></i>keluar</button>
+                </div>
+                <table id="example" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>Nama Produk</th>
+                            <th>Kabupaten/Kota</th>
+                            <th>Kategori</th>
+                            <th>Lokasi Penjual</th>
+                            <th>Kontak Penjual</th>
+                            <th>Kisaran Harga</th>
+                            <th>Foto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data Rows will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- DataTables jQuery -->
+    <script src="/js/datatables.min.js"></script>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="/js/laporandatatable.js"></script>
+</body>
+
+</html>

@@ -22,7 +22,24 @@ body {
   border-radius: 10px;
   box-shadow: 1px 2px 11px 4px rgb(14 55 54 /15%);
 }
+/* =================== */
 
+#example.dataTable td.lokasi-penjual {
+  max-width: 15ch;         
+  white-space: normal !important;  
+  overflow-wrap: anywhere; 
+  word-break: break-word;   
+}
+
+#example.dataTable td.fotos img {
+  width: 40%;           
+  height: 40%;          
+  object-fit: cover;     
+  border-radius: 4px;    
+  display: block;        
+  margin: 0 auto;
+}
+/* =============== */
 .container-table table thead {
   border-bottom-color: var(--bg-color);
 }

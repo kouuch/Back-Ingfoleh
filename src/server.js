@@ -127,6 +127,16 @@ app.get('/profile', async (req, res) => {
     }
 })
 
+// Route untuk halaman laporan Produk
+app.get('/lapproduk', async (req, res) => {
+    try {
+        res.render('lapproduk'); // Render halaman adminproduct.ejs
+    } catch (error) {
+        logger.error('Error rendering laporan produk page:', error);
+        res.status(500).send('Error rendering laporan page');
+    }
+})
+
 // app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
 //     try {
 //         // Render halaman adminproduct.ejs hanya jika token valid dan user adalah admin
