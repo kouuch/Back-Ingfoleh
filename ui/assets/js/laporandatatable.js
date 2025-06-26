@@ -1,33 +1,22 @@
-// /js/laporandatatable.js
 document.addEventListener('DOMContentLoaded', () => {
-    // konstruktor jsPDF untuk build UMD
-    const { jsPDF } = window.jspdf;
-
-    // Mengambil token dari localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('You need to be logged in to access this page.');
-        return;
-    }
-
     // Inisialisasi DataTables
     $('#example').DataTable({
-        destroy       : true,
-        language      : {
-            lengthMenu  : 'Tampilkan _MENU_ entri per halaman',
-            zeroRecords : 'Tidak ada data yang cocok',
-            info        : 'Menampilkan _START_ sampai _END_ dari _TOTAL_ entri',
-            infoEmpty   : 'Menampilkan 0 sampai 0 dari 0 entri',
+        destroy: true,
+        language: {
+            lengthMenu: 'Tampilkan _MENU_ entri per halaman',
+            zeroRecords: 'Tidak ada data yang cocok',
+            info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ entri',
+            infoEmpty: 'Menampilkan 0 sampai 0 dari 0 entri',
             infoFiltered: '(difilter dari total _MAX_ entri)'
         },
-        scrollY      : '600px',
+        scrollY: '600px',
         scrollCollapse: true
     });
 
-    // Ambil data produk
+    // Ambil data produk dan masukkan ke dalam tabel
     fetch('http://localhost:5000/api/adminget', {
-        method : 'GET',
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'GET',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => res.json())
         .then(data => {
@@ -54,30 +43,28 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Gagal mengambil data produk');
         });
 
-    // Download PDF
+    // Mengonversi tabel ke PDF saat tombol download ditekan
     document.getElementById('downloadPDFBtn').addEventListener('click', () => {
-        const doc   = new jsPDF();
-        const table = document.getElementById('example');
-        const rows  = table.querySelectorAll('tbody tr');
+        const element = document.getElementById('example'); // Tabel HTML yang akan di-convert
+        const opt = {
+            margin:       5,  // Menyesuaikan margin
+            filename:     'tabel_produk.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, logging: true, letterRendering: true, useCORS: true }, // Menyesuaikan skala dan memperbaiki rendering
+            jsPDF: {
+                unit: 'mm', 
+                format: 'legal',  // Menggunakan format legal
+                orientation: 'landscape', 
+                autoPaging: true, // Menambahkan halaman otomatis jika tabel panjang
+            }
+        };
 
-        rows.forEach((row, rIdx) => {
-            const cells = row.querySelectorAll('td');
-            cells.forEach((cell, cIdx) => {
-                doc.text(cell.textContent.trim(), 20 + cIdx * 40, 20 + rIdx * 10);
-            });
-        });
-
-        doc.save('tabel_produk.pdf');
+        // Menggunakan html2pdf untuk konversi
+        html2pdf().from(element).set(opt).save();
     });
 
     // Close modal / redirect
     document.getElementById('close').addEventListener('click', () => {
         window.location.href = '/';
-    });
-
-    // Validasi kolom wajib
-    document.querySelectorAll('input[required]').forEach(input => {
-        input.oninvalid = e => e.target.setCustomValidity('Harap isi kolom ini');
-        input.oninput   = e => e.target.setCustomValidity('');
     });
 });
