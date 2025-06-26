@@ -8,6 +8,7 @@ const logger = require('../utils/logger')
 const AppError = require('../utils/AppError')
 const upload = require('../utils/upload');
 const jwt = require('jsonwebtoken')
+const { log } = require('winston')
 const JWT_SECRET = process.env.JWT_SECRE
 
 // get all users (admin only)
@@ -33,6 +34,10 @@ router.get('/me', authenticateToken, async (req, res, next) => {
         }
 
         const user = await User.findById(userId).select('-password');
+        // Menambahkan log untuk memeriksa nilai profilePicture di database
+
+        logger.info('Profile picture in database:', user.profilePicture);  // Cek nilai profilePicture di database
+        console.log('Profile picture in database:', user.profilePicture);  // Cek nilai profilePicture di database
 
         if (!user) {
             return next(new AppError('User not found', 404));
@@ -56,8 +61,10 @@ router.get('/me', authenticateToken, async (req, res, next) => {
 
 
 
+
 // update Profile (user atau admin)
-router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUserInput, async (req, res, next) => {
+// Pastikan multer middleware diterapkan di sini
+router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), upload.single('profilePicture'), validateUserInput, async (req, res, next) => {
     try {
         const userId = req.user.id;
         let updateData = { ...req.body };
@@ -75,7 +82,10 @@ router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), validateUs
 
         // Jika ada foto profil yang diupload, simpan foto baru
         if (req.file) {
-            updateData.profilePicture = `/uploads/${req.file.filename}`; // Menggunakan path gambar yang baru
+            logger.warn('File upload detected:', req.file);  // Log informasi file yang di-upload
+            logger.info('File uploaded:', req.file);  // Log informasi file yang di-upload
+            console.log('File uploaded:', req.file);  // Log path dan informasi file yang di-upload
+            updateData.profilePicture = `/uploads/${req.file.filename}`;
         }
 
         // Perbarui data pengguna

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role'); // Ambil role dari localStorage
-    const fields = ['username', 'email', 'no_telepon', 'status', 'joinDate'];
+    console.log('role:', role);
     if (token) {
         // Fungsi untuk mengambil data profil pengguna
         function fetchProfileData(apiUrl, profileElements) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const profilePicInput = document.getElementById('profilePicInput');
     const profilePicForm = document.getElementById('profilePicForm');
     const editProfileBtn = document.getElementById('editProfileBtn');
-    const fields = ['username', 'email', 'no_telepon', 'status', 'joinDate'];
+    const fields = ['username', 'email', 'no_telepon', 'status', 'joinDate', 'userProfilePic'];
 
     if (token) {
         // Ambil data pengguna dari API
@@ -167,17 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fungsi untuk mengubah foto profil
         profilePicForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
+        
             if (!profilePicInput.files.length) {
                 alert('Please select an image to upload');
                 return;
             }
-
+        
             const formData = new FormData();
             formData.append('profilePicture', profilePicInput.files[0]);
-
+        
             console.log('Uploading new profile picture');  // Log saat mengupload foto profil
-
+        
             fetch('http://localhost:5000/api/users/me', {
                 method: 'PUT',
                 headers: {
@@ -188,8 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(updatedUser => {
                     console.log('Updated user profile picture:', updatedUser);  // Log data pengguna setelah foto diperbarui
+        
+                    // Memperbarui gambar profil dengan gambar yang baru
+                    document.getElementById('userProfilePic').src = updatedUser.profilePicture; // Pastikan ini diperbarui dengan path baru
+        
                     alert('Profile picture updated!');
-                    document.getElementById('userProfilePic').src = updatedUser.profilePicture;
                     profilePicForm.style.display = 'none';  // Sembunyikan form setelah foto diubah
                 })
                 .catch(error => {
@@ -197,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Failed to update profile picture.');
                 });
         });
+        
+
+
 
     } else {
         alert('Please log in first');
@@ -204,3 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Close modal atau redirect ke halaman utama
+document.getElementById('close').addEventListener('click', function () {
+    window.location.href = '/'; // Mengarahkan ke halaman utama
+    // history.pushState(null, null, '/'); // Alternatif menggunakan history
+});

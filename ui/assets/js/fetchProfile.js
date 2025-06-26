@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => response.json())  
                 .then(user => {
+                    console.log('User data fetched:', user);  // Debugging user data
                     const usernameElement = document.getElementById('username');
                     if (user.username) {
                         usernameElement.textContent = user.username;
