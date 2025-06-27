@@ -176,7 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: formData
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 401){
+                        localStorage.removeItem('token');
+                        alert('Sesi Anda Telah Berakhir, Silakan Login Kembali');
+                        window.location.href = '/';
+                        return;
+                    }
+                    if(!response.ok){
+                        return response.json().then(err => { throw err;})
+                    }
+                    response.json()
+                })                    
                 .then(updatedUser => {
                     console.log('Updated user profile picture:', updatedUser);  
                     localStorage.setItem('profilePicture', updatedUser.profilePicture)

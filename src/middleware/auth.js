@@ -21,7 +21,7 @@ function authenticateToken(req, res, next) {
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             logger.error(`Token tidak valid atau expired: ${err.message}`);
-            return next(new AppError('Token tidak valid atau expired', 403));
+            return next(new AppError('Token tidak valid atau expired', 401));
         }
         req.user = user;
         logger.info(`Token valid, user: ${user.id}, role: ${user.role}`); 
