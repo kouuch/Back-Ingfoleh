@@ -10,11 +10,32 @@ const { authenticateToken, authorizeRoles } = require('./middleware/auth')
 const app = express()
 const PORT = process.env.PORT || 5000
 
+
+app.use(cors({
+    origin: 'http://localhost:3000',  
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json())
+
+// konfigurasi raate limit
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: "Terlalu banyak permintaan, coba lagi nanti.",
+})
+
+
 app.use((req, res, next) => {
     logger.info(`Received request: ${req.method} ${req.url}`);
-    console.log(`Request URL: ${req.url}`);
     next()
 })
+
+// Middleware untuk logging request
+app.use((req, res, next) => {
+    logger.info(`Received request: ${req.method} ${req.url}`);
+    next();
+});
 
 // file statis
 app.use(express.static(path.join(__dirname, '..', 'ui', 'assets')))
@@ -169,25 +190,7 @@ app.get('/laporantoko', async (req, res) => {
 // });
 
 
-app.use(cors({
-    origin: 'http://localhost:3000',  
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(express.json())
 
-// konfigurasi raate limit
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: "Terlalu banyak permintaan, coba lagi nanti.",
-})
-
-// Middleware untuk logging request
-app.use((req, res, next) => {
-    logger.info(`Received request: ${req.method} ${req.url}`);
-    next();
-});
 
 app.use(limiter)
 

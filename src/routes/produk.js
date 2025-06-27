@@ -7,6 +7,8 @@ const { validateProductInput } = require('../middleware/validationMiddleware');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
 const upload = require('../utils/upload');  
+const User = require('../models/User');
+const Feedback = require('../models/Feedback');
 
 // Endpoint untuk menambahkan produk
 router.post('/admincreate', authenticateToken, authorizeRoles('admin'), upload.single('foto'), async (req, res, next) => {
@@ -58,6 +60,32 @@ router.get('/adminget', async (req, res, next) => {
     } catch (error) {
         logger.error(`Error fetching products: ${error.message}`);
         next(new AppError(error.message, 500));
+    }
+});
+
+
+// Mengambil produk beserta nama kategori
+router.get('/feedbacks', async (req, res, next) => {
+    try {
+        console.log('Fetching all feedbacks');  
+        const feedbacks = await Feedback.find()
+            .populate('id_user', 'profilePicture username');
+
+        console.log('Feedbacks found:', feedbacks);  
+
+        if (!feedbacks || feedbacks.length === 0) {
+            console.error("No feedbacks found");
+            return res.status(404).json({ message: 'No feedbacks found' });
+        }
+
+        res.status(200).json(feedbacks); 
+    } catch (error) {
+        console.error('Error fetching feedbacks:', error);  
+
+        res.status(500).json({
+            message: 'Failed to fetch feedbacks',
+            error: error.message  
+        });
     }
 });
 
