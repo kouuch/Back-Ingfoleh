@@ -63,7 +63,6 @@ router.post('/login', limiter, async (req, res, next) => {
     logger.info(`Login request received for email/username: ${emailOrUsername}`)
 
     try {
-        // Cek apakah login menggunakan email atau username
         let user;
         if (emailOrUsername.includes('@')) {
             // Jika input mengandung '@', anggap itu adalah email
@@ -90,10 +89,14 @@ router.post('/login', limiter, async (req, res, next) => {
         logger.info(`user role:`, user.role)
         logger.info(`Login successful for user: ${emailOrUsername}`)
 
-        // Kirim token dan userId di response
+        res.cookie('token', token, {
+            httpOnly: true,
+            maxAge: 1 * 60 * 60 * 1000 
+        });
+
         res.json({
             token,
-            userId: user._id,  // Mengirimkan userId
+            userId: user._id,  
             user: {
                 id: user._id,
                 username: user.username,
