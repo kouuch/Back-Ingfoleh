@@ -187,16 +187,6 @@ document.getElementById('showProductsBtn').addEventListener('click', () => {
         .then(products => displayProducts(products));
 });
 
-window.addEventListener('load', () => {
-    const role = localStorage.getItem('role');
-    const adminLink = document.getElementById('adminLink');
-
-    if (role === 'admin') {
-        adminLink.style.display = 'block';  // Menampilkan link admin sebagai inline-block
-    } else {
-        adminLink.style.display = 'none';   // Menyembunyikan link admin
-    }
-});
 
 
 
