@@ -8,6 +8,7 @@ function toggleMenu(element) {
         element.classList.add('bx-caret-down');
     }
 
+    // Toggle submenu
     subMenu.classList.toggle("open-menu");
 
     if (!subMenu.classList.contains("open-menu")) {
@@ -16,7 +17,6 @@ function toggleMenu(element) {
     }
 }
 
-// Pastikan untuk menambahkan event listener setelah DOM dimuat
 document.addEventListener('DOMContentLoaded', () => {
     let subMenu = document.getElementById("subMenu");
     const reportMenu = document.getElementById('reportMenu');
@@ -57,6 +57,7 @@ function fetchProducts(page = 1, category = '') {
                 displayProducts(data);
                 totalPages = Math.ceil((data.totalProducts || 0) / productsPerPage);
                 updatePagination();
+            } else {
                 console.error("Invalid data format: 'products' is not an array or missing.");
                 displayProducts([]);
             }
@@ -64,6 +65,7 @@ function fetchProducts(page = 1, category = '') {
         .catch(error => console.error('Error fetching products:', error));
 }
 
+// Function to load user's favorites after login
 function loadFavoriteProducts() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -187,7 +189,7 @@ function toggleHeart(element, productId, productName, categoryId, categoryName) 
     }
 
     const isFavorited = element.classList.contains('bxs-heart');
-    const favoriteId = localStorage.getItem(`favoriteId_${productId}`);
+    const favoriteId = localStorage.getItem(`favoriteId_${productId}`);  // Ambil favoriteId
     const url = isFavorited ? `/api/kategoriFavorit/${favoriteId}` : '/api/kategoriFavorit';
 
     const productData = {
@@ -230,6 +232,7 @@ function toggleHeart(element, productId, productName, categoryId, categoryName) 
 
 
 
+// Fungsi untuk update jumlah favorit produk di UI
 function updateProductFavoritCount(productId) {
     const countElement = document.querySelector(`#product-${productId}-favorit-count`);
     if (countElement) {
@@ -252,7 +255,9 @@ function checkFavoriteStatus(productId) {
     }
 }
 
+// Fungsi untuk logout
 document.getElementById('logoutBtn').addEventListener('click', function () {
+
     localStorage.removeItem('token');
     localStorage.removeItem('favorite_');
 

@@ -11,8 +11,6 @@ const JWT_SECRET = process.env.JWT_SECRET
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    console.log('Authorization Header:', authHeader);
-    console.log('Extracted Token:', token);
     if (!token) {
         logger.warn('Token tidak ditemukan');
         return next(new AppError('Token tidak ditemukan', 401));

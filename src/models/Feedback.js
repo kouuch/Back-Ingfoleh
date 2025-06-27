@@ -1,30 +1,29 @@
 const mongoose = require('mongoose');
-const User = require('./User');
 
 const feedbackSchema = new mongoose.Schema({
-    userId: {
+    id_user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    emailInput: {
-        type: String,  
+    email: {
+        type: String,
         required: true
     },
     rating: {
-        type: Number,   
+        type: Number,
         required: true,
         min: 1,
         max: 5
     },
-    comment: {
-        type: String,   
+    komentar: {
+        type: String,
         required: true
     },
     tanggal_review: {
         type: Date,
         default: Date.now
     }
-}, { timestamps: true })
+}, { timestamps: true, collection: 'feedbacks' });
 
 module.exports = mongoose.model('Feedback', feedbackSchema);
