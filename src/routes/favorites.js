@@ -5,7 +5,7 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const logger = require('../utils/logger');
 
 router.get('/', authenticateToken, authorizeRoles('admin', 'user'), async (req, res, next) => {
-    const userId = req.user.id; // Ambil userId dari token
+    const userId = req.user.id; 
     logger.info(`Fetching favorites for user: ${userId}`);
 
     try {

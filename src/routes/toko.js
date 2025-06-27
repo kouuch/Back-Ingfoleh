@@ -12,14 +12,12 @@ router.post('/admincreate', authenticateToken, authorizeRoles('admin'), validate
         // ambit data dari body request
         const { nama_toko, kabupaten_kota, alamat_lengkap, kontak_toko } = req.body
 
-        // membuat objek Toko baru
         const toko = new Toko({
             nama_toko,
             kabupaten_kota,
             alamat_lengkap,
             kontak_toko
         })
-        // simpan toko ke database
         await toko.save()
         logger.info(`Store created successfully: ${toko._id}`)
         res.status(201).json(toko)
@@ -43,11 +41,11 @@ router.get('/admintoko', async (req, res, next) => {
 
 router.get('/admintoko/:id', authenticateToken, async (req, res, next) => {
     try {
-        const toko = await Toko.findById(req.params.id);  // Mengambil toko berdasarkan ID
+        const toko = await Toko.findById(req.params.id);  
         if (!toko) {
             return res.status(404).json({ message: 'Toko tidak ditemukan' });
         }
-        res.json(toko);  // Mengembalikan data toko
+        res.json(toko);  
     } catch (error) {
         next(new AppError('Error fetching store: ' + error.message, 400));
     }
@@ -81,21 +79,16 @@ router.delete('/delete/:id', authenticateToken, authorizeRoles('admin'), async (
     try {
         // Mengambil ID toko dari parameter URL
         const tokoId = req.params.id;
-
-        // Mencari toko berdasarkan ID dan menghapusnya
         const toko = await Toko.findByIdAndDelete(tokoId);
 
-        // Jika toko tidak ditemukan, kirimkan respons 404
         if (!toko) {
             logger.warn(`Store with id ${tokoId} not found`);
             return next(new AppError('Toko tidak ditemukan', 404));
         }
 
-        // Jika toko berhasil dihapus
         logger.info(`Store successfully deleted: ${tokoId}`);
         res.json({ msg: 'Toko berhasil dihapus' });
     } catch (error) {
-        // Menangani error jika terjadi masalah saat menghapus
         logger.error(`Error deleting store with ID ${req.params.id}: ${error.message}`);
         next(new AppError(error.message, 500));
     }

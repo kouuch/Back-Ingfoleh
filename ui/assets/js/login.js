@@ -5,27 +5,22 @@ const container = document.getElementById('container');
 const signupFormContainer = document.getElementById('signupFormContainer');
 const loginFormContainer = document.getElementById('loginFormContainer');
 
-// Mengatur transisi saat tombol "Masuk" diklik
 signUpButton.addEventListener('click', () => {
     container.classList.add("right-panel-active");
     signupFormContainer.style.display = 'block';
     loginFormContainer.style.display = 'none';
 
-    // Ganti URL ke /register tanpa reload halaman
     history.pushState(null, '', '/register');
 });
 
-// Mengatur transisi saat tombol "Daftar" diklik
 signInButton.addEventListener('click', () => {
     container.classList.remove("right-panel-active");
     signupFormContainer.style.display = 'none';
     loginFormContainer.style.display = 'block';
 
-    // Ganti URL ke /login tanpa reload halaman
     history.pushState(null, '', '/login');
 });
 
-// Mengecek URL saat halaman dimuat untuk menentukan form yang harus ditampilkan
 window.addEventListener('load', () => {
     const signupFormContainer = document.getElementById('signupFormContainer');
     const loginFormContainer = document.getElementById('loginFormContainer');
@@ -60,18 +55,13 @@ loginForm.addEventListener('submit', function (event) {
         .then(response => response.json())
         .then(data => {
             if (data.token) {
-                // Menyimpan token dan role setelah login berhasil
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('role', data.user.role);  // Pastikan role disimpan
-                // Menyimpan foto profil pengguna setelah login
+                localStorage.setItem('role', data.user.role);  
             if (data.user.profilePicture) {
-                localStorage.setItem('profilePicture', data.user.profilePicture); // Menyimpan foto profil
+                localStorage.setItem('profilePicture', data.user.profilePicture); 
             }
-
-                // Memuat produk favorit setelah login
                 loadFavoriteProducts();
 
-                // Setelah favorit dimuat, redirect ke halaman utama
                 window.location.href = '/';
             } else {
                 alert('Login gagal: ' + data.message);
@@ -83,14 +73,10 @@ loginForm.addEventListener('submit', function (event) {
         });
 });
 
-
-
-
-
 // Fungsi untuk memuat produk favorit setelah login
 function loadFavoriteProducts() {
     const token = localStorage.getItem('token');
-    console.log('Token:', token);  // Debugging Token
+    console.log('Token:', token); 
     if (!token) {
         console.log("User is not logged in.");
         return;
@@ -106,8 +92,8 @@ function loadFavoriteProducts() {
     })
         .then(response => response.json())
         .then(favorites => {
-            console.log('Favorites fetched:', favorites);  // Debugging
-            displayFavorites(favorites);  // Menampilkan data favorit
+            console.log('Favorites fetched:', favorites);  
+            displayFavorites(favorites); 
             updateHeartStatus(favorites);
         })
         .catch(error => {
@@ -119,7 +105,7 @@ function loadFavoriteProducts() {
 
 // Fungsi untuk menampilkan produk favorit di halaman
 function displayProducts(data) {
-    const products = data.products || [];  // Pastikan kita mendapatkan array produk
+    const products = data.products || [];  
     console.log('Products:', products);
     if (!Array.isArray(products) || products.length === 0) {
         const container = document.getElementById('productsContainer');
@@ -135,10 +121,10 @@ function displayProducts(data) {
         const categoryId = product.kategori ? product.kategori._id : '';
 
         const isFavorited = localStorage.getItem(`favorite_${product._id}`) === 'true';
-        console.log('Product:', product, 'Is Favorited:', isFavorited);  // Debugging
+        console.log('Product:', product, 'Is Favorited:', isFavorited); 
 
         const favoriteId = localStorage.getItem(`favoriteId_${product._id}`);
-        console.log('FavoriteId from localStorage:', favoriteId);  // Debugging
+        console.log('FavoriteId from localStorage:', favoriteId);  
 
         const productCard = document.createElement('div');
         productCard.classList.add('box');
@@ -161,10 +147,10 @@ function displayProducts(data) {
 
 function displayFavorites(favorites) {
     const container = document.getElementById('favoritesContainer');
-    container.innerHTML = '';  // Bersihkan kontainer
+    container.innerHTML = '';  
 
     favorites.forEach(fav => {
-        const product = fav.id_produk;  // Ambil data produk favorit
+        const product = fav.id_produk;  
         const favoriteCard = document.createElement('div');
         favoriteCard.classList.add('favorite-card');
         favoriteCard.innerHTML = `

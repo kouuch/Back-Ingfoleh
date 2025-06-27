@@ -1,25 +1,20 @@
 function filterProducts(category) {
-    // Mengambil produk berdasarkan kategori yang dipilih
     fetch(`http://localhost:5000/api/productskate?category=${category}`)
         .then(response => response.json())
         .then(data => {
             const productList = document.getElementById('products-container');
-            productList.innerHTML = '';  // Reset daftar produk
+            productList.innerHTML = '';
 
-            // Menampilkan total produk di kategori yang dipilih
             updateCategoryItemCount(category, data.totalProducts);
 
-            // Jika kategori tidak ada produk
             if (data.products.length === 0) {
                 productList.innerHTML = "<p>No products found for this category.</p>";
             }
 
-            // Loop untuk menampilkan produk
             data.products.forEach(product => {
                 const productDiv = document.createElement('div');
-                productDiv.classList.add('box', 'filter-aksesoris'); // Menambahkan kelas untuk styling
+                productDiv.classList.add('box', 'filter-aksesoris'); 
 
-                // Ganti innerHTML dengan struktur baru
                 productDiv.innerHTML = `
                     <img src="${product.foto}" alt="${product.nama_produk}">
                     <span>${product.kategori.nama_kategori}</span>
@@ -32,7 +27,6 @@ function filterProducts(category) {
                     <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
                 `;
 
-                // Tambahkan produk ke container
                 productList.appendChild(productDiv);
             });
         })
@@ -67,23 +61,6 @@ function updateCategoryItemCount(category, totalProducts) {
     }
 }
 
-// // Fungsi untuk mengambil total produk setiap kategori dan menampilkannya
-// function loadCategoryProductCount() {
-//     const categories = ['Aksesoris', 'Makanan', 'Minuman', 'Fashion'];
-    
-//     categories.forEach(category => {
-//         fetch(`http://localhost:5000/api/productskate?category=${category}`)
-//             .then(response => response.json())
-//             .then(data => {
-//                 // Update jumlah produk untuk kategori tertentu
-//                 updateCategoryItemCount(category, data.totalProducts);
-//             })
-//             .catch(error => {
-//                 console.error('Error fetching category products:', error);
-//             });
-//     });
-// }
-// Menampilkan produk pertama kali saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function () {
-    filterProducts('');  // Menampilkan semua produk pada awal
+    filterProducts(''); 
 });

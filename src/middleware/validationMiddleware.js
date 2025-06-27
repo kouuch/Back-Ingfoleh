@@ -13,9 +13,9 @@ const validateProductInput = [
     // Validasi foto
     (req, res, next) => {
         if (!req.file) {
-            return next(new AppError('Foto produk harus diisi', 400));  // Menangani jika tidak ada foto yang diupload
+            return next(new AppError('Foto produk harus diisi', 400)); 
         }
-        next(); // Jika ada foto, lanjutkan ke validasi berikutnya
+        next(); 
     },
 
     // Hasil validasi

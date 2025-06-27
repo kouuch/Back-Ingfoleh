@@ -18,7 +18,7 @@ function authenticateToken(req, res, next) {
         return next(new AppError('Token tidak ditemukan', 401));
     }
 
-    logger.info('Verifying token: ', token);  // Log token untuk debugging
+    logger.info('Verifying token: ', token);  
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
@@ -26,15 +26,10 @@ function authenticateToken(req, res, next) {
             return next(new AppError('Token tidak valid atau expired', 403));
         }
         req.user = user;
-        logger.info(`Token valid, user: ${user.id}, role: ${user.role}`);  // Log user setelah token divalidasi
+        logger.info(`Token valid, user: ${user.id}, role: ${user.role}`); 
         next();
     });
 }
-
-
-
-
-// middleware cek role user
 
 // middleware cek role user
 function authorizeRoles(...allowedRoles) {
@@ -44,13 +39,13 @@ function authorizeRoles(...allowedRoles) {
             return next(new AppError('User belum terautentikasi', 401));
         }
 
-        logger.info(`User role: ${req.user.role}`);  // Log role pengguna
+        logger.info(`User role: ${req.user.role}`);  
 
         // Cek apakah role yang dimiliki termasuk dalam allowedRoles
         if (allowedRoles.includes(req.user.role)) {
-            // Jika role adalah 'user', pastikan hanya bisa mengakses data mereka sendiri
-            if (req.user.role === 'user' && req.user.id !== req.params.id) {
-                return next(new AppError('Unauthorized access', 403));  // User hanya bisa akses data mereka sendiri
+            
+            if (req.user.role === 'user' && req.user.id !== req.user.id) {
+                return next(new AppError('Unauthorized access', 403));
             }
             next();
         } else {
@@ -59,6 +54,7 @@ function authorizeRoles(...allowedRoles) {
         }
     };
 }
+
 
 
 

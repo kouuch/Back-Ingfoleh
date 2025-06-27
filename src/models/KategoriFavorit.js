@@ -12,7 +12,7 @@ const kategoriFavoritSchema = new mongoose.Schema({
     },
     id_produk: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Produk',  // Perhatikan huruf kapital di 'Produk'
+        ref: 'Produk',  
         required: true
     },
     nama_produk: {
@@ -23,9 +23,9 @@ const kategoriFavoritSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    user_id: { // Menambahkan user_id untuk menghubungkan favorit dengan pengguna
+    user_id: { 
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',  // Mengacu ke model User
+        ref: 'User',  
         required: true,
     }
 },{ timestamps: true });

@@ -3,32 +3,32 @@ document.addEventListener('DOMContentLoaded', function () {
     const role = localStorage.getItem('role');
 
     if (!token || role !== 'admin') {
-        document.getElementById('adminLink').style.display = 'none';  // Sembunyikan tombol admin
-    } else {
-        document.getElementById('nonAdminLink').style.display = 'none';  // Sembunyikan tombol non-admin
+        document.getElementById('adminLink').style.display = 'none';
     }
+    //  else {
+    //     document.getElementById('nonAdminLink').style.display = 'none';  
+    // }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const token = localStorage.getItem('token');  // Cek apakah token ada di localStorage
+    const token = localStorage.getItem('token');
 
     if (token) {
-        console.log('Token ditemukan:', token);  // Debugging: Pastikan token ada
+        console.log('Token ditemukan:', token);
     } else {
         console.log('Token tidak ditemukan. Pengguna harus login');
-        // Jika token tidak ada, arahkan ke halaman login atau tampilkan pesan kesalahan
-        window.location.href = '/login'; // Redirect jika token tidak ditemukan
+        window.location.href = '/login';
     }
 });
 
 
 
-document.getElementById('adminLink').addEventListener('click', function(event) {
+document.getElementById('adminLink').addEventListener('click', function (event) {
     const token = localStorage.getItem('token');
     if (!token) {
-        event.preventDefault();  // Mencegah pengalihan jika token tidak ada
+        event.preventDefault();
         alert('Token tidak ditemukan. Anda perlu login terlebih dahulu.');
-        window.location.href = '/login';  // Redirect ke halaman login
+        window.location.href = '/login';
     }
 });
 

@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Mengambil token dari localStorage
     const token = localStorage.getItem('token');
     console.log('Token found:', token);
 
     if (!token) {
         alert("You need to be logged in to access this page.");
-        return;  // Jika token tidak ada, hentikan eksekusi lebih lanjut
+        return;
     }
 
-    // Inisialisasi DataTables
     $('#example').DataTable({
         destroy: true,
         language: {
@@ -22,25 +20,24 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollCollapse: true
     });
 
-    // Ambil data produk menggunakan token yang valid
     fetch('http://localhost:5000/api/users/admingetuser', {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
+            'Authorization': `Bearer ${token}`,
         }
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Role dan Produk:', data);  // Log data untuk debugging
+            console.log('Role dan Produk:', data);
 
             const tableBody = document.querySelector('#example tbody');
-            tableBody.innerHTML = '';  // Kosongkan tabel sebelum diisi
+            tableBody.innerHTML = '';
 
             data.forEach((user, index) => {
                 console.log('data:', user);
 
                 const row = document.createElement('tr');
-                row.setAttribute('data-id', user._id);  // Menambahkan data-id pada baris
+                row.setAttribute('data-id', user._id);
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${user.username}</td>
@@ -63,24 +60,19 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Gagal mengambil data produk');
         });
 
-    // Inisialisasi modal dengan Bootstrap
     const modalForm = new bootstrap.Modal(document.getElementById('exModal'), {
         backdrop: 'static',
         keyboard: false,
     });
 
-    // Modal Form untuk menambahkan produk baru
     document.getElementById('addNewBtn').addEventListener('click', function () {
-        modalForm.show();  // Tampilkan modal
+        modalForm.show();
     });
 
-    // Close modal atau redirect ke halaman utama
     document.getElementById('close').addEventListener('click', function () {
-        window.location.href = '/'; // Mengarahkan ke halaman utama
-        // history.pushState(null, null, '/'); // Alternatif menggunakan history
+        window.location.href = '/';
     });
 
-    // Menangani validasi input yang wajib diisi
     document.querySelectorAll('input[required]').forEach(input => {
         input.oninvalid = function (e) {
             e.target.setCustomValidity('Harap isi kolom ini');
@@ -90,10 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 });
-// Close modal atau redirect ke halaman utama
 document.getElementById('close').addEventListener('click', function () {
-    window.location.href = '/'; // Mengarahkan ke halaman utama
-    // history.pushState(null, null, '/'); // Alternatif menggunakan history
+    window.location.href = '/';
 });
 
 
@@ -105,12 +95,11 @@ function deleteuser(userId) {
         return;
     }
 
-    // Konfirmasi sebelum menghapus
     if (confirm('Are you sure you want to delete this user?')) {
         fetch(`http://localhost:5000/api/users/${userId}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${token}`, // Mengirim token di header
+                'Authorization': `Bearer ${token}`,
             }
         })
             .then(response => response.json())
@@ -118,14 +107,12 @@ function deleteuser(userId) {
                 if (data.msg === 'User berhasil dihapus') {
                     alert('User berhasil dihapus');
 
-                    // Menghapus baris yang sesuai dari tabel
                     const row = document.querySelector(`tr[data-id='${userId}']`);
                     if (row) {
                         row.remove();
                     }
 
-                    // Refresh halaman setelah berhasil menghapus
-                    location.reload();  // Reload halaman untuk memperbarui tampilan tabel
+                    location.reload();
                 } else {
                     alert('Gagal menghapus user');
                 }

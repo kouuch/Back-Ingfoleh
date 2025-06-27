@@ -15,7 +15,7 @@ var swiper = new Swiper(".home", {
 // Menu login check
 window.onload = function () {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');  // Menyimpan role di localStorage
+    const role = localStorage.getItem('role');
 
     if (token && role) {
         document.getElementById('guestMenu').style.display = 'none';
@@ -25,27 +25,26 @@ window.onload = function () {
         document.getElementById('profileMenu').style.display = 'none';
     }
 
-    // Event listener untuk link admin
     document.getElementById('adminLink').addEventListener('click', function (event) {
         const token = localStorage.getItem('token');
         if (!token) {
-            event.preventDefault();  // Mencegah pengalihan ke /adminproducts
+            event.preventDefault();
             alert('Anda perlu login terlebih dahulu.');
-            window.location.href = '/login';  // Redirect ke halaman login
+            window.location.href = '/login';
         } else {
             fetch('http://localhost:5000/adminproduct', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Token tidak valid atau tidak memiliki hak akses');
-                window.location.href = '/adminproduct';  // Arahkan ke halaman admin
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Akses ditolak: Anda tidak memiliki hak akses atau token tidak valid');
-                window.location.href = '/login';  // Redirect ke halaman login jika ada error
-            });
+                .then(response => {
+                    if (!response.ok) throw new Error('Token tidak valid atau tidak memiliki hak akses');
+                    window.location.href = '/adminproduct';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Akses ditolak: Anda tidak memiliki hak akses atau token tidak valid');
+                    window.location.href = '/login';
+                });
         }
     });
 };
@@ -176,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Function to load user's favorite products
 function loadFavoriteProducts() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -190,18 +188,18 @@ function loadFavoriteProducts() {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(response => response.json())
-    .then(favorites => {
-        displayFavorites(favorites);  // Display favorite products
-        updateHeartStatus(favorites); // Update heart icon based on favorites data
-    })
-    .catch(error => {
-        console.error('Error loading favorites:', error);
-        alert('Gagal mengambil data favorit');
-    });
+        .then(response => response.json())
+        .then(favorites => {
+            displayFavorites(favorites);
+            updateHeartStatus(favorites);
+        })
+        .catch(error => {
+            console.error('Error loading favorites:', error);
+            alert('Gagal mengambil data favorit');
+        });
 }
 
-// Update heart icon status based on favorite products
+
 function updateHeartStatus(favorites) {
     favorites.forEach(favorite => {
         const productId = favorite.id_produk._id;
@@ -219,10 +217,9 @@ function updateHeartStatus(favorites) {
     });
 }
 
-// Display favorite products in the UI
 function displayFavorites(favorites) {
     const container = document.getElementById('favoritesContainer');
-    container.innerHTML = '';  // Clear container first
+    container.innerHTML = '';
 
     favorites.forEach(favorite => {
         const favoriteCard = document.createElement('div');

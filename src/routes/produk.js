@@ -19,31 +19,30 @@ router.post('/admincreate', authenticateToken, authorizeRoles('admin'), upload.s
         // Ambil ObjectId kategori berdasarkan nama kategori
         const kategoriObj = await Kategori.findOne({ nama_kategori: kategori });
 
-        // Jika kategori tidak ditemukan, beri respons error
         if (!kategoriObj) {
             return res.status(400).json({ message: "Kategori tidak ditemukan" });
         }
 
-        // Mendapatkan nama file gambar dari req.file.filename
+
         const fotoPath = `/uploads/${req.file.filename}`;
 
         // Membuat objek produk baru
         const newProduct = new Produk({
             kabupaten_kota,
             nama_produk,
-            kategori: kategoriObj._id,  // Menyimpan ObjectId kategori
+            kategori: kategoriObj._id,
             lokasi_penjual,
             kontak_penjual,
             kisaran_harga,
             foto: fotoPath
         });
 
-        // Simpan produk ke database
+
         await newProduct.save();
         res.status(201).json({ message: 'Produk berhasil ditambahkan' });
     } catch (error) {
         console.error("Error during product creation:", error);
-        next(error);  // Menangani error dengan middleware
+        next(error);
     }
 });
 
@@ -54,41 +53,36 @@ router.post('/admincreate', authenticateToken, authorizeRoles('admin'), upload.s
 router.get('/adminget', async (req, res, next) => {
     try {
         const produk = await Produk.find()
-            .populate('kategori', 'nama_kategori')  // Mengambil nama kategori dari model Kategori
+            .populate('kategori', 'nama_kategori')
             .exec();
 
         // Pastikan path gambar yang dikirimkan sudah benar
         const produkWithImagePath = produk.map(p => ({
             ...p.toObject(),
-            foto: p.foto  // Menggunakan path gambar yang sudah benar
+            foto: p.foto
         }));
 
         logger.info(`Fetched ${produk.length} products`);
-        res.json(produkWithImagePath);  // Mengirimkan produk dengan kategori dan path gambar yang benar
+        res.json(produkWithImagePath);
     } catch (error) {
         logger.error(`Error fetching products: ${error.message}`);
         next(new AppError(error.message, 500));
     }
 });
 
-// Update produk hanya admin
-// Mengupdate produk hanya untuk admin
-// Mengupdate produk hanya untuk admin
-// Mengupdate produk hanya untuk admin
-// Mengupdate produk hanya untuk admin
 // Mengupdate produk hanya untuk admin
 router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), upload.single('foto'), async (req, res, next) => {
     try {
-        let updatedFoto = req.body.foto;  // Jika tidak ada file baru, tetap gunakan foto yang lama
+        let updatedFoto = req.body.foto;
 
         // Jika ada file baru yang diupload, ganti dengan file tersebut
         if (req.file) {
-            updatedFoto = `/uploads/${req.file.filename}`;  // Pastikan path gambar benar
+            updatedFoto = `/uploads/${req.file.filename}`;
         }
 
         const { kabupaten_kota, nama_produk, kategori, lokasi_penjual, kontak_penjual, kisaran_harga } = req.body;
-        logger.warn(`Updating product with ID: ${req.params.id}`);  // Log ID produk yang akan diupdate
-        console.log("Kategori yang diterima dari frontend:", kategori);  // Log kategori
+        logger.warn(`Updating product with ID: ${req.params.id}`);
+        console.log("Kategori yang diterima dari frontend:", kategori);
 
         // Mencari produk berdasarkan ID
         const produk = await Produk.findById(req.params.id);
@@ -105,11 +99,11 @@ router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), uploa
         // Update produk dengan data baru
         produk.kabupaten_kota = kabupaten_kota || produk.kabupaten_kota;
         produk.nama_produk = nama_produk || produk.nama_produk;
-        produk.kategori = kategoriObj._id;  // Gunakan ObjectId kategori
+        produk.kategori = kategoriObj._id;
         produk.lokasi_penjual = lokasi_penjual || produk.lokasi_penjual;
         produk.kontak_penjual = kontak_penjual || produk.kontak_penjual;
         produk.kisaran_harga = kisaran_harga || produk.kisaran_harga;
-        produk.foto = updatedFoto;  // Update foto jika ada perubahan
+        produk.foto = updatedFoto;
 
         // Simpan perubahan ke database
         await produk.save();
@@ -129,7 +123,7 @@ router.put('/adminupdate/:id', authenticateToken, authorizeRoles('admin'), uploa
 router.get('/products/:id', async (req, res, next) => {
     try {
         const produk = await Produk.findById(req.params.id)
-            .populate('kategori', 'nama_kategori');  // Populasi kategori
+            .populate('kategori', 'nama_kategori');
 
         if (!produk) {
             logger.warn(`Product with id ${req.params.id} not found`);
@@ -176,13 +170,12 @@ router.get('/products', async (req, res) => {
         const products = await Produk.find(query)
             .skip(skip)
             .limit(productsPerPage)
-            .populate('kategori', 'nama_kategori');  // Pastikan kategori di-populate
+            .populate('kategori', 'nama_kategori');
 
         const totalProducts = await Produk.countDocuments(query);
 
-        // Kirim data dalam format yang benar
         res.json({
-            products: products,  // Pastikan products adalah array
+            products: products,
             totalProducts: totalProducts
         });
     } catch (error) {
@@ -193,24 +186,23 @@ router.get('/products', async (req, res) => {
 
 router.get('/productskate', async (req, res) => {
     try {
-        const { category, page = 1 } = req.query;  // Ambil kategori dan halaman dari query string
-        const productsPerPage = 6;  // Menampilkan 8 produk per halaman
+        const { category, page = 1 } = req.query;
+        const productsPerPage = 6;
         const skip = (page - 1) * productsPerPage;
 
-        // Cek apakah ada kategori yang dipilih
+
         let query = {};
 
-        // Jika kategori diberikan, kita filter berdasarkan kategori
+
         if (category) {
-            // Cek apakah kategori adalah ObjectId yang valid atau nama kategori
+
             const kategoriObj = await Kategori.findOne({ nama_kategori: category });
 
-            // Jika kategori tidak ditemukan, kembalikan error
+
             if (!kategoriObj) {
                 return res.status(404).json({ message: 'Kategori tidak ditemukan' });
             }
 
-            // Filter produk berdasarkan kategori yang ditemukan
             query = { kategori: kategoriObj._id };
         }
 
@@ -218,12 +210,11 @@ router.get('/productskate', async (req, res) => {
         const products = await Produk.find(query)
             .skip(skip)
             .limit(productsPerPage)
-            .populate('kategori', 'nama_kategori');  // Pastikan kategori di-populate
+            .populate('kategori', 'nama_kategori');
 
         // Ambil total produk untuk pagination
         const totalProducts = await Produk.countDocuments(query);
 
-        // Kirim data dalam format yang benar
         res.json({
             products: products,
             totalProducts: totalProducts,
@@ -263,7 +254,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// endpoint untuk filter produk berdasarkan kategori
+
 
 
 

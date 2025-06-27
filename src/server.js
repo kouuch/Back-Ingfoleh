@@ -23,13 +23,10 @@ app.use('/images', express.static('images'));
 // Menyajikan folder uploads yang ada di src/utils
 app.use('/uploads', express.static(path.join(__dirname, '..','src', 'utils', 'uploads')));
 
-
 // set EJS as view engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '..', 'ui', 'page'))
 
-
-// CSP
 // CSP
 app.use((req, res, next) => {
     res.setHeader(
@@ -42,11 +39,6 @@ app.use((req, res, next) => {
     );
     next();
 });
-
-
-
-
-
 
 // route utama
 app.get('/', (req, res) => {
@@ -84,7 +76,7 @@ app.get('/register', (req, res) => {
 // Route untuk halaman admin
 app.get('/adminproduct', async (req, res) => {
     try {
-        res.render('adminproduct'); // Render halaman adminproduct.ejs
+        res.render('adminproduct'); 
     } catch (error) {
         logger.error('Error rendering admin products page:', error);
         res.status(500).send('Error rendering page');
@@ -93,7 +85,7 @@ app.get('/adminproduct', async (req, res) => {
 // Route untuk halaman toko
 app.get('/admintoko', async (req, res) => {
     try {
-        res.render('admintoko'); // Render halaman adminproduct.ejs
+        res.render('admintoko'); 
     } catch (error) {
         logger.error('Error rendering admin toko page:', error);
         res.status(500).send('Error rendering page');
@@ -102,7 +94,7 @@ app.get('/admintoko', async (req, res) => {
 // Route untuk halaman Suka
 app.get('/adminfavorite', async (req, res) => {
     try {
-        res.render('adminfavorite'); // Render halaman adminproduct.ejs
+        res.render('adminfavorite'); 
     } catch (error) {
         logger.error('Error rendering admin Like page:', error);
         res.status(500).send('Error rendering page');
@@ -111,7 +103,7 @@ app.get('/adminfavorite', async (req, res) => {
 // Route untuk halaman datauser
 app.get('/datauser', async (req, res) => {
     try {
-        res.render('datauser'); // Render halaman adminproduct.ejs
+        res.render('datauser'); 
     } catch (error) {
         logger.error('Error rendering admin Like page:', error);
         res.status(500).send('Error rendering page');
@@ -120,7 +112,7 @@ app.get('/datauser', async (req, res) => {
 // Route untuk halaman profile
 app.get('/profile', async (req, res) => {
     try {
-        res.render('profile'); // Render halaman adminproduct.ejs
+        res.render('profile'); 
     } catch (error) {
         logger.error('Error rendering Profile page:', error);
         res.status(500).send('Error rendering page');
@@ -130,7 +122,7 @@ app.get('/profile', async (req, res) => {
 // Route untuk halaman laporan Produk
 app.get('/lapproduk', async (req, res) => {
     try {
-        res.render('lapproduk'); // Render halaman adminproduct.ejs
+        res.render('lapproduk'); 
     } catch (error) {
         logger.error('Error rendering laporan produk page:', error);
         res.status(500).send('Error rendering laporan page');
@@ -139,7 +131,7 @@ app.get('/lapproduk', async (req, res) => {
 // Route untuk halaman laporan datauser
 app.get('/laporandatauser', async (req, res) => {
     try {
-        res.render('laporandatauser'); // Render halaman adminproduct.ejs
+        res.render('laporandatauser'); 
     } catch (error) {
         logger.error('Error rendering laporandatauser page:', error);
         res.status(500).send('Error rendering laporan page');
@@ -148,7 +140,7 @@ app.get('/laporandatauser', async (req, res) => {
 // Route untuk halaman laporan favorite
 app.get('/laaphoranadminfavorite', async (req, res) => {
     try {
-        res.render('laaphoranadminfavorite'); // Render halaman adminproduct.ejs
+        res.render('laaphoranadminfavorite'); 
     } catch (error) {
         logger.error('Error rendering laaphoranadminfavorite page:', error);
         res.status(500).send('Error rendering laporan page');
@@ -158,35 +150,18 @@ app.get('/laaphoranadminfavorite', async (req, res) => {
 // Route untuk halaman laporan toko
 app.get('/laporantoko', async (req, res) => {
     try {
-        res.render('laporantoko'); // Render halaman adminproduct.ejs
+        res.render('laporantoko'); 
     } catch (error) {
         logger.error('Error rendering laporantoko page:', error);
         res.status(500).send('Error rendering laporan page');
     }
 })
-// app.get('/adminproduct', authenticateToken, authorizeRoles('admin'), async (req, res) => {
-//     try {
-//         // Render halaman adminproduct.ejs hanya jika token valid dan user adalah admin
-//         res.render('adminproduct');
-//     } catch (error) {
-//         logger.error('Error rendering admin products page:', error);
-//         res.status(500).send('Error rendering page');
-//     }
-// });
-
-
-
-// app.get('/adminproducts', authenticateToken, (req, res) => {
-//     logger.warn('Halaman admin produk diakses tanpa otorisasi yang benar');    
-//     console.log('Token diterima:', req.headers['authorization']);  // Log token yang diterima
-//     res.send('Halaman produk admin');
-// });
 
 
 // Route untuk halaman admin
 // app.get('/adminproducts', authenticateToken, async (req, res) => {
 //     try {
-//         res.render('adminproduct');  // Render halaman adminproduct.ejs
+//         res.render('adminproduct');  
 //     } catch (error) {
 //         logger.error('Error rendering admin products page:', error);
 //         res.status(500).send('Error rendering page');
@@ -194,15 +169,10 @@ app.get('/laporantoko', async (req, res) => {
 // });
 
 
-// //route untuk halaman admin
-// const adminRoutes = require('./routes/admin');
-// app.use('/api/admin', authenticateToken, authorizeRoles('admin'), adminRoutes);
-
-
 app.use(cors({
-    origin: 'http://localhost:3000',  // Ganti dengan URL frontend Anda
+    origin: 'http://localhost:3000',  
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']  // Pastikan Authorization diizinkan
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json())
 

@@ -14,9 +14,9 @@ const JWT_SECRET = process.env.JWT_SECRE
 // get all users (admin only)
 router.get('/admingetuser', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
-        const users = await User.find().select('-password'); // Mengambil data pengguna tanpa password
+        const users = await User.find().select('-password');
         logger.info(`Mengambil ${users.length} pengguna`);
-        res.json(users);  // Mengirimkan data pengguna dalam format JSON
+        res.json(users);
     } catch (error) {
         logger.error(`Terjadi kesalahan saat mengambil pengguna: ${error.message}`);
         next(new AppError(error.message, 500));
@@ -28,16 +28,20 @@ router.get('/me', authenticateToken, async (req, res, next) => {
     try {
         const userId = req.user.id;
 
-        // Admin bisa mengakses semua data pengguna, user hanya bisa akses data mereka sendiri
-        if (req.user.role !== 'admin' && req.user.id !== userId) {
-            return next(new AppError('Unauthorized access', 403));  // Tidak bisa akses profil orang lain
+        // Pengguna biasa hanya bisa mengakses data mereka sendiri
+        if (req.user.role === 'user' && req.user.id !== userId) {
+            return next(new AppError('Unauthorized access', 403));
+        }
+
+        // Admin bisa mengakses data pengguna lain
+        if (req.user.role === 'admin' && req.user.id !== userId) {
+            // Tidak perlu pengecekan lebih lanjut, admin bisa mengakses siapa saja
         }
 
         const user = await User.findById(userId).select('-password');
-        // Menambahkan log untuk memeriksa nilai profilePicture di database
 
-        logger.info('Profile picture in database:', user.profilePicture);  // Cek nilai profilePicture di database
-        console.log('Profile picture in database:', user.profilePicture);  // Cek nilai profilePicture di database
+        logger.info('Profile picture in database:', user.profilePicture);
+        console.log('Profile picture in database:', user.profilePicture);
 
         if (!user) {
             return next(new AppError('User not found', 404));
@@ -58,26 +62,20 @@ router.get('/me', authenticateToken, async (req, res, next) => {
     }
 });
 
-
-
-
-
 // update Profile (user atau admin)
-// Pastikan multer middleware diterapkan di sini
 router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), upload.single('profilePicture'), validateUserInput, async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.id;  // ID pengguna yang sedang login
         let updateData = { ...req.body };
+
+        // Pastikan user hanya bisa mengedit data mereka sendiri (bukan data pengguna lain)
+        if (req.user.role === 'user' && req.user.id !== userId) {
+            return next(new AppError('Unauthorized access', 403));  // Jika ID tidak cocok, akses ditolak
+        }
 
         // Jangan izinkan pengeditan status_akun dan tanggal_daftar
         if (updateData.status_akun || updateData.tanggal_daftar) {
             return next(new AppError('Status Akun dan Tanggal Daftar tidak dapat diubah', 400));
-        }
-
-        // Update password, jika ada, hash password baru
-        if (updateData.password) {
-            const salt = await bcrypt.genSalt(10);
-            updateData.password = await bcrypt.hash(updateData.password, salt);
         }
 
         // Jika ada foto profil yang diupload, simpan foto baru
@@ -99,10 +97,10 @@ router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), upload.sin
 });
 
 
+
 // Hapus user (admin only)
-// Route untuk menghapus pengguna (admin only)
 router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
-    const userId = req.params.id;  // Mendapatkan ID pengguna dari parameter URL
+    const userId = req.params.id;
     try {
         const user = await User.findByIdAndDelete(userId);
         if (!user) {
@@ -139,8 +137,6 @@ router.post('/uploadProfilePicture', upload.single('profilePicture'), async (req
 
         // Simpan URL gambar profil di database
         const profilePictureUrl = `/uploads/${req.file.filename}`;
-
-        // Update data profil pengguna dengan gambar baru
         const user = await User.findByIdAndUpdate(userId, { profilePicture: profilePictureUrl }, { new: true });
 
         if (!user) {

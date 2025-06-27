@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fields = ['username', 'email', 'no_telepon', 'status', 'joinDate', 'userProfilePic'];
 
     if (token) {
-        // Ambil data pengguna dari API
         fetch('http://localhost:5000/api/users/me', {
             method: 'GET',
             headers: {
@@ -78,18 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => response.json())
             .then(user => {
-                console.log('User data fetched:', user); // Log data pengguna yang diterima dari server
+                console.log('User data fetched:', user);
 
-                // Memperbarui input dengan data yang diterima
-                document.getElementById('username').value = user.username;  // Update input dengan value
+                document.getElementById('username').value = user.username; 
                 document.getElementById('email').value = user.email;
                 document.getElementById('no_telepon').value = user.no_telepon || 'N/A';
                 document.getElementById('status').value = user.status_akun || 'Unknown';
                 document.getElementById('joinDate').value = new Date(user.tanggal_daftar).toLocaleDateString();
                 document.getElementById('userProfilePic').src = user.profilePicture || '/images/userDefault/user.png';
-
-                // Memperbarui elemen yang tidak bisa diedit
-                document.getElementById('usernameText').textContent = user.username; // Menampilkan username di h4
+                // Menampilkan username di h4
+                document.getElementById('usernameText').textContent = user.username; 
             })
             .catch(error => {
                 console.error('Error fetching user profile:', error);
@@ -101,32 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const fieldElement = document.getElementById(field);
             if (field !== 'status' && field !== 'joinDate') {
                 fieldElement.addEventListener('click', () => {
-                    console.log(`Editing field: ${field}`);  // Log saat field diedit
-                    fieldElement.removeAttribute('readonly');  // Hapus readonly untuk membuatnya bisa diedit
+                    console.log(`Editing field: ${field}`); 
+                    fieldElement.removeAttribute('readonly');
                 });
             } else {
-                fieldElement.setAttribute('readonly', true);  // Tidak bisa diedit untuk 'status' dan 'joinDate'
+                fieldElement.setAttribute('readonly', true); 
             }
         });
 
-        // Tombol Save Changes untuk memperbarui data pengguna
         saveBtn.addEventListener('click', () => {
             const updatedData = {
                 username: document.getElementById('username').value,
                 email: document.getElementById('email').value,
                 no_telepon: document.getElementById('no_telepon').value,
-                // Jangan kirim status_akun dan tanggal_daftar
             };
 
-            console.log('Sending updated data:', updatedData); // Log data yang akan dikirimkan ke server
+            console.log('Sending updated data:', updatedData);
 
-            // Validasi jika ada field yang kosong
             if (!updatedData.username || !updatedData.email || !updatedData.no_telepon) {
                 alert('Please fill in all the required fields.');
                 return;
             }
 
-            // Kirim data perubahan ke server
             fetch('http://localhost:5000/api/users/me', {
                 method: 'PUT',
                 headers: {
@@ -137,15 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => response.json())
                 .then(updatedUser => {
-                    console.log('Updated user data:', updatedUser); // Log data yang diterima setelah update
+                    console.log('Updated user data:', updatedUser);
 
                     // Update h4 dengan username yang baru
-                    document.getElementById('usernameText').textContent = updatedUser.username; // Mengupdate h4 yang berisi username
+                    document.getElementById('usernameText').textContent = updatedUser.username; 
 
-                    // Setelah berhasil, perbarui UI dan set kembali readonly pada input
+                    // perbarui UI dan set kembali readonly pada input
                     fields.forEach(field => {
                         const fieldElement = document.getElementById(field);
-                        fieldElement.setAttribute('readonly', true);  // Kembali menjadi read-only setelah edit
+                        fieldElement.setAttribute('readonly', true);  
                     });
 
                     alert('Changes saved successfully!');
@@ -157,14 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        // Membuat input foto profil dapat diganti dengan tombol "Ganti Foto"
+
         editProfileBtn.addEventListener('click', () => {
-            console.log('Ganti foto profil clicked');  // Log saat tombol Ganti Foto diklik
-            // Menampilkan form upload foto jika tombol Edit diklik
+            console.log('Ganti foto profil clicked'); 
             profilePicForm.style.display = 'block';
         });
 
-        // Fungsi untuk mengubah foto profil
         profilePicForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -176,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData();
             formData.append('profilePicture', profilePicInput.files[0]);
 
-            console.log('Uploading new profile picture');  // Log saat mengupload foto profil
+            console.log('Uploading new profile picture');  
 
             fetch('http://localhost:5000/api/users/me', {
                 method: 'PUT',
@@ -187,14 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => response.json())
                 .then(updatedUser => {
-                    console.log('Updated user profile picture:', updatedUser);  // Log data pengguna setelah foto diperbarui
-                    // Update localStorage with new profile picture URL
+                    console.log('Updated user profile picture:', updatedUser);  
                     localStorage.setItem('profilePicture', updatedUser.profilePicture)
-                    // Memperbarui gambar profil dengan gambar yang baru
-                    document.getElementById('userProfilePic').src = updatedUser.profilePicture; // Pastikan ini diperbarui dengan path baru
+                    document.getElementById('userProfilePic').src = updatedUser.profilePicture; 
 
                     alert('Profile picture updated!');
-                    profilePicForm.style.display = 'none';  // Sembunyikan form setelah foto diubah
+                    profilePicForm.style.display = 'none';  
                 })
                 .catch(error => {
                     console.error('Error updating profile picture:', error);
@@ -211,8 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Close modal atau redirect ke halaman utama
 document.getElementById('close').addEventListener('click', function () {
-    window.location.href = '/'; // Mengarahkan ke halaman utama
-    // history.pushState(null, null, '/'); // Alternatif menggunakan history
+    window.location.href = '/';
 });

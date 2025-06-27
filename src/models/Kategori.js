@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Definisikan skema kategori
+
 const kategoriSchema = new mongoose.Schema({
     nama_kategori: {
         type: String,

@@ -1,113 +1,89 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const Feedback = require('../models/Feedback');
+const User = require('../models/User');
 const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
-const User = require('../models/User');
-const Feedback = require('../models/Feedback');
 
-
-// Endpoint untuk menyimpan feedback
-router.post('/feedback', authenticateToken, async (req, res) => {
-    const { email, rating, komentar } = req.body;
-    const userId = req.user.id;  // Mengambil userId dari req.user yang sudah divalidasi
-
+// Route untuk menambahkan feedback
+router.post('/feedback', authenticateToken, async (req, res, next) => {
     try {
-        // Cek apakah pengguna ada di database
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        const { emailInput, rating, comment } = req.body;  
+
+
+        if (!emailInput || !rating || !comment) {
+            return res.status(400).json({ message: 'All fields are required.' });
         }
 
-        // Simpan feedback
+        const user = req.user; 
+
+
         const newFeedback = new Feedback({
-            id_user: userId,
-            email,
-            rating,
-            komentar
+            userId: user.id,                
+            emailInput,                    
+            rating,                        
+            comment                        
         });
 
-        const savedFeedback = await newFeedback.save();
 
-        // Mencari feedback yang disimpan dan populasi foto pengguna
-        const feedbackWithUser = await Feedback.findById(savedFeedback._id)
-            .populate('id_user', 'profilePicture username email');
+        await newFeedback.save();
 
-        // Mengirimkan response dengan feedback yang disertakan foto pengguna
-        res.status(201).json(feedbackWithUser);
+        res.status(201).json({ message: 'Feedback submitted successfully!' });
     } catch (error) {
         console.error('Error saving feedback:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        next(error); 
     }
 });
 
 
-// Endpoint untuk mendapatkan semua feedback dan mem-populasi id_user
-// Backend: Menangani API GET feedback
-router.get('/feedbacks', authenticateToken, async (req, res) => {
+// Route untuk mendapatkan feedback
+router.get('/feedbacks', async (req, res, next) => {
     try {
-        console.log('Fetching all feedbacks');  // Tambahkan log untuk memastikan bahwa permintaan sampai ke server
+        const feedbacks = await Feedback.find().populate('user', 'username email profilePicture'); // Populate data pengguna
 
-        const feedbacks = await Feedback.find()
-            .populate('id_user', 'profilePicture username');
-
-        console.log('Feedbacks found:', feedbacks);  // Log hasil pencarian feedbacks
-
-        if (!feedbacks || feedbacks.length === 0) {
-            console.error("No feedbacks found");
-            return res.status(404).json({ message: 'No feedbacks found' });
-        }
-
-        res.status(200).json(feedbacks); // Mengirimkan daftar feedback yang ditemukan
+        res.json(feedbacks);
     } catch (error) {
-        console.error('Error fetching feedbacks:', error);  // Log error secara detail
-
-        res.status(500).json({
-            message: 'Failed to fetch feedbacks',
-            error: error.message  // Kirimkan pesan error untuk analisis lebih lanjut
-        });
+        console.error('Error fetching feedbacks:', error);
+        next(error);
     }
 });
-
 
 
 
 // Endpoint untuk memperbarui feedback berdasarkan ID
 router.put('/feedback/:id', authenticateToken, async (req, res) => {
     const { email, rating, komentar } = req.body;
-    const userId = req.user.id;  // Mendapatkan userId dari token yang sudah terautentikasi
+    const userId = req.user.id;
 
     try {
-        // Mencari feedback berdasarkan ID
+
         const feedback = await Feedback.findById(req.params.id);
 
         if (!feedback) {
             return res.status(404).json({ message: 'Feedback tidak ditemukan' });
         }
 
-        // Memastikan feedback hanya dapat diperbarui oleh pemilik atau admin
+
         if (feedback.id_user.toString() !== userId && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Tidak diizinkan untuk mengedit feedback ini' });
         }
 
-        // Memperbarui data feedback
         feedback.email = email || feedback.email;
         feedback.rating = rating || feedback.rating;
         feedback.komentar = komentar || feedback.komentar;
 
-        // Simpan perubahan
         const updatedFeedback = await feedback.save();
 
-        // Populasi id_user untuk mendapatkan data pengguna yang sudah diperbarui
         const populatedFeedback = await Feedback.findById(updatedFeedback._id).populate('id_user', 'profilePicture username');
 
-        res.status(200).json(populatedFeedback);  // Kirimkan data feedback yang sudah diperbarui
+        res.status(200).json(populatedFeedback);
     } catch (error) {
         console.error('Error updating feedback:', error);
         res.status(500).json({
             message: 'Gagal memperbarui feedback',
             error: error.message,
-            stack: error.stack  // Mengirimkan stack trace untuk membantu debugging
+            stack: error.stack
         });
     }
 });
@@ -117,44 +93,23 @@ router.get('/feedback/:id', async (req, res) => {
     try {
         console.log('Fetching feedback with id:', req.params.id);
 
-        // Mengambil feedback berdasarkan ID
         const feedback = await Feedback.findById(req.params.id)
-            .populate('id_user', 'profilePicture username'); // Mem-populasi id_user untuk mengambil data pengguna
+            .populate('id_user', 'profilePicture username');
 
         if (!feedback) {
             return res.status(404).json({ message: 'Feedback not found' });
         }
 
-        res.status(200).json(feedback); // Mengirimkan data feedback yang ditemukan
+        res.status(200).json(feedback);
     } catch (error) {
         console.error('Error fetching feedback:', error);
         res.status(500).json({
             message: 'Failed to fetch feedback',
             error: error.message,
-            stack: error.stack // Menyertakan stack trace untuk debugging lebih lanjut
+            stack: error.stack
         });
     }
 });
-
-
-
-
-
-
-
-
-// read feedback (user dan admin)
-router.get('/test', authenticateToken, authorizeRoles('admin', 'user'), async (req, res, next) => {
-    try {
-        const feedbacks = await Feedback.find().populate('user', 'username').populate('produk', 'nama_produk')
-        logger.info(`Fetched ${feedbacks.length} feedbacks`)
-        res.json(feedbacks)
-    } catch (error) {
-        logger.error(`Error fetching feedbacks: ${error.message}`)
-        next(new AppError(error.message, 500))
-    }
-})
-
 
 // Delete feedback (admin only)
 router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {

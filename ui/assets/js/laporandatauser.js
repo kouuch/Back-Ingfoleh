@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Mengambil token dari localStorage
     const token = localStorage.getItem('token');
     console.log('Token found:', token);
 
     if (!token) {
         alert("You need to be logged in to access this page.");
-        return;  // Jika token tidak ada, hentikan eksekusi lebih lanjut
+        return;  
     }
 
-    // Inisialisasi DataTables
     $('#example').DataTable({
         destroy: true,
         language: {
@@ -22,25 +20,24 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollCollapse: true
     });
 
-    // Ambil data produk menggunakan token yang valid
     fetch('http://localhost:5000/api/users/admingetuser', {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,  // Kirim token di header Authorization
+            'Authorization': `Bearer ${token}`,  
         }
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Role dan Produk:', data);  // Log data untuk debugging
+            console.log('Role dan Produk:', data);  
 
             const tableBody = document.querySelector('#example tbody');
-            tableBody.innerHTML = '';  // Kosongkan tabel sebelum diisi
+            tableBody.innerHTML = ''; 
 
             data.forEach((user, index) => {
                 console.log('data:', user);
 
                 const row = document.createElement('tr');
-                row.setAttribute('data-id', user._id);  // Menambahkan data-id pada baris
+                row.setAttribute('data-id', user._id);  
                 row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${user.username}</td>
@@ -61,27 +58,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     // Mengonversi tabel ke PDF saat tombol download ditekan
     document.getElementById('downloadPDFBtn').addEventListener('click', () => {
-        const element = document.getElementById('example'); // Tabel HTML yang akan di-convert
+        const element = document.getElementById('example'); 
         const opt = {
-            margin:       5,  // Menyesuaikan margin
+            margin:       5,  
             filename:     'laporan_user.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, logging: true, letterRendering: true, useCORS: true }, // Menyesuaikan skala dan memperbaiki rendering
+            html2canvas:  { scale: 2, logging: true, letterRendering: true, useCORS: true }, 
             jsPDF: {
                 unit: 'mm', 
-                format: 'legal',  // Menggunakan format legal
+                format: 'legal',  
                 orientation: 'landscape', 
-                autoPaging: true, // Menambahkan halaman otomatis jika tabel panjang
+                autoPaging: true, 
             }
         };
 
-        // Menggunakan html2pdf untuk konversi
         html2pdf().from(element).set(opt).save();
     });
-    // Close modal atau redirect ke halaman utama
     document.getElementById('close').addEventListener('click', function () {
-        window.location.href = '/'; // Mengarahkan ke halaman utama
-        // history.pushState(null, null, '/'); // Alternatif menggunakan history
+        window.location.href = '/'; 
     });
 
 })

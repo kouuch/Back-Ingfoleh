@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Inisialisasi DataTables
     $('#example').DataTable({
         destroy: true,
         language: {
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollCollapse: true
     });
 
-    // Ambil data produk dan masukkan ke dalam tabel
     fetch('http://localhost:5000/api/adminget', {
         method: 'GET',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -45,25 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mengonversi tabel ke PDF saat tombol download ditekan
     document.getElementById('downloadPDFBtn').addEventListener('click', () => {
-        const element = document.getElementById('example'); // Tabel HTML yang akan di-convert
+        const element = document.getElementById('example'); 
         const opt = {
-            margin:       5,  // Menyesuaikan margin
+            margin:       5,  
             filename:     'tabel_produk.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, logging: true, letterRendering: true, useCORS: true }, // Menyesuaikan skala dan memperbaiki rendering
+            html2canvas:  { scale: 2, logging: true, letterRendering: true, useCORS: true }, 
             jsPDF: {
                 unit: 'mm', 
-                format: 'legal',  // Menggunakan format legal
+                format: 'legal',  
                 orientation: 'landscape', 
-                autoPaging: true, // Menambahkan halaman otomatis jika tabel panjang
+                autoPaging: true, 
             }
         };
 
-        // Menggunakan html2pdf untuk konversi
         html2pdf().from(element).set(opt).save();
     });
 
-    // Close modal / redirect
     document.getElementById('close').addEventListener('click', () => {
         window.location.href = '/';
     });
