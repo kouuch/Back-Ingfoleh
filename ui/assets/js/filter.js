@@ -24,7 +24,7 @@ function filterProducts(category) {
                     <a href="https://maps.app.goo.gl/TF1mdkSz2HVMcn1y7" target="_blank" title="Lihat lokasi Toko di Google Maps">
                         <i class='bx bx-map'></i>
                     </a>
-                    <i class='bx bx-heart' onclick="toggleHeart(this);"></i>
+                    
                 `;
 
                 productList.appendChild(productDiv);

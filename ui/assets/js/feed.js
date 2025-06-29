@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <p>${feedback.komentar}</p>
             <div class="review-profile">
                 <img src="${feedback.id_user.profilePicture}" alt="User Profile Picture">
-                <h3>${feedback.email}</h3>
+                <h3>${feedback.id_user.username}</h3>
             </div>
         `;
 
