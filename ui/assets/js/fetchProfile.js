@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 usernameElement.textContent = user.username || 'No Name';
-                noTeleponElement.textContent = user.no_telepon || 'N/A';
+                //noTeleponElement.textContent = user.no_telepon || 'N/A';
             })
             .catch(err => {
                 console.error('Error fetching profile data:', err);

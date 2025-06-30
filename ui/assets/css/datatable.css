@@ -15,7 +15,7 @@ body {
 }
 
 .container-table {
-  max-width: 1500px;
+  max-width: 1700px;
   margin: 25px;
   background: var(--bg-color);
   padding: 20px;
@@ -45,12 +45,17 @@ body {
 }
 
 .container-table table {
+  table-layout: fixed;
+  width: 100%;
   border-color: var(--green-color);
 }
 
 .container-table table thead {
   color: var(--bg-color);
   background: var(--green-color);
+}
+.container-table table thead .no {
+  width: 60px;
 }
 
 .container-table table thead tr th {

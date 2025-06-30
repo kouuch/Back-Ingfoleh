@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    fetch('http://localhost:5000/api/kategoriFavorit/like', {
+    fetch('http://localhost:5000/api/kategoriFavorit/adminfavorit', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${favorit.user_id.username}</td>  <!-- Menampilkan Username User -->
                 <td>${favorit.nama_produk}</td>  <!-- Nama produk -->
                 <td>${favorit.nama_kategori}</td>  <!-- Nama kategori produk -->
                 <td>${favorit.jumlah_favorit}</td>  <!-- Jumlah favorit -->

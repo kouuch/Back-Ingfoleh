@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const row = document.createElement('tr');
                 row.setAttribute('data-id', user._id);  
                 row.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td >${index + 1}</td>
                     <td>${user.username}</td>
-                    <td>${user.email}</td>
+                    <td >${user.email}</td>
                     <td>${user.role}</td>
                     <td>${user.no_telepon}</td>
                     <td>${user.status_akun}</td>

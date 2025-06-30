@@ -189,7 +189,7 @@ function toggleHeart(element, productId, productName, categoryId, categoryName) 
     }
 
     const isFavorited = element.classList.contains('bxs-heart');
-    const favoriteId = localStorage.getItem(`favoriteId_${productId}`);  // Ambil favoriteId
+    const favoriteId = localStorage.getItem(`favoriteId_${productId}`);
     const url = isFavorited ? `/api/kategoriFavorit/${favoriteId}` : '/api/kategoriFavorit';
 
     const productData = {

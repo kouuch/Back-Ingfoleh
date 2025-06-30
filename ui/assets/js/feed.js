@@ -27,31 +27,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     submitButton.addEventListener('click', (e) => {
         e.preventDefault();
-
+    
+        // Pengecekan input form
         if (!emailInput.value || !ratingInput.value || ratingInput.value == "0" || !commentInput.value) {
             alert('Semua field harus diisi dan rating minimal 1');
             return;
         }
-
+    
+        // Pengecekan apakah token ada di localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Anda belum login. Silakan login terlebih dahulu untuk mengirim feedback.');
+            window.location.href = '/login'; // Mengarahkan ke halaman login
+            return;
+        }
+    
+        // Membuat objek feedback
         const feedbackData = {
             email: emailInput.value,
             rating: ratingInput.value,
             komentar: commentInput.value
         };
-
+    
         console.log('Data yang dikirim ke API:', feedbackData);
-
+    
+        // Mengirimkan feedback ke API
         fetch('http://localhost:5000/api/feedback', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(feedbackData)
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Response dari API:', data); 
+                console.log('Response dari API:', data);
                 alert('Feedback berhasil dikirim');
                 emailInput.value = '';
                 ratingInput.value = '0';
@@ -60,8 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     s.classList.remove('bxs-star');
                     s.classList.add('bx-star');
                 });
-
-
+    
                 renderFeedback(data);
             })
             .catch(error => {
@@ -69,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert('Terjadi kesalahan dalam mengirim feedback');
             });
     });
+    
 
 
     function fetchFeedbacks() {
