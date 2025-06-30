@@ -30,52 +30,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data Rows will be injected here via JS -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <!-- Modal untuk Edit Toko -->
-    <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Edit Toko</h5>
-                    <button type="button" class="cross" data-bs-dismiss="modal" aria-label="Close"><i
-                            class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Form Edit Toko -->
-                    <form id="EditNewToko" style="display:block;">
-                        <!-- Input tersembunyi untuk ID toko -->
-                        <input type="hidden" id="tokoId" name="id">
-
-                        <div class="mb-3">
-                            <label for="EdittokoName">Nama Toko<span>*</span></label>
-                            <input type="text" class="form-control" id="EdittokoName" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="EdittokoCity">Kabupaten/Kota<span>*</span></label>
-                            <input type="text" class="form-control" id="EdittokoCity" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="EdittokoLocation">Alamat Toko<span>*</span></label>
-                            <input type="text" class="form-control" id="EdittokoLocation" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="EdittokoContact">Kontak Toko<span>*</span></label>
-                            <input type="text" class="form-control" id="EdittokoContact" required autocomplete="off">
-                        </div>
-                        <button type="submit" class="submitBtn">Simpan</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- jQuery CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 

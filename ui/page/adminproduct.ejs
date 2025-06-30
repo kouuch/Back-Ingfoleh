@@ -12,7 +12,6 @@
 </head>
 
 <body>
-    <!-- Table for displaying products -->
     <div class="container-table">
         <div class="row-table">
             <div class="col-12">
@@ -35,7 +34,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data Rows will be injected here via JS -->
+
                     </tbody>
                 </table>
             </div>
@@ -43,7 +42,6 @@
     </div>
 
     <!-- Modal -->
-    <!-- Modal for Add Product -->
     <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -54,7 +52,6 @@
                             class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Add Product Form -->
                     <form id="addNewProducts" style="display:block;">
                         <div class="mb-3">
                             <label for="productCity">Kabupaten/Kota<span>*</span></label>
@@ -93,7 +90,6 @@
                         <button type="submit" class="submitBtn">Simpan</button>
                     </form>
 
-                    <!-- Edit Product Form (Hidden by Default) -->
                     <form id="editProductForm" style="display:none;">
                         <input type="hidden" id="productId" name="productId">
                         <div class="mb-3">
@@ -116,11 +112,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="productLocationEdit">Lokasi Penjual<span>*</span></label>
-                            <input type="text" class="form-control" id="productLocationEdit" required autocomplete="off">
+                            <input type="text" class="form-control" id="productLocationEdit" required
+                                autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label for="costumerContactEdit">Kontak Penjual<span>*</span></label>
-                            <input type="text" class="form-control" id="costumerContactEdit" required autocomplete="off">
+                            <input type="text" class="form-control" id="costumerContactEdit" required
+                                autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label for="produkKotaEdit">Kisaran Harga<span>*</span></label>
@@ -129,7 +127,6 @@
                         <div class="mb-3">
                             <label for="oldFoto">Foto Produk Lama</label>
                             <img id="oldFoto" src="" alt="Old Product Photo" width="100" />
-                            <!-- Menampilkan gambar lama -->
                         </div>
                         <div class="input-group mb-3">
                             <input type="file" class="form-control" id="productImgEdit" name="foto">

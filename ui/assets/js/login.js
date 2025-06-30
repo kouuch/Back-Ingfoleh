@@ -161,6 +161,7 @@ function displayFavorites(favorites) {
         `;
         container.appendChild(favoriteCard);
     });
+    container.style.display = 'none';
 }
 
 

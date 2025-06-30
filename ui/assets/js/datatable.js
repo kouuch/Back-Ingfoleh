@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${product.nama_produk}</td>
                 <td>${product.kabupaten_kota}</td>
                 <td>${product.kategori ? product.kategori.nama_kategori : 'N/A'}</td>
-                <td>${product.lokasi_penjual}</td>
+                <td class="lokasi-penjual">${product.lokasi_penjual}</td>
                 <td>${product.kontak_penjual}</td>
                 <td>Rp ${product.kisaran_harga}</td>
                 <td><img src="http://localhost:5000${productImagePath}" alt="Product Image" width="50"></td>

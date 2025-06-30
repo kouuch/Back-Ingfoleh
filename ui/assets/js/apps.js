@@ -231,6 +231,7 @@ function displayFavorites(favorites) {
         `;
         container.appendChild(favoriteCard);
     });
+    container.style.display = 'none';
 }
 
 // Display products in the UI with correct favorite status
