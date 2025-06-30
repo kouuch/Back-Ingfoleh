@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="/css/datatables.min.css">
+    <link rel="stylesheet" href="/css/datatable.css">
+    <title>Products</title>
+</head>
+
+<body>
+    <div class="container-table">
+        <div class="row-table">
+            <div class="col-12">
+                <div class="btn-dttabble">
+                    <button id="addNewBtn"><i class="fa-solid fa-plus"></i>Tambah produk</button>
+                    <button id="close"><i class="fa-solid fa-arrow-left"></i>keluar</button>
+                </div>
+                <table id="example" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>Email</th>
+                            <th>Rating</th>
+                            <th>Komentar</th>
+                            <th>Tanggal Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data Rows will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk Edit Toko -->
+    <div class="modal fade" id="exModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Edit Toko</h5>
+                    <button type="button" class="cross" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Edit Toko -->
+                    <form id="EditNewToko" style="display:block;">
+                        <!-- Input tersembunyi untuk ID toko -->
+                        <input type="hidden" id="tokoId" name="id">
+
+                        <div class="mb-3">
+                            <label for="EdittokoName">Nama Toko<span>*</span></label>
+                            <input type="text" class="form-control" id="EdittokoName" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="EdittokoCity">Kabupaten/Kota<span>*</span></label>
+                            <input type="text" class="form-control" id="EdittokoCity" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="EdittokoLocation">Alamat Toko<span>*</span></label>
+                            <input type="text" class="form-control" id="EdittokoLocation" required autocomplete="off">
+                        </div>
+                        <div class="mb-3">
+                            <label for="EdittokoContact">Kontak Toko<span>*</span></label>
+                            <input type="text" class="form-control" id="EdittokoContact" required autocomplete="off">
+                        </div>
+                        <button type="submit" class="submitBtn">Simpan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- DataTables jQuery -->
+    <script src="/js/datatables.min.js"></script>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="/js/laporanadatafeedback.js"></script>
+</body>
+
+</html>

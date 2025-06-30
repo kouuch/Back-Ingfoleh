@@ -143,7 +143,7 @@ router.get('/test', authenticateToken, authorizeRoles('admin', 'user'), async (r
 
 
 // Delete feedback (admin only)
-router.delete('/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
+router.delete('/feedback/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
         const feedback = await Feedback.findByIdAndDelete(req.params.id)
         if (!feedback) {

@@ -142,6 +142,15 @@ app.get('/profile', async (req, res) => {
         res.status(500).send('Error rendering page');
     }
 })
+// Route untuk halaman adminFeedback
+app.get('/adminFeedback', async (req, res) => {
+    try {
+        res.render('adminFeedback');
+    } catch (error) {
+        logger.error('Error rendering adminFeedback page:', error);
+        res.status(500).send('Error rendering page');
+    }
+})
 
 // Route untuk halaman laporan Produk
 app.get('/lapproduk', authenticateToken, authorizeRoles('admin'), async (req, res) => {
@@ -178,6 +187,16 @@ app.get('/laporantoko',authenticateToken, authorizeRoles('admin'), async (req, r
     } catch (error) {
         logger.error('Error rendering laporantoko page:', error);
         res.status(500).send('Error rendering laporan page');
+    }
+})
+
+// Route untuk halaman laporan Feedback
+app.get('/laporanFeedback',authenticateToken, authorizeRoles('admin'), async (req, res) => {
+    try {
+        res.render('laporanFeedback');
+    } catch (error) {
+        logger.error('Error rendering laporanFeedback page:', error);
+        res.status(500).send('Error rendering laporanFeedback page');
     }
 })
 
