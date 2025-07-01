@@ -35,14 +35,12 @@ router.post('/', authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
     try {
-        // Cek apakah produk sudah ada di favorit
         const existingFavorit = await KategoriFavorit.findOne({ id_produk, user_id: userId });
 
         if (existingFavorit) {
             return res.status(400).json({ message: 'Produk sudah ada di favorit' });
         }
 
-        // Menambahkan produk ke favorit
         const favorit = new KategoriFavorit({
             id_produk,
             nama_produk,
@@ -53,7 +51,6 @@ router.post('/', authenticateToken, async (req, res) => {
 
         await favorit.save();
 
-        // Update jumlah favorit produk di database
         await KategoriFavorit.updateOne(
             { id_produk },
             { $inc: { jumlah_favorit: 1 } }

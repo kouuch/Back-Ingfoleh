@@ -25,7 +25,6 @@ router.post('/register', async (req, res, next) => {
     logger.info(`Registrasi request received for email: ${email}`)
 
     try {
-        // cek apakah user sudah terdaftar
         const existingUserByEmail = await User.findOne({ email });
         const existingUserByUsername = await User.findOne({ username });
 
@@ -34,7 +33,6 @@ router.post('/register', async (req, res, next) => {
             return next(new AppError('User sudah terdaftar dengan email atau username tersebut', 400))
         }
 
-        // hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -58,17 +56,15 @@ router.post('/register', async (req, res, next) => {
 
 // Route untuk login user
 router.post('/login', limiter, async (req, res, next) => {
-    const { emailOrUsername, password } = req.body; // Ambil input yang bisa berupa email atau username
+    const { emailOrUsername, password } = req.body; 
 
     logger.info(`Login request received for email/username: ${emailOrUsername}`)
 
     try {
         let user;
         if (emailOrUsername.includes('@')) {
-            // Jika input mengandung '@', anggap itu adalah email
             user = await User.findOne({ email: emailOrUsername });
         } else {
-            // Jika tidak mengandung '@', anggap itu adalah username
             user = await User.findOne({ username: emailOrUsername });
         }
 
@@ -77,14 +73,12 @@ router.post('/login', limiter, async (req, res, next) => {
             return next(new AppError('User Tidak ditemukan', 400))
         }
 
-        // Cek password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             logger.warn(`Login failed: Invalid password for email/username: ${emailOrUsername}`)
             return next(new AppError('Password salah', 400))
         }
 
-        // Buat JWT token
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
         logger.info(`user role:`, user.role)
         logger.info(`Login successful for user: ${emailOrUsername}`)

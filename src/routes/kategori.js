@@ -1,5 +1,5 @@
 const express = require('express');
-const Kategori = require('../models/Kategori'); // Import model Kategori
+const Kategori = require('../models/Kategori'); 
 const { authenticateToken, authorizeRoles } = require('../middleware/auth'); // Pastikan hanya admin yang bisa mengakses
 const { log } = require('winston');
 const logger = require('../utils/logger');

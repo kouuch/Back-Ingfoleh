@@ -9,7 +9,6 @@ const AppError = require('../utils/AppError')
 // Create toko (admin only)
 router.post('/admincreate', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res, next) => {
     try {
-        // ambit data dari body request
         const { nama_toko, kabupaten_kota, alamat_lengkap, kontak_toko } = req.body
 
         const toko = new Toko({
@@ -55,10 +54,8 @@ router.get('/admintoko/:id', authenticateToken, async (req, res, next) => {
 // Update toko (admin only)
 router.put('/admintoko/:id', authenticateToken, authorizeRoles('admin'), validateStoreInput, async (req, res, next) => {
     try {
-        // Ambil data dari request body dan update toko berdasarkan ID
         const { nama_toko, kabupaten_kota, alamat_lengkap, kontak_toko } = req.body;
 
-        // Update toko berdasarkan ID dan kembalikan data toko yang diperbarui
         const toko = await Toko.findByIdAndUpdate(req.params.id, { nama_toko, kabupaten_kota, alamat_lengkap, kontak_toko }, { new: true });
 
         if (!toko) {
@@ -77,7 +74,6 @@ router.put('/admintoko/:id', authenticateToken, authorizeRoles('admin'), validat
 // Delete toko (admin only)
 router.delete('/delete/:id', authenticateToken, authorizeRoles('admin'), async (req, res, next) => {
     try {
-        // Mengambil ID toko dari parameter URL
         const tokoId = req.params.id;
         const toko = await Toko.findByIdAndDelete(tokoId);
 

@@ -28,14 +28,11 @@ router.get('/me', authenticateToken, async (req, res, next) => {
     try {
         const userId = req.user.id;
 
-        // Pengguna biasa hanya bisa mengakses data mereka sendiri
         if (req.user.role === 'user' && req.user.id !== userId) {
             return next(new AppError('Unauthorized access', 403));
         }
 
-        // Admin bisa mengakses data pengguna lain
         if (req.user.role === 'admin' && req.user.id !== userId) {
-            // Tidak perlu pengecekan lebih lanjut, admin bisa mengakses siapa saja
         }
 
         const user = await User.findById(userId).select('-password');
@@ -47,7 +44,6 @@ router.get('/me', authenticateToken, async (req, res, next) => {
             return next(new AppError('User not found', 404));
         }
 
-        // Mengirimkan data pengguna
         res.json({
             username: user.username,
             email: user.email,
@@ -65,28 +61,24 @@ router.get('/me', authenticateToken, async (req, res, next) => {
 // update Profile (user atau admin)
 router.put('/me', authenticateToken, authorizeRoles('user', 'admin'), upload.single('profilePicture'), validateUserInput, async (req, res, next) => {
     try {
-        const userId = req.user.id;  // ID pengguna yang sedang login
+        const userId = req.user.id;  
         let updateData = { ...req.body };
 
-        // Pastikan user hanya bisa mengedit data mereka sendiri (bukan data pengguna lain)
         if (req.user.role === 'user' && req.user.id !== userId) {
-            return next(new AppError('Unauthorized access', 403));  // Jika ID tidak cocok, akses ditolak
+            return next(new AppError('Unauthorized access', 403));  
         }
 
-        // Jangan izinkan pengeditan status_akun dan tanggal_daftar
         if (updateData.status_akun || updateData.tanggal_daftar) {
             return next(new AppError('Status Akun dan Tanggal Daftar tidak dapat diubah', 400));
         }
 
-        // Jika ada foto profil yang diupload, simpan foto baru
         if (req.file) {
-            logger.warn('File upload detected:', req.file);  // Log informasi file yang di-upload
-            logger.info('File uploaded:', req.file);  // Log informasi file yang di-upload
-            console.log('File uploaded:', req.file);  // Log path dan informasi file yang di-upload
+            logger.warn('File upload detected:', req.file);  
+            logger.info('File uploaded:', req.file);  
+            console.log('File uploaded:', req.file);  
             updateData.profilePicture = `/uploads/${req.file.filename}`;
         }
 
-        // Perbarui data pengguna
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
         logger.info(`User profile updated successfully: ${userId}`);
         res.json(updatedUser);
@@ -125,7 +117,6 @@ router.post('/uploadProfilePicture', upload.single('profilePicture'), async (req
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        // Verifikasi token JWT untuk mendapatkan ID pengguna
         const token = req.headers['authorization']?.split(' ')[1];
         if (!token) {
             logger.error('No token provided for profile picture upload');
@@ -135,7 +126,6 @@ router.post('/uploadProfilePicture', upload.single('profilePicture'), async (req
         const decoded = jwt.verify(token, JWT_SECRET);
         const userId = decoded.id;
 
-        // Simpan URL gambar profil di database
         const profilePictureUrl = `/uploads/${req.file.filename}`;
         const user = await User.findByIdAndUpdate(userId, { profilePicture: profilePictureUrl }, { new: true });
 
