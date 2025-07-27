@@ -1,4 +1,4 @@
-# 🛍️ back-ingfoleh
+# 🛍️ Ingfoleh Khas Kalsel
 
 A fullstack Node.js application for managing products, users, feedback, and more — built with Express.js, MongoDB, EJS templating, and a modular MVC architecture.
 
