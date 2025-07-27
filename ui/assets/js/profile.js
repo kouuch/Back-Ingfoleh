@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role'); // Ambil role dari localStorage
+    const role = localStorage.getItem('role'); 
     console.log('role:', role);
     if (token) {
-        // Fungsi untuk mengambil data profil pengguna
         function fetchProfileData(apiUrl, profileElements) {
             fetch(apiUrl, {
                 method: 'GET',
@@ -18,16 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return response.json();
                 })
                 .then(user => {
-                    console.log('Fetched user data:', user); // Log data pengguna
-                    // Menangani elemen profil berdasarkan key yang diberikan
+                    console.log('Fetched user data:', user); 
                     Object.keys(profileElements).forEach(key => {
                         const element = document.querySelector(profileElements[key].selector);
                         if (element) {
                             if (profileElements[key].type === 'text') {
-                                // Mengupdate teks
                                 element.textContent = user[key] || profileElements[key].defaultValue;
                             } else if (profileElements[key].type === 'image') {
-                                // Mengupdate gambar profil
                                 element.src = user[key] || profileElements[key].defaultValue;
                             }
                         }
@@ -39,10 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         }
 
-        // URL API untuk mengambil data profil pengguna
         const apiUrl = 'http://localhost:5000/api/users/me';
 
-        // Elemen-elemen profil yang akan diupdate
         const profileElements = {
             username: { selector: '#username', type: 'text', defaultValue: 'No Name' },
             email: { selector: '#email', type: 'text', defaultValue: 'N/A' },
@@ -51,10 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
             userJoinDate: { selector: '#userJoinDate', type: 'text', defaultValue: 'Unknown' },
             userProfilePic: { selector: '#userProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
             userSubMenuProfilePic: { selector: '#userSubMenuProfilePic', type: 'image', defaultValue: '/images/userDefault/user.png' },
-            role: { selector: '#role', type: 'text', defaultValue: 'No Role' }  // Menambahkan role ke profil
+            role: { selector: '#role', type: 'text', defaultValue: 'No Role' }  
         };
 
-        // Memanggil fungsi untuk mengambil dan mengupdate profil
         fetchProfileData(apiUrl, profileElements);
     } else {
         alert('Please log in first');
@@ -85,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('status').value = user.status_akun || 'Unknown';
                 document.getElementById('joinDate').value = new Date(user.tanggal_daftar).toLocaleDateString();
                 document.getElementById('userProfilePic').src = user.profilePicture || '/images/userDefault/user.png';
-                // Menampilkan username di h4
                 document.getElementById('usernameText').textContent = user.username; 
             })
             .catch(error => {
@@ -93,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error fetching profile. Please try again later.');
             });
 
-        // Membuat input menjadi editable saat tombol edit diklik
         fields.forEach(field => {
             const fieldElement = document.getElementById(field);
             if (field !== 'status' && field !== 'joinDate') {
@@ -132,10 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(updatedUser => {
                     console.log('Updated user data:', updatedUser);
 
-                    // Update h4 dengan username yang baru
                     document.getElementById('usernameText').textContent = updatedUser.username; 
 
-                    // perbarui UI dan set kembali readonly pada input
                     fields.forEach(field => {
                         const fieldElement = document.getElementById(field);
                         fieldElement.setAttribute('readonly', true);  

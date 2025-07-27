@@ -28,21 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
     submitButton.addEventListener('click', (e) => {
         e.preventDefault();
     
-        // Pengecekan input form
         if (!emailInput.value || !ratingInput.value || ratingInput.value == "0" || !commentInput.value) {
             alert('Semua field harus diisi dan rating minimal 1');
             return;
         }
     
-        // Pengecekan apakah token ada di localStorage
         const token = localStorage.getItem('token');
         if (!token) {
             alert('Anda belum login. Silakan login terlebih dahulu untuk mengirim feedback.');
-            window.location.href = '/login'; // Mengarahkan ke halaman login
+            window.location.href = '/login'; 
             return;
         }
     
-        // Membuat objek feedback
         const feedbackData = {
             email: emailInput.value,
             rating: ratingInput.value,
@@ -51,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
         console.log('Data yang dikirim ke API:', feedbackData);
     
-        // Mengirimkan feedback ke API
         fetch('http://localhost:5000/api/feedback', {
             method: 'POST',
             headers: {

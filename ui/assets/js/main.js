@@ -190,15 +190,12 @@ document.getElementById('showProductsBtn').addEventListener('click', () => {
 
 
 
-// Function to close overlay when clicking the close button (X)
+// Function to close 
 document.getElementById('closeOverlayBtn').addEventListener('click', function () {
-    // Menyembunyikan overlay
     document.getElementById('overlay').style.display = 'none';
 
-    // Menghapus data favorit di localStorage
     localStorage.removeItem('favorite_');
     localStorage.removeItem('favoriteId_');
 
-    // Reset URL hash ke '/'
     history.pushState(null, null, '/');
 });

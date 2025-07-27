@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Close modal atau redirect ke halaman utama
 document.getElementById('close').addEventListener('click', function () {
     window.location.href = '/'; 
 });

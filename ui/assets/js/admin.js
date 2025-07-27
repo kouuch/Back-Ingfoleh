@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    console.log('Guest dapat mengakses landing page');
 });
-
 
 function checkAccess(event, menuId, requiredRole = 'admin') {
     const token = localStorage.getItem('token');
@@ -28,7 +26,6 @@ function checkAccess(event, menuId, requiredRole = 'admin') {
         alert('Anda tidak memiliki akses ke halaman ini.');
         window.location.href = '/unauthorized';
     } else {
-        console.log(`Akses diberikan ke ${menuId}`);
     }
 }
 

@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Mengambil token dari localStorage
     const token = localStorage.getItem('token');
     console.log('Token found:', token);
 
     if (!token) {
         alert("You need to be logged in to access this page.");
-        return;  // Jika token tidak ada, hentikan eksekusi lebih lanjut
+        return; 
     }
 
-    // Inisialisasi DataTables
     $('#example').DataTable({
         destroy: true,
         language: {
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollCollapse: true
     });
 
-    // Ambil data produk menggunakan token yang valid
     fetch('http://localhost:5000/api/adminget', {
         method: 'GET',
         headers: {

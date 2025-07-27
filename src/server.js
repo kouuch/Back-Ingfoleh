@@ -200,20 +200,6 @@ app.get('/laporanFeedback',authenticateToken, authorizeRoles('admin'), async (re
     }
 })
 
-
-// Route untuk halaman admin
-// app.get('/adminproducts', authenticateToken, async (req, res) => {
-//     try {
-//         res.render('adminproduct');  
-//     } catch (error) {
-//         logger.error('Error rendering admin products page:', error);
-//         res.status(500).send('Error rendering page');
-//     }
-// });
-
-
-
-
 app.use(limiter)
 
 mongoose.connect(process.env.DB_URI
@@ -260,10 +246,6 @@ const kategoriRoutes = require('./routes/kategori');
 const AppError = require('./utils/AppError');
 app.use('/api/kategori', kategoriRoutes);
 
-// app.get('/', (req, res) => {
-//     res.send("Hello World")
-//     logger.info("server is running...")
-// })
 
 // Global error handling
 app.use((err, req, res, next) => {
